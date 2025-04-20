@@ -1,10 +1,11 @@
 // Copyright (c) 2011-2016 The Bitcoin Core developers
 // Copyright (c) 2017-2019 The Raven Core developers
+// Copyright (c) 2024-2025 The Memeium Core developers
 // Distributed under the MIT software license, see the accompanying
 // file COPYING or http://www.opensource.org/licenses/mit-license.php.
 
-#ifndef RAVEN_QT_BANTABLEMODEL_H
-#define RAVEN_QT_BANTABLEMODEL_H
+#ifndef MEMEIUM_QT_BANTABLEMODEL_H
+#define MEMEIUM_QT_BANTABLEMODEL_H
 
 #include "net.h"
 
@@ -22,8 +23,7 @@ struct CCombinedBan {
 class BannedNodeLessThan
 {
 public:
-    BannedNodeLessThan(int nColumn, Qt::SortOrder fOrder) :
-        column(nColumn), order(fOrder) {}
+    BannedNodeLessThan(int nColumn, Qt::SortOrder fOrder) : column(nColumn), order(fOrder) {}
     bool operator()(const CCombinedBan& left, const CCombinedBan& right) const;
 
 private:
@@ -40,7 +40,7 @@ class BanTableModel : public QAbstractTableModel
     Q_OBJECT
 
 public:
-    explicit BanTableModel(ClientModel *parent = 0);
+    explicit BanTableModel(ClientModel* parent = 0);
     ~BanTableModel();
     void startAutoRefresh();
     void stopAutoRefresh();
@@ -52,12 +52,12 @@ public:
 
     /** @name Methods overridden from QAbstractTableModel
         @{*/
-    int rowCount(const QModelIndex &parent) const;
-    int columnCount(const QModelIndex &parent) const;
-    QVariant data(const QModelIndex &index, int role) const;
+    int rowCount(const QModelIndex& parent) const;
+    int columnCount(const QModelIndex& parent) const;
+    QVariant data(const QModelIndex& index, int role) const;
     QVariant headerData(int section, Qt::Orientation orientation, int role) const;
-    QModelIndex index(int row, int column, const QModelIndex &parent) const;
-    Qt::ItemFlags flags(const QModelIndex &index) const;
+    QModelIndex index(int row, int column, const QModelIndex& parent) const;
+    Qt::ItemFlags flags(const QModelIndex& index) const;
     void sort(int column, Qt::SortOrder order);
     bool shouldShow();
     /*@}*/
@@ -66,9 +66,9 @@ public Q_SLOTS:
     void refresh();
 
 private:
-    ClientModel *clientModel;
+    ClientModel* clientModel;
     QStringList columns;
     std::unique_ptr<BanTablePriv> priv;
 };
 
-#endif // RAVEN_QT_BANTABLEMODEL_H
+#endif // MEMEIUM_QT_BANTABLEMODEL_H

@@ -1,5 +1,6 @@
 // Copyright (c) 2015 The Bitcoin Core developers
 // Copyright (c) 2017-2019 The Raven Core developers
+// Copyright (c) 2024-2025 The Memeium Core developers
 // Distributed under the MIT software license, see the accompanying
 // file COPYING or http://www.opensource.org/licenses/mit-license.php.
 
@@ -12,17 +13,17 @@ CZMQAbstractNotifier::~CZMQAbstractNotifier()
     assert(!psocket);
 }
 
-bool CZMQAbstractNotifier::NotifyBlock(const CBlockIndex * /*CBlockIndex*/)
+bool CZMQAbstractNotifier::NotifyBlock(const CBlockIndex* /*CBlockIndex*/)
 {
     return true;
 }
 
-bool CZMQAbstractNotifier::NotifyTransaction(const CTransaction &/*transaction*/)
+bool CZMQAbstractNotifier::NotifyTransaction(const CTransaction& /*transaction*/)
 {
     return true;
 }
 
-bool CZMQAbstractNotifier::NotifyMessage(const CMessage &/*message*/)
+bool CZMQAbstractNotifier::NotifyMessage(const CMessage& /*message*/)
 {
     return true;
 }

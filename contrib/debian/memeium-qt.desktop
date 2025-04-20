@@ -1,0 +1,13 @@
+[Desktop Entry]
+Encoding=UTF-8
+Name=Memeium Core
+Comment=Connect to the Memeium P2P Network
+Comment[de]=Verbinde mit dem Memeium peer-to-peer Netzwerk
+Comment[fr]=Memeium, monnaie virtuelle cryptographique pair à pair
+Comment[tr]=Memeium, eşten eşe kriptografik sanal para birimi
+Exec=memeium-qt %u
+Terminal=false
+Type=Application
+Icon=memeium128
+MimeType=x-scheme-handler/memeium;
+Categories=Office;Finance;

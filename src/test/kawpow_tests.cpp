@@ -3,12 +3,12 @@
 // file COPYING or http://www.opensource.org/licenses/mit-license.php.
 
 
-#include <test/test_raven.h>
+#include <test/test_memeium.h>
 
 #include <boost/test/unit_test.hpp>
 
-#include <crypto/ethash/lib/ethash/endianness.hpp>
 #include <crypto/ethash/include/ethash/progpow.hpp>
+#include <crypto/ethash/lib/ethash/endianness.hpp>
 
 #include "crypto/ethash/helpers.hpp"
 #include "crypto/ethash/progpow_test_vectors.hpp"
@@ -24,13 +24,13 @@ BOOST_AUTO_TEST_CASE(kawpow_l1_cache)
     constexpr auto test_size = 20;
     std::array<uint32_t, test_size> cache_slice;
     for (size_t i = 0; i < cache_slice.size(); ++i)
-    cache_slice[i] = ethash::le::uint32(context.l1_cache[i]);
+        cache_slice[i] = ethash::le::uint32(context.l1_cache[i]);
 
     const std::array<uint32_t, test_size> expected{
         {2492749011, 430724829, 2029256771, 3095580433, 3583790154, 3025086503,
-         805985885, 4121693337, 2320382801, 3763444918, 1006127899, 1480743010,
-         2592936015, 2598973744, 3038068233, 2754267228, 2867798800, 2342573634,
-         467767296, 246004123}};
+            805985885, 4121693337, 2320382801, 3763444918, 1006127899, 1480743010,
+            2592936015, 2598973744, 3038068233, 2754267228, 2867798800, 2342573634,
+            467767296, 246004123}};
     int i = 0;
     for (auto item : cache_slice) {
         BOOST_CHECK(item == expected[i]);
@@ -59,7 +59,7 @@ BOOST_AUTO_TEST_CASE(kawpow_hash_30000)
 {
     const int block_number = 30000;
     const auto header =
-            to_hash256("ffeeddccbbaa9988776655443322110000112233445566778899aabbccddeeff");
+        to_hash256("ffeeddccbbaa9988776655443322110000112233445566778899aabbccddeeff");
     const uint64_t nonce = 0x123456789abcdef0;
 
     auto context = ethash::create_epoch_context(ethash::get_epoch_number(block_number));
@@ -69,15 +69,13 @@ BOOST_AUTO_TEST_CASE(kawpow_hash_30000)
     const auto final_hex = "c824bee0418e3cfb7fae56e0d5b3b8b14ba895777feea81c70c0ba947146da69";
     BOOST_CHECK_EQUAL(to_hex(result.mix_hash), mix_hex);
     BOOST_CHECK_EQUAL(to_hex(result.final_hash), final_hex);
-
 }
 
 BOOST_AUTO_TEST_CASE(kawpow_hash_and_verify)
 {
     ethash::epoch_context_ptr context{nullptr, nullptr};
 
-    for (auto& t : progpow_hash_test_cases)
-    {
+    for (auto& t : progpow_hash_test_cases) {
         const auto epoch_number = ethash::get_epoch_number(t.block_number);
         if (!context || context->epoch_number != epoch_number)
             context = ethash::create_epoch_context(epoch_number);
@@ -89,19 +87,19 @@ BOOST_AUTO_TEST_CASE(kawpow_hash_and_verify)
         BOOST_CHECK_EQUAL(to_hex(result.final_hash), t.final_hash_hex);
 
         auto success = progpow::verify(
-                *context, t.block_number, header_hash, result.mix_hash, nonce, result.final_hash);
+            *context, t.block_number, header_hash, result.mix_hash, nonce, result.final_hash);
         BOOST_CHECK(success);
 
         auto lower_boundary = result.final_hash;
         --lower_boundary.bytes[31];
         auto final_failure = progpow::verify(
-                *context, t.block_number, header_hash, result.mix_hash, nonce, lower_boundary);
+            *context, t.block_number, header_hash, result.mix_hash, nonce, lower_boundary);
         BOOST_CHECK(!final_failure);
 
         auto different_mix = result.mix_hash;
         ++different_mix.bytes[7];
         auto mix_failure = progpow::verify(
-                *context, t.block_number, header_hash, different_mix, nonce, result.final_hash);
+            *context, t.block_number, header_hash, different_mix, nonce, result.final_hash);
         BOOST_CHECK(!mix_failure);
     }
 }

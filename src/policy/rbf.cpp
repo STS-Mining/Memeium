@@ -1,21 +1,22 @@
 // Copyright (c) 2016 The Bitcoin Core developers
 // Copyright (c) 2017-2019 The Raven Core developers
+// Copyright (c) 2024-2025 The Memeium Core developers
 // Distributed under the MIT software license, see the accompanying
 // file COPYING or http://www.opensource.org/licenses/mit-license.php.
 
 #include "policy/rbf.h"
 
-bool SignalsOptInRBF(const CTransaction &tx)
+bool SignalsOptInRBF(const CTransaction& tx)
 {
-    for (const CTxIn &txin : tx.vin) {
-        if (txin.nSequence < std::numeric_limits<unsigned int>::max()-1) {
+    for (const CTxIn& txin : tx.vin) {
+        if (txin.nSequence < std::numeric_limits<unsigned int>::max() - 1) {
             return true;
         }
     }
     return false;
 }
 
-RBFTransactionState IsRBFOptIn(const CTransaction &tx, CTxMemPool &pool)
+RBFTransactionState IsRBFOptIn(const CTransaction& tx, CTxMemPool& pool)
 {
     AssertLockHeld(pool.cs);
 

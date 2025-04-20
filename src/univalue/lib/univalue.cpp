@@ -1,11 +1,12 @@
 // Copyright 2014 BitPay Inc.
 // Copyright 2015 Raven Core Developers
+// Copyright (c) 2024-2025 The Memeium Core developers
 // Distributed under the MIT software license, see the accompanying
 // file COPYING or http://www.opensource.org/licenses/mit-license.php.
 
-#include <stdint.h>
 #include <iomanip>
 #include <sstream>
+#include <stdint.h>
 #include <stdlib.h>
 
 #include "univalue.h"
@@ -156,7 +157,7 @@ bool UniValue::pushKVs(const UniValue& obj)
     return true;
 }
 
-void UniValue::getObjMap(std::map<std::string,UniValue>& kv) const
+void UniValue::getObjMap(std::map<std::string, UniValue>& kv) const
 {
     if (typ != VOBJ)
         return;
@@ -178,13 +179,13 @@ bool UniValue::findKey(const std::string& key, size_t& retIdx) const
     return false;
 }
 
-bool UniValue::checkObject(const std::map<std::string,UniValue::VType>& t) const
+bool UniValue::checkObject(const std::map<std::string, UniValue::VType>& t) const
 {
     if (typ != VOBJ)
         return false;
 
-    for (std::map<std::string,UniValue::VType>::const_iterator it = t.begin();
-         it != t.end(); ++it) {
+    for (std::map<std::string, UniValue::VType>::const_iterator it = t.begin();
+        it != t.end(); ++it) {
         size_t idx = 0;
         if (!findKey(it->first, idx))
             return false;
@@ -218,15 +219,21 @@ const UniValue& UniValue::operator[](size_t index) const
     return values.at(index);
 }
 
-const char *uvTypeName(UniValue::VType t)
+const char* uvTypeName(UniValue::VType t)
 {
     switch (t) {
-    case UniValue::VNULL: return "null";
-    case UniValue::VBOOL: return "bool";
-    case UniValue::VOBJ: return "object";
-    case UniValue::VARR: return "array";
-    case UniValue::VSTR: return "string";
-    case UniValue::VNUM: return "number";
+    case UniValue::VNULL:
+        return "null";
+    case UniValue::VBOOL:
+        return "bool";
+    case UniValue::VOBJ:
+        return "object";
+    case UniValue::VARR:
+        return "array";
+    case UniValue::VSTR:
+        return "string";
+    case UniValue::VNUM:
+        return "number";
     }
 
     // not reached
@@ -241,4 +248,3 @@ const UniValue& find_value(const UniValue& obj, const std::string& name)
 
     return NullUniValue;
 }
-

@@ -1,5 +1,6 @@
 // Copyright (c) 2014-2016 The Bitcoin Core developers
 // Copyright (c) 2017-2019 The Raven Core developers
+// Copyright (c) 2024-2025 The Memeium Core developers
 // Distributed under the MIT software license, see the accompanying
 // file COPYING or http://www.opensource.org/licenses/mit-license.php.
 
@@ -9,12 +10,12 @@
 #include "uint256.h"
 
 #include <assert.h>
-#include <stdint.h>
-#include <string.h>
-#include <vector>
-#include <string>
 #include <boost/variant/apply_visitor.hpp>
 #include <boost/variant/static_visitor.hpp>
+#include <stdint.h>
+#include <string.h>
+#include <string>
+#include <vector>
 
 /** All alphanumeric characters except for "0", "I", "O", and "l" */
 static const char* pszBase58 = "123456789ABCDEFGHJKLMNPQRSTUVWXYZabcdefghijkmnopqrstuvwxyz";
@@ -32,7 +33,7 @@ bool DecodeBase58(const char* psz, std::vector<unsigned char>& vch)
         psz++;
     }
     // Allocate enough space in big-endian base256 representation.
-    int size = strlen(psz) * 733 /1000 + 1; // log(58) / log(256), rounded up.
+    int size = strlen(psz) * 733 / 1000 + 1; // log(58) / log(256), rounded up.
     std::vector<unsigned char> b256(size);
     // Process the characters.
     while (*psz && !isspace(*psz)) {
@@ -214,13 +215,13 @@ int CBase58Data::CompareTo(const CBase58Data& b58) const
 namespace
 {
 
-class CRavenAddressVisitor : public boost::static_visitor<bool>
+class CMemeiumAddressVisitor : public boost::static_visitor<bool>
 {
 private:
-    CRavenAddress* addr;
+    CMemeiumAddress* addr;
 
 public:
-    explicit CRavenAddressVisitor(CRavenAddress* addrIn) : addr(addrIn) {}
+    explicit CMemeiumAddressVisitor(CMemeiumAddress* addrIn) : addr(addrIn) {}
 
     bool operator()(const CKeyID& id) const { return addr->Set(id); }
     bool operator()(const CScriptID& id) const { return addr->Set(id); }
@@ -229,29 +230,29 @@ public:
 
 } // namespace
 
-bool CRavenAddress::Set(const CKeyID& id)
+bool CMemeiumAddress::Set(const CKeyID& id)
 {
     SetData(GetParams().Base58Prefix(CChainParams::PUBKEY_ADDRESS), &id, 20);
     return true;
 }
 
-bool CRavenAddress::Set(const CScriptID& id)
+bool CMemeiumAddress::Set(const CScriptID& id)
 {
     SetData(GetParams().Base58Prefix(CChainParams::SCRIPT_ADDRESS), &id, 20);
     return true;
 }
 
-bool CRavenAddress::Set(const CTxDestination& dest)
+bool CMemeiumAddress::Set(const CTxDestination& dest)
 {
-    return boost::apply_visitor(CRavenAddressVisitor(this), dest);
+    return boost::apply_visitor(CMemeiumAddressVisitor(this), dest);
 }
 
-bool CRavenAddress::IsValid() const
+bool CMemeiumAddress::IsValid() const
 {
     return IsValid(GetParams());
 }
 
-bool CRavenAddress::IsValid(const CChainParams& params) const
+bool CMemeiumAddress::IsValid(const CChainParams& params) const
 {
     bool fCorrectSize = vchData.size() == 20;
     bool fKnownVersion = vchVersion == params.Base58Prefix(CChainParams::PUBKEY_ADDRESS) ||
@@ -259,7 +260,7 @@ bool CRavenAddress::IsValid(const CChainParams& params) const
     return fCorrectSize && fKnownVersion;
 }
 
-CTxDestination CRavenAddress::Get() const
+CTxDestination CMemeiumAddress::Get() const
 {
     if (!IsValid())
         return CNoDestination();
@@ -273,7 +274,7 @@ CTxDestination CRavenAddress::Get() const
         return CNoDestination();
 }
 
-bool CRavenAddress::GetIndexKey(uint160& hashBytes, int& type) const
+bool CMemeiumAddress::GetIndexKey(uint160& hashBytes, int& type) const
 {
     if (!IsValid()) {
         return false;
@@ -290,7 +291,7 @@ bool CRavenAddress::GetIndexKey(uint160& hashBytes, int& type) const
     return false;
 }
 
-void CRavenSecret::SetKey(const CKey& vchSecret)
+void CMemeiumSecret::SetKey(const CKey& vchSecret)
 {
     assert(vchSecret.IsValid());
     SetData(GetParams().Base58Prefix(CChainParams::SECRET_KEY), vchSecret.begin(), vchSecret.size());
@@ -298,7 +299,7 @@ void CRavenSecret::SetKey(const CKey& vchSecret)
         vchData.push_back(1);
 }
 
-CKey CRavenSecret::GetKey()
+CKey CMemeiumSecret::GetKey()
 {
     CKey ret;
     assert(vchData.size() >= 32);
@@ -306,41 +307,41 @@ CKey CRavenSecret::GetKey()
     return ret;
 }
 
-bool CRavenSecret::IsValid() const
+bool CMemeiumSecret::IsValid() const
 {
     bool fExpectedFormat = vchData.size() == 32 || (vchData.size() == 33 && vchData[32] == 1);
     bool fCorrectVersion = vchVersion == GetParams().Base58Prefix(CChainParams::SECRET_KEY);
     return fExpectedFormat && fCorrectVersion;
 }
 
-bool CRavenSecret::SetString(const char* pszSecret)
+bool CMemeiumSecret::SetString(const char* pszSecret)
 {
     return CBase58Data::SetString(pszSecret) && IsValid();
 }
 
-bool CRavenSecret::SetString(const std::string& strSecret)
+bool CMemeiumSecret::SetString(const std::string& strSecret)
 {
     return SetString(strSecret.c_str());
 }
 
 std::string EncodeDestination(const CTxDestination& dest)
 {
-    CRavenAddress addr(dest);
+    CMemeiumAddress addr(dest);
     if (!addr.IsValid()) return "";
     return addr.ToString();
 }
 
 CTxDestination DecodeDestination(const std::string& str)
 {
-    return CRavenAddress(str).Get();
+    return CMemeiumAddress(str).Get();
 }
 
 bool IsValidDestinationString(const std::string& str, const CChainParams& params)
 {
-    return CRavenAddress(str).IsValid(params);
+    return CMemeiumAddress(str).IsValid(params);
 }
 
 bool IsValidDestinationString(const std::string& str)
 {
-    return CRavenAddress(str).IsValid();
+    return CMemeiumAddress(str).IsValid();
 }

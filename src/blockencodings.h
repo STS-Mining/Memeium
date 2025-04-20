@@ -1,10 +1,11 @@
 // Copyright (c) 2016 The Bitcoin Core developers
 // Copyright (c) 2017-2019 The Raven Core developers
+// Copyright (c) 2024-2025 The Memeium Core developers
 // Distributed under the MIT software license, see the accompanying
 // file COPYING or http://www.opensource.org/licenses/mit-license.php.
 
-#ifndef RAVEN_BLOCK_ENCODINGS_H
-#define RAVEN_BLOCK_ENCODINGS_H
+#ifndef MEMEIUM_BLOCK_ENCODINGS_H
+#define MEMEIUM_BLOCK_ENCODINGS_H
 
 #include "primitives/block.h"
 
@@ -17,18 +18,21 @@ class CDatabasedAssetData;
 struct TransactionCompressor {
 private:
     CTransactionRef& tx;
+
 public:
     explicit TransactionCompressor(CTransactionRef& txIn) : tx(txIn) {}
 
     ADD_SERIALIZE_METHODS;
 
     template <typename Stream, typename Operation>
-    inline void SerializationOp(Stream& s, Operation ser_action) {
-        READWRITE(tx); //TODO: Compress tx encoding
+    inline void SerializationOp(Stream& s, Operation ser_action)
+    {
+        READWRITE(tx); // TODO: Compress tx encoding
     }
 };
 
-class BlockTransactionsRequest {
+class BlockTransactionsRequest
+{
 public:
     // A BlockTransactionsRequest message
     uint256 blockhash;
@@ -37,7 +41,8 @@ public:
     ADD_SERIALIZE_METHODS;
 
     template <typename Stream, typename Operation>
-    inline void SerializationOp(Stream& s, Operation ser_action) {
+    inline void SerializationOp(Stream& s, Operation ser_action)
+    {
         READWRITE(blockhash);
         uint64_t indexes_size = (uint64_t)indexes.size();
         READWRITE(COMPACTSIZE(indexes_size));
@@ -70,20 +75,21 @@ public:
     }
 };
 
-class BlockTransactions {
+class BlockTransactions
+{
 public:
     // A BlockTransactions message
     uint256 blockhash;
     std::vector<CTransactionRef> txn;
 
     BlockTransactions() {}
-    explicit BlockTransactions(const BlockTransactionsRequest& req) :
-        blockhash(req.blockhash), txn(req.indexes.size()) {}
+    explicit BlockTransactions(const BlockTransactionsRequest& req) : blockhash(req.blockhash), txn(req.indexes.size()) {}
 
     ADD_SERIALIZE_METHODS;
 
     template <typename Stream, typename Operation>
-    inline void SerializationOp(Stream& s, Operation ser_action) {
+    inline void SerializationOp(Stream& s, Operation ser_action)
+    {
         READWRITE(blockhash);
         uint64_t txn_size = (uint64_t)txn.size();
         READWRITE(COMPACTSIZE(txn_size));
@@ -111,7 +117,8 @@ struct PrefilledTransaction {
     ADD_SERIALIZE_METHODS;
 
     template <typename Stream, typename Operation>
-    inline void SerializationOp(Stream& s, Operation ser_action) {
+    inline void SerializationOp(Stream& s, Operation ser_action)
+    {
         uint64_t idx = index;
         READWRITE(COMPACTSIZE(idx));
         if (idx > std::numeric_limits<uint16_t>::max())
@@ -121,16 +128,16 @@ struct PrefilledTransaction {
     }
 };
 
-typedef enum ReadStatus_t
-{
+typedef enum ReadStatus_t {
     READ_STATUS_OK,
-    READ_STATUS_INVALID, // Invalid object, peer is sending bogus crap
-    READ_STATUS_FAILED, // Failed to process object
+    READ_STATUS_INVALID,           // Invalid object, peer is sending bogus crap
+    READ_STATUS_FAILED,            // Failed to process object
     READ_STATUS_CHECKBLOCK_FAILED, // Used only by FillBlock to indicate a
                                    // failure in CheckBlock.
 } ReadStatus;
 
-class CBlockHeaderAndShortTxIDs {
+class CBlockHeaderAndShortTxIDs
+{
 private:
     mutable uint64_t shorttxidk0, shorttxidk1;
     uint64_t nonce;
@@ -140,6 +147,7 @@ private:
     friend class PartiallyDownloadedBlock;
 
     static const int SHORTTXIDS_LENGTH = 6;
+
 protected:
     std::vector<uint64_t> shorttxids;
     std::vector<PrefilledTransaction> prefilledtxn;
@@ -159,7 +167,8 @@ public:
     ADD_SERIALIZE_METHODS;
 
     template <typename Stream, typename Operation>
-    inline void SerializationOp(Stream& s, Operation ser_action) {
+    inline void SerializationOp(Stream& s, Operation ser_action)
+    {
         READWRITE(header);
         READWRITE(nonce);
 
@@ -170,7 +179,8 @@ public:
             while (shorttxids.size() < shorttxids_size) {
                 shorttxids.resize(std::min((uint64_t)(1000 + shorttxids.size()), shorttxids_size));
                 for (; i < shorttxids.size(); i++) {
-                    uint32_t lsb = 0; uint16_t msb = 0;
+                    uint32_t lsb = 0;
+                    uint16_t msb = 0;
                     READWRITE(lsb);
                     READWRITE(msb);
                     shorttxids[i] = (uint64_t(msb) << 32) | uint64_t(lsb);
@@ -193,11 +203,13 @@ public:
     }
 };
 
-class PartiallyDownloadedBlock {
+class PartiallyDownloadedBlock
+{
 protected:
     std::vector<CTransactionRef> txn_available;
     size_t prefilled_count = 0, mempool_count = 0, extra_count = 0;
     CTxMemPool* pool;
+
 public:
     CBlockHeader header;
     explicit PartiallyDownloadedBlock(CTxMemPool* poolIn) : pool(poolIn) {}
@@ -208,7 +220,8 @@ public:
     ReadStatus FillBlock(CBlock& block, const std::vector<CTransactionRef>& vtx_missing);
 };
 
-class SerializedAssetData {
+class SerializedAssetData
+{
 public:
     std::string name;
     int8_t units;
@@ -218,12 +231,13 @@ public:
     std::string ipfs;
     int32_t nHeight;
 
-    SerializedAssetData(const CDatabasedAssetData &assetData);
+    SerializedAssetData(const CDatabasedAssetData& assetData);
 
     ADD_SERIALIZE_METHODS;
 
     template <typename Stream, typename Operation>
-    inline void SerializationOp(Stream& s, Operation ser_action) {
+    inline void SerializationOp(Stream& s, Operation ser_action)
+    {
         READWRITE(name);
         READWRITE(amount);
         READWRITE(units);
@@ -232,7 +246,5 @@ public:
         READWRITE(ipfs);
         READWRITE(nHeight);
     }
-
-
 };
 #endif

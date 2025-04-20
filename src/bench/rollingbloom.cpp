@@ -1,5 +1,6 @@
 // Copyright (c) 2016 The Bitcoin Core developers
 // Copyright (c) 2017-2019 The Raven Core developers
+// Copyright (c) 2024-2025 The Memeium Core developers
 // Distributed under the MIT software license, see the accompanying
 // file COPYING or http://www.opensource.org/licenses/mit-license.php.
 
@@ -27,7 +28,7 @@ static void RollingBloom(benchmark::State& state)
             int64_t b = GetTimeMicros();
             filter.insert(data);
             int64_t e = GetTimeMicros();
-            std::cout << "RollingBloom-refresh,1," << (e-b)*0.000001 << "," << (e-b)*0.000001 << "," << (e-b)*0.000001 << "\n";
+            std::cout << "RollingBloom-refresh,1," << (e - b) * 0.000001 << "," << (e - b) * 0.000001 << "," << (e - b) * 0.000001 << "\n";
             countnow = 0;
         } else {
             filter.insert(data);

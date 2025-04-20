@@ -1,10 +1,11 @@
 // Copyright (c) 2011-2014 The Bitcoin Core developers
 // Copyright (c) 2017-2019 The Raven Core developers
+// Copyright (c) 2024-2025 The Memeium Core developers
 // Distributed under the MIT software license, see the accompanying
 // file COPYING or http://www.opensource.org/licenses/mit-license.php.
 
-#ifndef RAVEN_QT_WALLETMODELTRANSACTION_H
-#define RAVEN_QT_WALLETMODELTRANSACTION_H
+#ifndef MEMEIUM_QT_WALLETMODELTRANSACTION_H
+#define MEMEIUM_QT_WALLETMODELTRANSACTION_H
 
 #include "walletmodel.h"
 
@@ -21,12 +22,12 @@ class CWalletTx;
 class WalletModelTransaction
 {
 public:
-    explicit WalletModelTransaction(const QList<SendCoinsRecipient> &recipients);
+    explicit WalletModelTransaction(const QList<SendCoinsRecipient>& recipients);
     ~WalletModelTransaction();
 
     QList<SendCoinsRecipient> getRecipients() const;
 
-    CWalletTx *getTransaction() const;
+    CWalletTx* getTransaction() const;
     unsigned int getTransactionSize();
 
     void setTransactionFee(const CAmount& newFee);
@@ -34,16 +35,16 @@ public:
 
     CAmount getTotalTransactionAmount() const;
 
-    void newPossibleKeyChange(CWallet *wallet);
-    CReserveKey *getPossibleKeyChange();
+    void newPossibleKeyChange(CWallet* wallet);
+    CReserveKey* getPossibleKeyChange();
 
     void reassignAmounts(int nChangePosRet); // needed for the subtract-fee-from-amount feature
 
 private:
     QList<SendCoinsRecipient> recipients;
-    CWalletTx *walletTransaction;
+    CWalletTx* walletTransaction;
     std::unique_ptr<CReserveKey> keyChange;
     CAmount fee;
 };
 
-#endif // RAVEN_QT_WALLETMODELTRANSACTION_H
+#endif // MEMEIUM_QT_WALLETMODELTRANSACTION_H

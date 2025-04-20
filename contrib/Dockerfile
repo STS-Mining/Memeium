@@ -1,10 +1,10 @@
 FROM amd64/ubuntu:20.04 AS base
 
-#If you found this docker image helpful please donate RVN to the maintainer
+#If you found this docker image helpful please donate MMM to the maintainer
 LABEL maintainer="RV9zdNeUTQUToZUcRp9uNF8gwH5LzDFtan"
 
 EXPOSE 8766/tcp
-EXPOSE 8767/tcp
+EXPOSE 8676/tcp
 
 ENV DEBIAN_FRONTEND=noninteractive
 
@@ -31,33 +31,33 @@ RUN apt-get update && \
 	apt-get clean
 
 #Copy source dir
-COPY . /home/raven/build/Ravencoin/
-WORKDIR /home/raven/build/Ravencoin
+COPY . /home/memeium/build/Memeium/
+WORKDIR /home/memeium/build/Memeium
 
 #build db4 from source
-WORKDIR /home/raven/build/Ravencoin/contrib
+WORKDIR /home/memeium/build/Memeium/contrib
 RUN ./install_db4.sh ../../
 
-# build Ravencore
-WORKDIR /home/raven/build/Ravencoin
-RUN ./autogen.sh && ./configure --disable-tests BDB_LIBS="-L/home/raven/build/db4/lib -ldb_cxx-4.8" BDB_CFLAGS="-I/home/raven/build/db4/include" --with-gui=no  && make -j4
+# build Memeiumcore
+WORKDIR /home/memeium/build/Memeium
+RUN ./autogen.sh && ./configure --disable-tests BDB_LIBS="-L/home/memeium/build/db4/lib -ldb_cxx-4.8" BDB_CFLAGS="-I/home/memeium/build/db4/include" --with-gui=no  && make -j4
 
 FROM base AS final
 
 #Add our service account user
-RUN useradd -ms /bin/bash raven && \
-	mkdir /var/lib/raven && \
-	chown raven:raven /var/lib/raven && \
-	ln -s /var/lib/raven /home/raven/.raven && \
-	chown -h raven:raven /home/raven/.raven
+RUN useradd -ms /bin/bash memeium && \
+	mkdir /var/lib/memeium && \
+	chown memeium:memeium /var/lib/memeium && \
+	ln -s /var/lib/memeium /home/memeium/.memeium && \
+	chown -h memeium:memeium /home/memeium/.memeium
 
-VOLUME /var/lib/raven
+VOLUME /var/lib/memeium
 
 #Copy the compiled binaries from the build
-COPY --from=build /home/raven/build/Ravencoin/src/ravend /usr/local/bin/ravend
-COPY --from=build /home/raven/build/Ravencoin/src/raven-cli /usr/local/bin/raven-cli
+COPY --from=build /home/memeium/build/Memeium/src/memeiumd /usr/local/bin/memeiumd
+COPY --from=build /home/memeium/build/Memeium/src/memeium-cli /usr/local/bin/memeium-cli
 
-WORKDIR /home/raven
-USER raven
+WORKDIR /home/memeium
+USER memeium
 
-CMD /usr/local/bin/ravend -datadir=/var/lib/raven -printtoconsole -onlynet=ipv4
+CMD /usr/local/bin/memeiumd -datadir=/var/lib/memeium -printtoconsole -onlynet=ipv4

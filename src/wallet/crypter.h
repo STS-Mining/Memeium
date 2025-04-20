@@ -1,10 +1,11 @@
 // Copyright (c) 2009-2016 The Bitcoin Core developers
 // Copyright (c) 2017-2020 The Raven Core developers
+// Copyright (c) 2024-2025 The Memeium Core developers
 // Distributed under the MIT software license, see the accompanying
 // file COPYING or http://www.opensource.org/licenses/mit-license.php.
 
-#ifndef RAVEN_WALLET_CRYPTER_H
-#define RAVEN_WALLET_CRYPTER_H
+#ifndef MEMEIUM_WALLET_CRYPTER_H
+#define MEMEIUM_WALLET_CRYPTER_H
 
 #include "keystore.h"
 #include "serialize.h"
@@ -48,7 +49,8 @@ public:
     ADD_SERIALIZE_METHODS;
 
     template <typename Stream, typename Operation>
-    inline void SerializationOp(Stream& s, Operation ser_action) {
+    inline void SerializationOp(Stream& s, Operation ser_action)
+    {
         READWRITE(vchCryptedKey);
         READWRITE(vchSalt);
         READWRITE(nDerivationMethod);
@@ -66,27 +68,27 @@ public:
     }
 };
 
-typedef std::vector<unsigned char, secure_allocator<unsigned char> > CKeyingMaterial;
+typedef std::vector<unsigned char, secure_allocator<unsigned char>> CKeyingMaterial;
 
 namespace wallet_crypto
 {
-    class TestCrypter;
+class TestCrypter;
 }
 
 /** Encryption/decryption context with key information */
 class CCrypter
 {
-friend class wallet_crypto::TestCrypter; // for test access to chKey/chIV
+    friend class wallet_crypto::TestCrypter; // for test access to chKey/chIV
 private:
     std::vector<unsigned char, secure_allocator<unsigned char>> vchKey;
     std::vector<unsigned char, secure_allocator<unsigned char>> vchIV;
     bool fKeySet;
 
-    int BytesToKeySHA512AES(const std::vector<unsigned char>& chSalt, const SecureString& strKeyData, int count, unsigned char *key,unsigned char *iv) const;
+    int BytesToKeySHA512AES(const std::vector<unsigned char>& chSalt, const SecureString& strKeyData, int count, unsigned char* key, unsigned char* iv) const;
 
 public:
-    bool SetKeyFromPassphrase(const SecureString &strKeyData, const std::vector<unsigned char>& chSalt, const unsigned int nRounds, const unsigned int nDerivationMethod);
-    bool Encrypt(const CKeyingMaterial& vchPlaintext, std::vector<unsigned char> &vchCiphertext) const;
+    bool SetKeyFromPassphrase(const SecureString& strKeyData, const std::vector<unsigned char>& chSalt, const unsigned int nRounds, const unsigned int nDerivationMethod);
+    bool Encrypt(const CKeyingMaterial& vchPlaintext, std::vector<unsigned char>& vchCiphertext) const;
     bool Decrypt(const std::vector<unsigned char>& vchCiphertext, CKeyingMaterial& vchPlaintext) const;
     bool SetKey(const CKeyingMaterial& chNewKey, const std::vector<unsigned char>& chNewIV);
 
@@ -116,7 +118,6 @@ public:
 class CCryptoKeyStore : public CBasicKeyStore
 {
 private:
-
     CKeyingMaterial vMasterKey;
 
     //! if fUseCrypto is true, mapKeys must be empty
@@ -167,12 +168,12 @@ public:
 
     bool Lock();
 
-    virtual bool AddCryptedKey(const CPubKey &vchPubKey, const std::vector<unsigned char> &vchCryptedSecret);
-    virtual bool AddCryptedWords(const uint256& hash, const std::vector<unsigned char> &vchCryptedWords);
-    virtual bool AddCryptedPassphrase(const std::vector<unsigned char> &vchCryptedPassphrase);
-    virtual bool AddCryptedVchSeed(const std::vector<unsigned char> &vchCryptedVchSeed);
-    bool AddKeyPubKey(const CKey& key, const CPubKey &pubkey) override;
-    bool HaveKey(const CKeyID &address) const override
+    virtual bool AddCryptedKey(const CPubKey& vchPubKey, const std::vector<unsigned char>& vchCryptedSecret);
+    virtual bool AddCryptedWords(const uint256& hash, const std::vector<unsigned char>& vchCryptedWords);
+    virtual bool AddCryptedPassphrase(const std::vector<unsigned char>& vchCryptedPassphrase);
+    virtual bool AddCryptedVchSeed(const std::vector<unsigned char>& vchCryptedVchSeed);
+    bool AddKeyPubKey(const CKey& key, const CPubKey& pubkey) override;
+    bool HaveKey(const CKeyID& address) const override
     {
         {
             LOCK(cs_KeyStore);
@@ -183,8 +184,8 @@ public:
         }
         return false;
     }
-    bool GetKey(const CKeyID &address, CKey& keyOut) const override;
-    bool GetPubKey(const CKeyID &address, CPubKey& vchPubKeyOut) const override;
+    bool GetKey(const CKeyID& address, CKey& keyOut) const override;
+    bool GetPubKey(const CKeyID& address, CPubKey& vchPubKeyOut) const override;
     std::set<CKeyID> GetKeys() const override
     {
         LOCK(cs_KeyStore);
@@ -202,7 +203,7 @@ public:
      * Wallet status (encrypted, locked) changed.
      * Note: Called without locks held.
      */
-    boost::signals2::signal<void (CCryptoKeyStore* wallet)> NotifyStatusChanged;
+    boost::signals2::signal<void(CCryptoKeyStore* wallet)> NotifyStatusChanged;
 };
 
-#endif // RAVEN_WALLET_CRYPTER_H
+#endif // MEMEIUM_WALLET_CRYPTER_H

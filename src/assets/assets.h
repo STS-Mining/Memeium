@@ -1,27 +1,27 @@
-// Copyright (c) 2017-2021 The Raven Core developers
+// Copyright (c) 2024-2025 The Memeium Core developers
 // Distributed under the MIT software license, see the accompanying
 // file COPYING or http://www.opensource.org/licenses/mit-license.php.
 
 
-#ifndef RAVENCOIN_ASSET_PROTOCOL_H
-#define RAVENCOIN_ASSET_PROTOCOL_H
+#ifndef MEMEIUM_ASSET_PROTOCOL_H
+#define MEMEIUM_ASSET_PROTOCOL_H
 
 #include "amount.h"
-#include "tinyformat.h"
 #include "assettypes.h"
+#include "tinyformat.h"
 
-#include <string>
-#include <set>
-#include <map>
-#include <unordered_map>
 #include <list>
+#include <map>
+#include <set>
+#include <string>
+#include <unordered_map>
 
-#define RVN_R 114
-#define RVN_V 118
-#define RVN_N 110
-#define RVN_Q 113
-#define RVN_T 116
-#define RVN_O 111
+#define MMM_R 114
+#define MMM_V 118
+#define MMM_N 110
+#define MMM_Q 113
+#define MMM_T 116
+#define MMM_O 111
 
 #define DEFAULT_UNITS 0
 #define DEFAULT_REISSUABLE 1
@@ -71,36 +71,40 @@ class COutput;
 extern std::map<uint256, std::string> mapReissuedTx;
 extern std::map<std::string, uint256> mapReissuedAssets;
 
-class CAssets {
+class CAssets
+{
 public:
     std::map<std::pair<std::string, std::string>, CAmount> mapAssetsAddressAmount; // pair < Asset Name , Address > -> Quantity of tokens in the address
 
     // Dirty, Gets wiped once flushed to database
     std::map<std::string, CNewAsset> mapReissuedAssetData; // Asset Name -> New Asset Data
 
-    CAssets(const CAssets& assets) {
+    CAssets(const CAssets& assets)
+    {
         this->mapAssetsAddressAmount = assets.mapAssetsAddressAmount;
         this->mapReissuedAssetData = assets.mapReissuedAssetData;
     }
 
-    CAssets& operator=(const CAssets& other) {
+    CAssets& operator=(const CAssets& other)
+    {
         mapAssetsAddressAmount = other.mapAssetsAddressAmount;
         mapReissuedAssetData = other.mapReissuedAssetData;
         return *this;
     }
 
-    CAssets() {
+    CAssets()
+    {
         SetNull();
     }
 
-    void SetNull() {
+    void SetNull()
+    {
         mapAssetsAddressAmount.clear();
         mapReissuedAssetData.clear();
     }
 };
 
 struct ErrorReport {
-
     enum ErrorType {
         NotSetError = 0,
         InvalidQualifierName = 1,
@@ -129,7 +133,8 @@ private:
     bool AddBackSpentAsset(const Coin& coin, const std::string& assetName, const std::string& address, const CAmount& nAmount, const COutPoint& out);
     void AddToAssetBalance(const std::string& strName, const std::string& address, const CAmount& nAmount);
     bool UndoTransfer(const CAssetTransfer& transfer, const std::string& address, const COutPoint& outToRemove);
-public :
+
+public:
     //! These are memory only containers that show dirty entries that will be databased when flushed
     std::vector<CAssetCacheUndoAssetAmount> vUndoAssetAmount;
     std::vector<CAssetCacheSpendAsset> vSpentAssets;
@@ -167,8 +172,8 @@ public :
     std::set<CAssetCacheRestrictedVerifiers> setNewRestrictedVerifierToRemove;
 
     //! Root Qualifier Address Map
-    std::map<CAssetCacheRootQualifierChecker, std::set<std::string> > mapRootQualifierAddressesAdd;
-    std::map<CAssetCacheRootQualifierChecker, std::set<std::string> > mapRootQualifierAddressesRemove;
+    std::map<CAssetCacheRootQualifierChecker, std::set<std::string>> mapRootQualifierAddressesAdd;
+    std::map<CAssetCacheRootQualifierChecker, std::set<std::string>> mapRootQualifierAddressesRemove;
 
     CAssetsCache() : CAssets()
     {
@@ -271,7 +276,7 @@ public :
     bool RemoveNewAsset(const CNewAsset& asset, const std::string address);
     bool RemoveTransfer(const CAssetTransfer& transfer, const std::string& address, const COutPoint& out);
     bool RemoveOwnerAsset(const std::string& assetsName, const std::string address);
-    bool RemoveReissueAsset(const CReissueAsset& reissue, const std::string address, const COutPoint& out, const std::vector<std::pair<std::string, CBlockAssetUndo> >& vUndoIPFS);
+    bool RemoveReissueAsset(const CReissueAsset& reissue, const std::string address, const COutPoint& out, const std::vector<std::pair<std::string, CBlockAssetUndo>>& vUndoIPFS);
     bool UndoAssetCoin(const Coin& coin, const COutPoint& out);
     bool RemoveQualifierAddress(const std::string& assetName, const std::string& address, const QualifierType type);
     bool RemoveRestrictedAddress(const std::string& assetName, const std::string& address, const RestrictedType type);
@@ -299,20 +304,20 @@ public :
     bool CheckIfAssetExists(const std::string& name, bool fForceDuplicateCheck = true);
 
     //! Returns true if an asset with the name exists, and it was able to get the asset metadata from database
-    bool GetAssetMetaDataIfExists(const std::string &name, CNewAsset &asset);
-    bool GetAssetMetaDataIfExists(const std::string &name, CNewAsset &asset, int& nHeight, uint256& blockHash);
+    bool GetAssetMetaDataIfExists(const std::string& name, CNewAsset& asset);
+    bool GetAssetMetaDataIfExists(const std::string& name, CNewAsset& asset, int& nHeight, uint256& blockHash);
 
     //! Returns true if the Asset Verifier String was found for an asset_name, if fSkipTempCache is true, it will only search passets pointer and databases
-    bool GetAssetVerifierStringIfExists(const std::string &name, CNullAssetTxVerifierString& verifier, bool fSkipTempCache = false);
+    bool GetAssetVerifierStringIfExists(const std::string& name, CNullAssetTxVerifierString& verifier, bool fSkipTempCache = false);
 
     //! Return true if the address has the given qualifier assigned to it
-    bool CheckForAddressQualifier(const std::string &qualifier_name, const std::string& address, bool fSkipTempCache = false);
+    bool CheckForAddressQualifier(const std::string& qualifier_name, const std::string& address, bool fSkipTempCache = false);
 
     //! Return true if the address is marked as frozen
-    bool CheckForAddressRestriction(const std::string &restricted_name, const std::string& address, bool fSkipTempCache = false);
+    bool CheckForAddressRestriction(const std::string& restricted_name, const std::string& address, bool fSkipTempCache = false);
 
     //! Return true if the restricted asset is globally freezing trading
-    bool CheckForGlobalRestriction(const std::string &restricted_name, bool fSkipTempCache = false);
+    bool CheckForGlobalRestriction(const std::string& restricted_name, bool fSkipTempCache = false);
 
     //! Calculate the size of the CAssets (in bytes)
     size_t DynamicMemoryUsage() const;
@@ -328,8 +333,8 @@ public :
     bool DumpCacheToDatabase();
 
     //! Clear all dirty cache sets, vetors, and maps
-    void ClearDirtyCache() {
-
+    void ClearDirtyCache()
+    {
         vUndoAssetAmount.clear();
         vSpentAssets.clear();
 
@@ -364,16 +369,16 @@ public :
         mapRootQualifierAddressesRemove.clear();
     }
 
-   std::string CacheToString() const {
-
-       return strprintf(
-               "vNewAssetsToRemove size : %d, vNewAssetsToAdd size : %d, vNewTransfer size : %d, vSpentAssets : %d\n"
-               "setNewQualifierAddressToAdd size : %d, setNewQualifierAddressToRemove size : %d, setNewRestrictedAddressToAdd size : %d\n"
-               "setNewRestrictedAddressToRemove size : %d, setNewRestrictedGlobalToAdd size : %d, setNewRestrictedGlobalToRemove : %d",
-               setNewAssetsToRemove.size(), setNewAssetsToAdd.size(), setNewTransferAssetsToAdd.size(),
-               vSpentAssets.size(), setNewQualifierAddressToAdd.size(), setNewQualifierAddressToRemove.size(), setNewRestrictedAddressToAdd.size(),
-               setNewRestrictedAddressToRemove.size(), setNewRestrictedGlobalToAdd.size(), setNewRestrictedGlobalToRemove.size());
-   }
+    std::string CacheToString() const
+    {
+        return strprintf(
+            "vNewAssetsToRemove size : %d, vNewAssetsToAdd size : %d, vNewTransfer size : %d, vSpentAssets : %d\n"
+            "setNewQualifierAddressToAdd size : %d, setNewQualifierAddressToRemove size : %d, setNewRestrictedAddressToAdd size : %d\n"
+            "setNewRestrictedAddressToRemove size : %d, setNewRestrictedGlobalToAdd size : %d, setNewRestrictedGlobalToRemove : %d",
+            setNewAssetsToRemove.size(), setNewAssetsToAdd.size(), setNewTransferAssetsToAdd.size(),
+            vSpentAssets.size(), setNewQualifierAddressToAdd.size(), setNewQualifierAddressToRemove.size(), setNewRestrictedAddressToAdd.size(),
+            setNewRestrictedAddressToRemove.size(), setNewRestrictedGlobalToAdd.size(), setNewRestrictedGlobalToRemove.size());
+    }
 };
 
 //! Functions to be used to get access to the current burn amount required for specific asset issuance transactions
@@ -463,10 +468,10 @@ bool CheckIssueBurnTx(const CTxOut& txOut, const AssetType& type);
 bool CheckReissueBurnTx(const CTxOut& txOut);
 
 //! issue asset scripts to make sure script meets the standards
-bool CheckIssueDataTx(const CTxOut& txOut); // OP_RAVEN_ASSET RVNQ (That is a Q as in Que not an O)
-bool CheckOwnerDataTx(const CTxOut& txOut);// OP_RAVEN_ASSET RVNO
-bool CheckReissueDataTx(const CTxOut& txOut);// OP_RAVEN_ASSET RVNR
-bool CheckTransferOwnerTx(const CTxOut& txOut);// OP_RAVEN_ASSET RVNT
+bool CheckIssueDataTx(const CTxOut& txOut);     // OP_MEMEIUM_ASSET MMMQ (That is a Q as in Que not an O)
+bool CheckOwnerDataTx(const CTxOut& txOut);     // OP_MEMEIUM_ASSET MMMO
+bool CheckReissueDataTx(const CTxOut& txOut);   // OP_MEMEIUM_ASSET MMMR
+bool CheckTransferOwnerTx(const CTxOut& txOut); // OP_MEMEIUM_ASSET MMMT
 
 //! Check the Encoded hash and make sure it is either an IPFS hash or a OIP hash
 bool CheckEncoded(const std::string& hash, std::string& strError);
@@ -480,7 +485,7 @@ bool IsScriptNewAsset(const CScript& scriptPubKey, int& nStartingIndex);
 
 //! Check script and see if it matches the unquie issuance template
 bool IsScriptNewUniqueAsset(const CScript& scriptPubKey);
-bool IsScriptNewUniqueAsset(const CScript &scriptPubKey, int &nStartingIndex);
+bool IsScriptNewUniqueAsset(const CScript& scriptPubKey, int& nStartingIndex);
 
 //! Check script and see if it matches the owner issuance template
 bool IsScriptOwnerAsset(const CScript& scriptPubKey);
@@ -500,15 +505,15 @@ bool IsScriptNewMsgChannelAsset(const CScript& scriptPubKey, int& nStartingIndex
 
 //! Check script and see if it matches the qualifier issuance template
 bool IsScriptNewQualifierAsset(const CScript& scriptPubKey);
-bool IsScriptNewQualifierAsset(const CScript &scriptPubKey, int &nStartingIndex);
+bool IsScriptNewQualifierAsset(const CScript& scriptPubKey, int& nStartingIndex);
 
 //! Check script and see if it matches the restricted issueance template
 bool IsScriptNewRestrictedAsset(const CScript& scriptPubKey);
-bool IsScriptNewRestrictedAsset(const CScript &scriptPubKey, int &nStartingIndex);
+bool IsScriptNewRestrictedAsset(const CScript& scriptPubKey, int& nStartingIndex);
 
 bool IsNewOwnerTxValid(const CTransaction& tx, const std::string& assetName, const std::string& address, std::string& errorMsg);
 
-void GetAllAdministrativeAssets(CWallet *pwallet, std::vector<std::string> &names, int nMinConf = 1);
+void GetAllAdministrativeAssets(CWallet* pwallet, std::vector<std::string>& names, int nMinConf = 1);
 void GetAllMyAssets(CWallet* pwallet, std::vector<std::string>& names, int nMinConf = 1, bool fIncludeAdministrator = false, bool fOnlyAdministrator = false);
 
 bool GetAssetInfoFromCoin(const Coin& coin, std::string& strName, CAmount& nAmount);
@@ -527,7 +532,7 @@ std::string EncodeIPFS(std::string decoded);
 
 #ifdef ENABLE_WALLET
 
-bool GetAllMyAssetBalances(std::map<std::string, std::vector<COutput> >& outputs, std::map<std::string, CAmount>& amounts, const int confirmations = 0, const std::string& prefix = "");
+bool GetAllMyAssetBalances(std::map<std::string, std::vector<COutput>>& outputs, std::map<std::string, CAmount>& amounts, const int confirmations = 0, const std::string& prefix = "");
 bool GetMyAssetBalance(const std::string& name, CAmount& balance, const int& confirmations);
 
 //! Creates new asset issuance transaction
@@ -539,7 +544,7 @@ bool CreateReissueAssetTransaction(CWallet* pwallet, CCoinControl& coinControl, 
 
 
 //! Create a transfer asset transaction
-bool CreateTransferAssetTransaction(CWallet* pwallet, const CCoinControl& coinControl, const std::vector< std::pair<CAssetTransfer, std::string> >vTransfers, const std::string& changeAddress, std::pair<int, std::string>& error, CWalletTx& wtxNew, CReserveKey& reservekey, CAmount& nFeeRequired, std::vector<std::pair<CNullAssetTxData, std::string> >* nullAssetTxData = nullptr, std::vector<CNullAssetTxData>* nullGlobalRestrictionData = nullptr);
+bool CreateTransferAssetTransaction(CWallet* pwallet, const CCoinControl& coinControl, const std::vector<std::pair<CAssetTransfer, std::string>> vTransfers, const std::string& changeAddress, std::pair<int, std::string>& error, CWalletTx& wtxNew, CReserveKey& reservekey, CAmount& nFeeRequired, std::vector<std::pair<CNullAssetTxData, std::string>>* nullAssetTxData = nullptr, std::vector<CNullAssetTxData>* nullGlobalRestrictionData = nullptr);
 
 //! Send any type of asset transaction to the network
 bool SendAssetTransaction(CWallet* pwallet, CWalletTx& transaction, CReserveKey& reserveKey, std::pair<int, std::string>& error, std::string& txid);
@@ -549,7 +554,7 @@ bool VerifyWalletHasAsset(const std::string& asset_name, std::pair<int, std::str
 #endif
 
 /** Helper method for extracting address bytes, asset name and amount from an asset script */
-bool ParseAssetScript(CScript scriptPubKey, uint160 &hashBytes, std::string &assetName, CAmount &assetAmount);
+bool ParseAssetScript(CScript scriptPubKey, uint160& hashBytes, std::string& assetName, CAmount& assetAmount);
 
 /** Helper method for extracting #TAGS from a verifier string */
 void ExtractVerifierStringQualifiers(const std::string& verifier, std::set<std::string>& qualifiers);
@@ -579,4 +584,4 @@ bool ContextualCheckReissueAsset(CAssetsCache* assetCache, const CReissueAsset& 
 bool ContextualCheckUniqueAssetTx(CAssetsCache* assetCache, std::string& strError, const CTransaction& tx);
 bool ContextualCheckUniqueAsset(CAssetsCache* assetCache, const CNewAsset& unique_asset, std::string& strError);
 
-#endif //RAVENCOIN_ASSET_PROTOCOL_H
+#endif // MEMEIUM_ASSET_PROTOCOL_H

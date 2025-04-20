@@ -1,32 +1,32 @@
 // Copyright (c) 2019 The Raven Core developers
+// Copyright (c) 2024-2025 The Memeium Core developers
 // Distributed under the MIT software license, see the accompanying
 // file COPYING or http://www.opensource.org/licenses/mit-license.php.
 
 #include "restrictedassignqualifier.h"
 #include "ui_restrictedassignqualifier.h"
 
-#include "ravenunits.h"
+#include "assetfilterproxy.h"
+#include "assettablemodel.h"
 #include "clientmodel.h"
 #include "guiconstants.h"
 #include "guiutil.h"
+#include "memeiumunits.h"
 #include "optionsmodel.h"
 #include "platformstyle.h"
 #include "walletmodel.h"
-#include "assetfilterproxy.h"
-#include "assettablemodel.h"
 
 #include <QAbstractItemDelegate>
-#include <QPainter>
 #include <QCompleter>
-#include <validation.h>
+#include <QPainter>
 #include <utiltime.h>
+#include <validation.h>
 
-AssignQualifier::AssignQualifier(const PlatformStyle *_platformStyle, QWidget *parent) :
-        QWidget(parent),
-        ui(new Ui::AssignQualifier),
-        clientModel(0),
-        walletModel(0),
-        platformStyle(_platformStyle)
+AssignQualifier::AssignQualifier(const PlatformStyle* _platformStyle, QWidget* parent) : QWidget(parent),
+                                                                                         ui(new Ui::AssignQualifier),
+                                                                                         clientModel(0),
+                                                                                         walletModel(0),
+                                                                                         platformStyle(_platformStyle)
 {
     ui->setupUi(this);
 
@@ -51,10 +51,10 @@ AssignQualifier::AssignQualifier(const PlatformStyle *_platformStyle, QWidget *p
     ui->labelAddress->setFont(GUIUtil::getTopLabelFont());
 
     ui->labelAssignType->setStyleSheet(STRING_LABEL_COLOR);
-    ui->labelAssignType ->setFont(GUIUtil::getTopLabelFont());
+    ui->labelAssignType->setFont(GUIUtil::getTopLabelFont());
 
     ui->labelAssetData->setStyleSheet(STRING_LABEL_COLOR);
-    ui->labelAssetData ->setFont(GUIUtil::getTopLabelFont());
+    ui->labelAssetData->setFont(GUIUtil::getTopLabelFont());
 
     ui->checkBoxChangeAddress->setStyleSheet(QString(".QCheckBox{ %1; }").arg(STRING_LABEL_COLOR));
 
@@ -67,12 +67,12 @@ AssignQualifier::~AssignQualifier()
     delete ui;
 }
 
-void AssignQualifier::setClientModel(ClientModel *model)
+void AssignQualifier::setClientModel(ClientModel* model)
 {
     this->clientModel = model;
 }
 
-void AssignQualifier::setWalletModel(WalletModel *model)
+void AssignQualifier::setWalletModel(WalletModel* model)
 {
     this->walletModel = model;
 
@@ -91,7 +91,7 @@ void AssignQualifier::setWalletModel(WalletModel *model)
 
 bool AssignQualifier::eventFilter(QObject* object, QEvent* event)
 {
-    if((object == ui->lineEditAddress || object == ui->lineEditChangeAddress || object == ui->lineEditAssetData) && event->type() == QEvent::FocusIn) {
+    if ((object == ui->lineEditAddress || object == ui->lineEditChangeAddress || object == ui->lineEditAssetData) && event->type() == QEvent::FocusIn) {
         static_cast<QLineEdit*>(object)->setStyleSheet(STYLE_VALID);
         // bring up your custom edit
         return false; // lets the event continue to the edit
@@ -166,7 +166,7 @@ void AssignQualifier::check()
     bool removing = ui->assignTypeComboBox->currentIndex() == 1;
 
     bool failed = false;
-    if (!IsAssetNameAQualifier(qualifier.toStdString())){
+    if (!IsAssetNameAQualifier(qualifier.toStdString())) {
         showWarning(tr("Must have a qualifier asset selected"));
         failed = true;
     }

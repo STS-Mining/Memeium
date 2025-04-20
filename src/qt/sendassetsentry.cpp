@@ -1,38 +1,38 @@
 // Copyright (c) 2011-2016 The Bitcoin Core developers
 // Copyright (c) 2017-2021 The Raven Core developers
+// Copyright (c) 2024-2025 The Memeium Core developers
 // Distributed under the MIT software license, see the accompanying
 // file COPYING or http://www.opensource.org/licenses/mit-license.php.
 #include "sendassetsentry.h"
 #include "ui_sendassetsentry.h"
-//#include "sendcoinsentry.h"
-//#include "ui_sendcoinsentry.h"
+// #include "sendcoinsentry.h"
+// #include "ui_sendcoinsentry.h"
 
 #include "addressbookpage.h"
 #include "addresstablemodel.h"
+#include "assetcontroldialog.h"
+#include "guiconstants.h"
 #include "guiutil.h"
 #include "optionsmodel.h"
 #include "platformstyle.h"
 #include "walletmodel.h"
-#include "assetcontroldialog.h"
-#include "guiconstants.h"
 
-#include "wallet/coincontrol.h"
 #include "assets/assets.h"
+#include "wallet/coincontrol.h"
 
-#include <QGraphicsDropShadowEffect>
 #include <QApplication>
 #include <QClipboard>
-#include <validation.h>
-#include <core_io.h>
-#include <QStringListModel>
-#include <QSortFilterProxyModel>
 #include <QCompleter>
+#include <QGraphicsDropShadowEffect>
+#include <QSortFilterProxyModel>
+#include <QStringListModel>
+#include <core_io.h>
+#include <validation.h>
 
-SendAssetsEntry::SendAssetsEntry(const PlatformStyle *_platformStyle, const QStringList myAssetsNames, QWidget *parent) :
-    QStackedWidget(parent),
-    ui(new Ui::SendAssetsEntry),
-    model(0),
-    platformStyle(_platformStyle)
+SendAssetsEntry::SendAssetsEntry(const PlatformStyle* _platformStyle, const QStringList myAssetsNames, QWidget* parent) : QStackedWidget(parent),
+                                                                                                                          ui(new Ui::SendAssetsEntry),
+                                                                                                                          model(0),
+                                                                                                                          platformStyle(_platformStyle)
 {
     ui->setupUi(this);
 
@@ -50,9 +50,9 @@ SendAssetsEntry::SendAssetsEntry(const PlatformStyle *_platformStyle, const QStr
     ui->addAsLabel->setPlaceholderText(tr("Enter a label for this address to add it to your address book"));
 #endif
 
-    // normal raven address field
+    // normal memeium address field
     GUIUtil::setupAddressWidget(ui->payTo, this);
-    // just a label for displaying raven address(es)
+    // just a label for displaying memeium address(es)
     ui->payTo_is->setFont(GUIUtil::fixedPitchFont());
 
     // Connect signals
@@ -70,8 +70,7 @@ SendAssetsEntry::SendAssetsEntry(const PlatformStyle *_platformStyle, const QStr
     stringModel->insertRow(stringModel->rowCount());
     stringModel->setData(stringModel->index(stringModel->rowCount() - 1, 0), "", Qt::DisplayRole);
 
-    for (auto name : myAssetsNames)
-    {
+    for (auto name : myAssetsNames) {
         stringModel->insertRow(stringModel->rowCount());
         stringModel->setData(stringModel->index(stringModel->rowCount() - 1, 0), name, Qt::DisplayRole);
     }
@@ -83,7 +82,7 @@ SendAssetsEntry::SendAssetsEntry(const PlatformStyle *_platformStyle, const QStr
     ui->assetSelectionBox->setModel(proxy);
     ui->assetSelectionBox->setEditable(true);
 
-    completer = new QCompleter(proxy,this);
+    completer = new QCompleter(proxy, this);
     completer->setCompletionMode(QCompleter::PopupCompletion);
     completer->setCaseSensitivity(Qt::CaseInsensitive);
     ui->assetSelectionBox->setCompleter(completer);
@@ -148,28 +147,27 @@ void SendAssetsEntry::on_pasteButton_clicked()
 
 void SendAssetsEntry::on_addressBookButton_clicked()
 {
-    if(!model)
+    if (!model)
         return;
     AddressBookPage dlg(platformStyle, AddressBookPage::ForSelection, AddressBookPage::SendingTab, this);
     dlg.setModel(model->getAddressTableModel());
-    if(dlg.exec())
-    {
+    if (dlg.exec()) {
         ui->payTo->setText(dlg.getReturnValue());
         ui->payAssetAmount->setFocus();
     }
 }
 
-void SendAssetsEntry::on_payTo_textChanged(const QString &address)
+void SendAssetsEntry::on_payTo_textChanged(const QString& address)
 {
     updateLabel(address);
 }
 
-void SendAssetsEntry::setModel(WalletModel *_model)
+void SendAssetsEntry::setModel(WalletModel* _model)
 {
     this->model = _model;
 
-//    if (_model && _model->getOptionsModel())
-//        connect(_model->getOptionsModel(), SIGNAL(displayUnitChanged(int)), this, SLOT(updateDisplayUnit()));
+    //    if (_model && _model->getOptionsModel())
+    //        connect(_model->getOptionsModel(), SIGNAL(displayUnitChanged(int)), this, SLOT(updateDisplayUnit()));
 
     clear();
 }
@@ -211,8 +209,7 @@ bool SendAssetsEntry::validate()
     if (recipient.paymentRequest.IsInitialized())
         return retval;
 
-    if (!model->validateAddress(ui->payTo->text()))
-    {
+    if (!model->validateAddress(ui->payTo->text())) {
         ui->payTo->setValid(false);
         retval = false;
     }
@@ -222,13 +219,11 @@ bool SendAssetsEntry::validate()
         retval = false;
     }
 
-    if (!ui->payAssetAmount->validate())
-    {
+    if (!ui->payAssetAmount->validate()) {
         retval = false;
     }
 
-    if (ui->payAssetAmount->value(0) <= 0)
-    {
+    if (ui->payAssetAmount->value(0) <= 0) {
         ui->payAssetAmount->setValid(false);
         retval = false;
     }
@@ -245,7 +240,6 @@ bool SendAssetsEntry::validate()
 
         if (size != 46) {
             if (!AreMessagesDeployed()) {
-
                 ui->memoBox->setStyleSheet(STYLE_INVALID);
                 retval = false;
             } else {
@@ -257,11 +251,10 @@ bool SendAssetsEntry::validate()
         }
 
         std::string error = "";
-        if(!CheckEncoded(DecodeAssetData(ui->memoBox->text().toStdString()), error)) {
+        if (!CheckEncoded(DecodeAssetData(ui->memoBox->text().toStdString()), error)) {
             ui->memoBox->setStyleSheet(STYLE_INVALID);
             retval = false;
         }
-
     }
     std::string assetName = ui->assetSelectionBox->currentText().toStdString();
     if (IsAssetNameAnRestricted(assetName)) {
@@ -277,7 +270,7 @@ bool SendAssetsEntry::validate()
             if (passets->GetAssetVerifierStringIfExists(assetName, verifier)) {
                 std::string strError = "";
                 ErrorReport report;
-                if (!ContextualCheckVerifierString(passets, verifier.verifier_string,ui->payTo->text().toStdString(), strError, &report)) {
+                if (!ContextualCheckVerifierString(passets, verifier.verifier_string, ui->payTo->text().toStdString(), strError, &report)) {
                     ui->payTo->setValid(false);
                     ui->messageTextLabel->show();
                     ui->messageTextLabel->setText(QString::fromStdString(GetUserErrorString(report)));
@@ -308,7 +301,7 @@ SendAssetsRecipient SendAssetsEntry::getValue()
     return recipient;
 }
 
-QWidget *SendAssetsEntry::setupTabChain(QWidget *prev)
+QWidget* SendAssetsEntry::setupTabChain(QWidget* prev)
 {
     QWidget::setTabOrder(prev, ui->payTo);
     QWidget::setTabOrder(ui->payTo, ui->addAsLabel);
@@ -319,7 +312,7 @@ QWidget *SendAssetsEntry::setupTabChain(QWidget *prev)
     return ui->memoBox;
 }
 
-void SendAssetsEntry::setValue(const SendAssetsRecipient &value)
+void SendAssetsEntry::setValue(const SendAssetsRecipient& value)
 {
     recipient = value;
 
@@ -330,7 +323,7 @@ void SendAssetsEntry::setValue(const SendAssetsRecipient &value)
     }
 }
 
-void SendAssetsEntry::setAddress(const QString &address)
+void SendAssetsEntry::setAddress(const QString& address)
 {
     ui->payTo->setText(address);
     ui->payAssetAmount->setFocus();
@@ -351,15 +344,14 @@ void SendAssetsEntry::setFocusAssetListBox()
     ui->assetSelectionBox->setFocus();
 }
 
-bool SendAssetsEntry::updateLabel(const QString &address)
+bool SendAssetsEntry::updateLabel(const QString& address)
 {
-    if(!model)
+    if (!model)
         return false;
 
     // Fill in label from address book, if address has an associated label
     QString associatedLabel = model->getAddressTableModel()->labelForAddress(address);
-    if(!associatedLabel.isEmpty())
-    {
+    if (!associatedLabel.isEmpty()) {
         ui->addAsLabel->setText(associatedLabel);
         return true;
     }
@@ -374,8 +366,8 @@ void SendAssetsEntry::onAssetSelected(int index)
     // If the name
     if (index == 0) {
         ui->assetAmountLabel->clear();
-//        if(!ui->administratorCheckbox->isChecked())
-//            ui->payAssetAmount->setDisabled(false);
+        //        if(!ui->administratorCheckbox->isChecked())
+        //            ui->payAssetAmount->setDisabled(false);
         ui->payAssetAmount->clear();
         ui->payAssetAmount->setDisabled(true);
         return;
@@ -411,10 +403,10 @@ void SendAssetsEntry::onAssetSelected(int index)
 
     CAmount amount = 0;
 
-    if(!model || !model->getWallet())
+    if (!model || !model->getWallet())
         return;
 
-    std::map<std::string, std::vector<COutput> > mapAssets;
+    std::map<std::string, std::vector<COutput>> mapAssets;
     model->getWallet()->AvailableAssets(mapAssets, true, AssetControlDialog::assetControl);
 
     // Add back the OWNER_TAG (!) that was removed above
@@ -444,7 +436,7 @@ void SendAssetsEntry::onAssetSelected(int index)
     QString displayBalance = AssetControlDialog::assetControl->HasAssetSelected() ? tr("Selected Balance") : tr("Wallet Balance");
 
     ui->assetAmountLabel->setText(
-            displayBalance + ": <b>" + QString::fromStdString(ValueFromAmountString(amount, units)) + "</b> " + name);
+        displayBalance + ": <b>" + QString::fromStdString(ValueFromAmountString(amount, units)) + "</b> " + name);
 
     ui->messageLabel->hide();
     ui->messageTextLabel->hide();
@@ -469,7 +461,8 @@ void SendAssetsEntry::onSendOwnershipChanged()
     switchAdministratorList(true);
 }
 
-void SendAssetsEntry::CheckOwnerBox() {
+void SendAssetsEntry::CheckOwnerBox()
+{
     fUsingAssetControl = true;
     switchAdministratorList();
 }
@@ -500,7 +493,7 @@ void SendAssetsEntry::refreshAssetList()
 
 void SendAssetsEntry::switchAdministratorList(bool fSwitchStatus)
 {
-    if(!model)
+    if (!model)
         return;
 
     if (fSwitchStatus)
@@ -514,7 +507,7 @@ void SendAssetsEntry::switchAdministratorList(bool fSwitchStatus)
 
             QStringList list;
             list << "";
-            for (auto name: names)
+            for (auto name : names)
                 list << QString::fromStdString(name);
 
             stringModel->setStringList(list);
@@ -526,7 +519,7 @@ void SendAssetsEntry::switchAdministratorList(bool fSwitchStatus)
         }
 
         ui->payAssetAmount->setUnit(MIN_UNIT); // Min unit because this is an administrator asset
-        ui->payAssetAmount->setValue(1); // When using AssetAmountField, you must use 1 instead of 1 * COIN, because of the way that AssetAmountField uses the unit and value to display the amount
+        ui->payAssetAmount->setValue(1);       // When using AssetAmountField, you must use 1 instead of 1 * COIN, because of the way that AssetAmountField uses the unit and value to display the amount
         ui->payAssetAmount->setDisabled(true);
 
 
@@ -549,8 +542,8 @@ void SendAssetsEntry::switchAdministratorList(bool fSwitchStatus)
 
             stringModel->setStringList(list);
             ui->assetSelectionBox->lineEdit()->setPlaceholderText(tr("Select an asset to transfer"));
-//            ui->payAssetAmount->clear();
-//            ui->payAssetAmount->setUnit(MAX_UNIT);
+            //            ui->payAssetAmount->clear();
+            //            ui->payAssetAmount->setUnit(MAX_UNIT);
             ui->assetAmountLabel->clear();
             ui->assetSelectionBox->setFocus();
         } else {
@@ -560,11 +553,10 @@ void SendAssetsEntry::switchAdministratorList(bool fSwitchStatus)
     }
 }
 
-bool SendAssetsEntry::eventFilter(QObject *object, QEvent *event)
+bool SendAssetsEntry::eventFilter(QObject* object, QEvent* event)
 {
-    if (object == ui->memoBox && event->type() == QEvent::FocusIn)
-    {
-    // Clear invalid flag on focus
+    if (object == ui->memoBox && event->type() == QEvent::FocusIn) {
+        // Clear invalid flag on focus
         ui->memoBox->setStyleSheet("");
     }
     return QWidget::eventFilter(object, event);

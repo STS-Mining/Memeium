@@ -1,14 +1,15 @@
 // Copyright (c) 2019 The Raven Core developers
+// Copyright (c) 2024-2025 The Memeium Core developers
 // Distributed under the MIT software license, see the accompanying
 // file COPYING or http://www.opensource.org/licenses/mit-license.php.
 
-#ifndef RAVEN_QT_ASSIGNQUALIFIER_H
-#define RAVEN_QT_ASSIGNQUALIFIER_H
+#ifndef MEMEIUM_QT_ASSIGNQUALIFIER_H
+#define MEMEIUM_QT_ASSIGNQUALIFIER_H
 
 #include "amount.h"
 
-#include <QWidget>
 #include <QMenu>
+#include <QWidget>
 #include <memory>
 
 class ClientModel;
@@ -20,8 +21,9 @@ class QCompleter;
 class AssetFilterProxy;
 
 
-namespace Ui {
-    class AssignQualifier;
+namespace Ui
+{
+class AssignQualifier;
 }
 
 QT_BEGIN_NAMESPACE
@@ -34,11 +36,11 @@ class AssignQualifier : public QWidget
     Q_OBJECT
 
 public:
-    explicit AssignQualifier(const PlatformStyle *_platformStyle, QWidget *parent = 0);
+    explicit AssignQualifier(const PlatformStyle* _platformStyle, QWidget* parent = 0);
     ~AssignQualifier();
 
-    void setClientModel(ClientModel *clientModel);
-    void setWalletModel(WalletModel *walletModel);
+    void setClientModel(ClientModel* clientModel);
+    void setWalletModel(WalletModel* walletModel);
     void showOutOfSyncWarning(bool fShow);
     Ui::AssignQualifier* getUI();
     bool eventFilter(QObject* object, QEvent* event);
@@ -47,16 +49,16 @@ public:
     void showWarning(QString string, bool failure = true);
     void hideWarning();
 
-    AssetFilterProxy *assetFilterProxy;
+    AssetFilterProxy* assetFilterProxy;
     QCompleter* completer;
 
     void clear();
 
 private:
-    Ui::AssignQualifier *ui;
-    ClientModel *clientModel;
-    WalletModel *walletModel;
-    const PlatformStyle *platformStyle;
+    Ui::AssignQualifier* ui;
+    ClientModel* clientModel;
+    WalletModel* walletModel;
+    const PlatformStyle* platformStyle;
 
 private Q_SLOTS:
     void check();
@@ -64,4 +66,4 @@ private Q_SLOTS:
     void changeAddressChanged(int);
 };
 
-#endif // RAVEN_QT_ASSIGNQUALIFIER_H
+#endif // MEMEIUM_QT_ASSIGNQUALIFIER_H

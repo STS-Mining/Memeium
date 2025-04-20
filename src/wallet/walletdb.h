@@ -1,17 +1,18 @@
 // Copyright (c) 2009-2010 Satoshi Nakamoto
 // Copyright (c) 2009-2016 The Bitcoin Core developers
 // Copyright (c) 2017-2020 The Raven Core developers
+// Copyright (c) 2024-2025 The Memeium Core developers
 // Distributed under the MIT software license, see the accompanying
 // file COPYING or http://www.opensource.org/licenses/mit-license.php.
 
-#ifndef RAVEN_WALLET_WALLETDB_H
-#define RAVEN_WALLET_WALLETDB_H
+#ifndef MEMEIUM_WALLET_WALLETDB_H
+#define MEMEIUM_WALLET_WALLETDB_H
 
 #include "amount.h"
-#include "primitives/transaction.h"
-#include "wallet/db.h"
 #include "key.h"
+#include "primitives/transaction.h"
 #include "wallet/bip39.h"
+#include "wallet/db.h"
 
 #include <list>
 #include <stdint.h>
@@ -48,8 +49,7 @@ class uint160;
 class uint256;
 
 /** Error statuses for the wallet database */
-enum DBErrors
-{
+enum DBErrors {
     DB_LOAD_OK,
     DB_CORRUPT,
     DB_NONCRITICAL_ERROR,
@@ -71,15 +71,15 @@ public:
     SecureVector vchMnemonicPassphrase;
     SecureVector vchSeed;
 
-    static const int VERSION_HD_BASE        = 1;
+    static const int VERSION_HD_BASE = 1;
     static const int VERSION_HD_CHAIN_SPLIT = 2;
     static const int VERSION_HD_BIP44_BIP39 = 3;
-    static const int CURRENT_VERSION        = VERSION_HD_BIP44_BIP39;
+    static const int CURRENT_VERSION = VERSION_HD_BIP44_BIP39;
     int nVersion;
 
     CWallet* pwallet;
 
-    CHDChain(CWallet* pw): pwallet(pw) { SetNull(); }
+    CHDChain(CWallet* pw) : pwallet(pw) { SetNull(); }
 
     ADD_SERIALIZE_METHODS;
     template <typename Stream, typename Operation>
@@ -92,7 +92,7 @@ public:
             READWRITE(nInternalChainCounter);
         }
 
-        if(VERSION_HD_BIP44_BIP39 == this->nVersion) {
+        if (VERSION_HD_BIP44_BIP39 == this->nVersion) {
             READWRITE(bUse_bip44);
         }
     }
@@ -108,11 +108,11 @@ public:
         bUse_bip44 = false;
     }
 
-    bool IsNull() { return seed_id.IsNull();}
+    bool IsNull() { return seed_id.IsNull(); }
 
 
-    void UseBip44( bool b = true)   { bUse_bip44 = b;}
-    bool IsBip44() const            { return bUse_bip44 == true;}
+    void UseBip44(bool b = true) { bUse_bip44 = b; }
+    bool IsBip44() const { return bUse_bip44 == true; }
 
 
     bool SetMnemonic(const SecureString& ssMnemonic, const SecureString& ssMnemonicPassphrase, SecureVector& vchSeed);
@@ -121,13 +121,13 @@ public:
 class CKeyMetadata
 {
 public:
-    static const int VERSION_BASIC=1;
-    static const int VERSION_WITH_HDDATA=10;
-    static const int CURRENT_VERSION=VERSION_WITH_HDDATA;
+    static const int VERSION_BASIC = 1;
+    static const int VERSION_WITH_HDDATA = 10;
+    static const int CURRENT_VERSION = VERSION_WITH_HDDATA;
     int nVersion;
-    int64_t nCreateTime; // 0 means unknown
-    std::string hdKeypath; //optional HD/bip32 keypath
-    CKeyID hd_seed_id; //id of the HD seed used to derive this key
+    int64_t nCreateTime;   // 0 means unknown
+    std::string hdKeypath; // optional HD/bip32 keypath
+    CKeyID hd_seed_id;     // id of the HD seed used to derive this key
 
     CKeyMetadata()
     {
@@ -142,11 +142,11 @@ public:
     ADD_SERIALIZE_METHODS;
 
     template <typename Stream, typename Operation>
-    inline void SerializationOp(Stream& s, Operation ser_action) {
+    inline void SerializationOp(Stream& s, Operation ser_action)
+    {
         READWRITE(this->nVersion);
         READWRITE(nCreateTime);
-        if (this->nVersion >= VERSION_WITH_HDDATA)
-        {
+        if (this->nVersion >= VERSION_WITH_HDDATA) {
             READWRITE(hdKeypath);
             READWRITE(hd_seed_id);
         }
@@ -190,9 +190,8 @@ private:
     }
 
 public:
-    explicit CWalletDB(CWalletDBWrapper& dbw, const char* pszMode = "r+", bool _fFlushOnClose = true) :
-        batch(dbw, pszMode, _fFlushOnClose),
-        m_dbw(dbw)
+    explicit CWalletDB(CWalletDBWrapper& dbw, const char* pszMode = "r+", bool _fFlushOnClose = true) : batch(dbw, pszMode, _fFlushOnClose),
+                                                                                                        m_dbw(dbw)
     {
     }
     CWalletDB(const CWalletDB&) = delete;
@@ -207,14 +206,14 @@ public:
     bool WriteTx(const CWalletTx& wtx);
     bool EraseTx(uint256 hash);
 
-    bool WriteKey(const CPubKey& vchPubKey, const CPrivKey& vchPrivKey, const CKeyMetadata &keyMeta);
-    bool WriteCryptedKey(const CPubKey& vchPubKey, const std::vector<unsigned char>& vchCryptedSecret, const CKeyMetadata &keyMeta);
+    bool WriteKey(const CPubKey& vchPubKey, const CPrivKey& vchPrivKey, const CKeyMetadata& keyMeta);
+    bool WriteCryptedKey(const CPubKey& vchPubKey, const std::vector<unsigned char>& vchCryptedSecret, const CKeyMetadata& keyMeta);
     bool WriteMasterKey(unsigned int nID, const CMasterKey& kMasterKey);
 
     bool WriteCScript(const uint160& hash, const CScript& redeemScript);
 
-    bool WriteWatchOnly(const CScript &script, const CKeyMetadata &keymeta);
-    bool EraseWatchOnly(const CScript &script);
+    bool WriteWatchOnly(const CScript& script, const CKeyMetadata& keymeta);
+    bool EraseWatchOnly(const CScript& script);
 
     bool WriteBestBlock(const CBlockLocator& locator);
     bool ReadBestBlock(CBlockLocator& locator);
@@ -234,9 +233,9 @@ public:
     bool WriteAccount(const std::string& strAccount, const CAccount& account);
 
     /// Write destination data key,value tuple to database
-    bool WriteDestData(const std::string &address, const std::string &key, const std::string &value);
+    bool WriteDestData(const std::string& address, const std::string& key, const std::string& value);
     /// Erase destination data tuple from wallet database
-    bool EraseDestData(const std::string &address, const std::string &key);
+    bool EraseDestData(const std::string& address, const std::string& key);
 
     CAmount GetAccountCreditDebit(const std::string& strAccount);
     void ListAccountCreditDebit(const std::string& strAccount, std::list<CAccountingEntry>& acentries);
@@ -246,11 +245,11 @@ public:
     DBErrors ZapWalletTx(std::vector<CWalletTx>& vWtx);
     DBErrors ZapSelectTx(std::vector<uint256>& vHashIn, std::vector<uint256>& vHashOut);
     /* Try to (very carefully!) recover wallet database (with a possible key type filter) */
-    static bool Recover(const std::string& filename, void *callbackDataIn, bool (*recoverKVcallback)(void* callbackData, CDataStream ssKey, CDataStream ssValue), std::string& out_backup_filename);
+    static bool Recover(const std::string& filename, void* callbackDataIn, bool (*recoverKVcallback)(void* callbackData, CDataStream ssKey, CDataStream ssValue), std::string& out_backup_filename);
     /* Recover convenience-function to bypass the key filter callback, called when verify fails, recovers everything */
     static bool Recover(const std::string& filename, std::string& out_backup_filename);
     /* Recover filter (used as callback), will only let keys (cryptographical keys) as KV/key-type pass through */
-    static bool RecoverKeysOnlyFilter(void *callbackData, CDataStream ssKey, CDataStream ssValue);
+    static bool RecoverKeysOnlyFilter(void* callbackData, CDataStream ssKey, CDataStream ssValue);
     /* Function to determine if a certain KV/key-type is a key (cryptographical key) type */
     static bool IsKeyType(const std::string& strType);
     /* verifies the database environment */
@@ -274,13 +273,14 @@ public:
 
     bool WriteBip39Words(const uint256& hash, const std::vector<unsigned char>& vchWords, bool fEncrypted);
     bool WriteBip39Passphrase(const std::vector<unsigned char>& vchPassphrase, bool fEncrypted);
-    bool WriteBip39VchSeed(const std::vector<unsigned char>& vchSeed,  bool fEncrypted);
+    bool WriteBip39VchSeed(const std::vector<unsigned char>& vchSeed, bool fEncrypted);
     bool ReadBip39Words(uint256& hash, std::vector<unsigned char>& vchWords, bool fEncrypted);
     bool ReadBip39Passphrase(std::vector<unsigned char>& vchPassphrase, bool fEncrypted);
-    bool ReadBip39VchSeed(std::vector<unsigned char>& vchSeed,  bool fEncrypted);
+    bool ReadBip39VchSeed(std::vector<unsigned char>& vchSeed, bool fEncrypted);
     bool EraseBip39Words(bool fEncrypted);
     bool EraseBip39Passphrase(bool fEncrypted);
     bool EraseBip39VchSeed(bool fEncrypted);
+
 private:
     CDB batch;
     CWalletDBWrapper& m_dbw;
@@ -289,4 +289,4 @@ private:
 //! Compacts BDB state so that wallet.dat is self-contained (if there are changes)
 void MaybeCompactWalletDB();
 
-#endif // RAVEN_WALLET_WALLETDB_H
+#endif // MEMEIUM_WALLET_WALLETDB_H

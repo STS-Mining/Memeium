@@ -1,11 +1,12 @@
 // Copyright (c) 2009-2010 Satoshi Nakamoto
 // Copyright (c) 2009-2016 The Bitcoin Core developers
 // Copyright (c) 2017-2019 The Raven Core developers
+// Copyright (c) 2024-2025 The Memeium Core developers
 // Distributed under the MIT software license, see the accompanying
 // file COPYING or http://www.opensource.org/licenses/mit-license.php.
 
-#ifndef RAVEN_ARITH_UINT256_H
-#define RAVEN_ARITH_UINT256_H
+#ifndef MEMEIUM_ARITH_UINT256_H
+#define MEMEIUM_ARITH_UINT256_H
 
 #include <assert.h>
 #include <cstring>
@@ -16,23 +17,24 @@
 
 class uint256;
 
-class uint_error : public std::runtime_error {
+class uint_error : public std::runtime_error
+{
 public:
     explicit uint_error(const std::string& str) : std::runtime_error(str) {}
 };
 
 /** Template base class for unsigned big integers. */
-template<unsigned int BITS>
+template <unsigned int BITS>
 class base_uint
 {
 protected:
-    enum { WIDTH=BITS/32 };
+    enum { WIDTH = BITS / 32 };
     uint32_t pn[WIDTH];
-public:
 
+public:
     base_uint()
     {
-        static_assert(BITS/32 > 0 && BITS%32 == 0, "Template parameter BITS must be a positive multiple of 32.");
+        static_assert(BITS / 32 > 0 && BITS % 32 == 0, "Template parameter BITS must be a positive multiple of 32.");
 
         for (int i = 0; i < WIDTH; i++)
             pn[i] = 0;
@@ -40,7 +42,7 @@ public:
 
     base_uint(const base_uint& b)
     {
-        static_assert(BITS/32 > 0 && BITS%32 == 0, "Template parameter BITS must be a positive multiple of 32.");
+        static_assert(BITS / 32 > 0 && BITS % 32 == 0, "Template parameter BITS must be a positive multiple of 32.");
 
         for (int i = 0; i < WIDTH; i++)
             pn[i] = b.pn[i];
@@ -55,7 +57,7 @@ public:
 
     base_uint(uint64_t b)
     {
-        static_assert(BITS/32 > 0 && BITS%32 == 0, "Template parameter BITS must be a positive multiple of 32.");
+        static_assert(BITS / 32 > 0 && BITS % 32 == 0, "Template parameter BITS must be a positive multiple of 32.");
 
         pn[0] = (unsigned int)b;
         pn[1] = (unsigned int)(b >> 32);
@@ -142,8 +144,7 @@ public:
     base_uint& operator+=(const base_uint& b)
     {
         uint64_t carry = 0;
-        for (int i = 0; i < WIDTH; i++)
-        {
+        for (int i = 0; i < WIDTH; i++) {
             uint64_t n = carry + pn[i] + b.pn[i];
             pn[i] = n & 0xffffffff;
             carry = n >> 32;
@@ -257,7 +258,8 @@ public:
 };
 
 /** 256-bit unsigned big integer. */
-class arith_uint256 : public base_uint<256> {
+class arith_uint256 : public base_uint<256>
+{
 public:
     arith_uint256() {}
     arith_uint256(const base_uint<256>& b) : base_uint<256>(b) {}
@@ -279,19 +281,19 @@ public:
      * Thus 0x1234560000 is compact (0x05123456)
      * and  0xc0de000000 is compact (0x0600c0de)
      *
-     * Raven only uses this "compact" format for encoding difficulty
+     * memeium only uses this "compact" format for encoding difficulty
      * targets, which are unsigned 256bit quantities.  Thus, all the
      * complexities of the sign bit and using base 256 are probably an
      * implementation accident.
      */
-    arith_uint256& SetCompact(uint32_t nCompact, bool *pfNegative = nullptr, bool *pfOverflow = nullptr);
+    arith_uint256& SetCompact(uint32_t nCompact, bool* pfNegative = nullptr, bool* pfOverflow = nullptr);
     uint32_t GetCompact(bool fNegative = false) const;
 
-    friend uint256 ArithToUint256(const arith_uint256 &);
-    friend arith_uint256 UintToArith256(const uint256 &);
+    friend uint256 ArithToUint256(const arith_uint256&);
+    friend arith_uint256 UintToArith256(const uint256&);
 };
 
-uint256 ArithToUint256(const arith_uint256 &);
-arith_uint256 UintToArith256(const uint256 &);
+uint256 ArithToUint256(const arith_uint256&);
+arith_uint256 UintToArith256(const uint256&);
 
-#endif // RAVEN_ARITH_UINT256_H
+#endif // MEMEIUM_ARITH_UINT256_H

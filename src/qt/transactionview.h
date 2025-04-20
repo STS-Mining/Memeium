@@ -1,15 +1,16 @@
 // Copyright (c) 2011-2016 The Bitcoin Core developers
 // Copyright (c) 2017-2021 The Raven Core developers
+// Copyright (c) 2024-2025 The Memeium Core developers
 // Distributed under the MIT software license, see the accompanying
 // file COPYING or http://www.opensource.org/licenses/mit-license.php.
 
-#ifndef RAVEN_QT_TRANSACTIONVIEW_H
-#define RAVEN_QT_TRANSACTIONVIEW_H
+#ifndef MEMEIUM_QT_TRANSACTIONVIEW_H
+#define MEMEIUM_QT_TRANSACTIONVIEW_H
 
 #include "guiutil.h"
 
-#include <QWidget>
 #include <QKeyEvent>
+#include <QWidget>
 
 class PlatformStyle;
 class TransactionFilterProxy;
@@ -34,14 +35,13 @@ class TransactionView : public QWidget
     Q_OBJECT
 
 public:
-    explicit TransactionView(const PlatformStyle *platformStyle, QWidget *parent = 0);
+    explicit TransactionView(const PlatformStyle* platformStyle, QWidget* parent = 0);
 
-    void setModel(WalletModel *model);
+    void setModel(WalletModel* model);
     void showAssets();
 
     // Date ranges for filter
-    enum DateEnum
-    {
+    enum DateEnum {
         All,
         Today,
         ThisWeek,
@@ -62,34 +62,34 @@ public:
     };
 
 private:
-    WalletModel *model;
-    TransactionFilterProxy *transactionProxyModel;
-    QTableView *transactionView;
+    WalletModel* model;
+    TransactionFilterProxy* transactionProxyModel;
+    QTableView* transactionView;
 
-    QComboBox *dateWidget;
-    QComboBox *typeWidget;
-    QComboBox *watchOnlyWidget;
-    QLineEdit *addressWidget;
-    QLineEdit *amountWidget;
-    QLineEdit *assetNameWidget;
+    QComboBox* dateWidget;
+    QComboBox* typeWidget;
+    QComboBox* watchOnlyWidget;
+    QLineEdit* addressWidget;
+    QLineEdit* amountWidget;
+    QLineEdit* assetNameWidget;
 
     bool showingAssets;
 
-    QMenu *contextMenu;
-    QSignalMapper *mapperThirdPartyTxUrls;
+    QMenu* contextMenu;
+    QSignalMapper* mapperThirdPartyTxUrls;
 
-    QFrame *dateRangeWidget;
-    QDateTimeEdit *dateFrom;
-    QDateTimeEdit *dateTo;
-    QAction *abandonAction;
-    QAction *bumpFeeAction;
+    QFrame* dateRangeWidget;
+    QDateTimeEdit* dateFrom;
+    QDateTimeEdit* dateTo;
+    QAction* abandonAction;
+    QAction* bumpFeeAction;
 
-    QWidget *createDateRangeWidget();
+    QWidget* createDateRangeWidget();
 
-    bool eventFilter(QObject *obj, QEvent *event);
+    bool eventFilter(QObject* obj, QEvent* event);
 
 private Q_SLOTS:
-    void contextualMenu(const QPoint &);
+    void contextualMenu(const QPoint&);
     void dateRangeChanged();
     void showDetails();
     void copyAddress();
@@ -109,7 +109,7 @@ Q_SIGNALS:
     void doubleClicked(const QModelIndex&);
 
     /**  Fired when a message should be reported to the user */
-    void message(const QString &title, const QString &message, unsigned int style);
+    void message(const QString& title, const QString& message, unsigned int style);
 
 public Q_SLOTS:
     void chooseDate(int idx);
@@ -120,7 +120,6 @@ public Q_SLOTS:
     void changedPrefix();
     void exportClicked();
     void focusTransaction(const QModelIndex&);
-
 };
 
-#endif // RAVEN_QT_TRANSACTIONVIEW_H
+#endif // MEMEIUM_QT_TRANSACTIONVIEW_H

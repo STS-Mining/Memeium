@@ -1,11 +1,12 @@
 // Copyright (c) 2009-2010 Satoshi Nakamoto
 // Copyright (c) 2009-2016 The Bitcoin Core developers
 // Copyright (c) 2017-2020 The Raven Core developers
+// Copyright (c) 2024-2025 The Memeium Core developers
 // Distributed under the MIT software license, see the accompanying
 // file COPYING or http://www.opensource.org/licenses/mit-license.php.
 
-#ifndef RAVEN_CHAINPARAMS_H
-#define RAVEN_CHAINPARAMS_H
+#ifndef MEMEIUM_CHAINPARAMS_H
+#define MEMEIUM_CHAINPARAMS_H
 
 #include "chainparamsbase.h"
 #include "consensus/params.h"
@@ -18,7 +19,7 @@
 struct CDNSSeedData {
     std::string host;
     bool supportsServiceBitsFiltering;
-    CDNSSeedData(const std::string &strHost, bool supportsServiceBitsFilteringIn) : host(strHost), supportsServiceBitsFiltering(supportsServiceBitsFilteringIn) {}
+    CDNSSeedData(const std::string& strHost, bool supportsServiceBitsFilteringIn) : host(strHost), supportsServiceBitsFiltering(supportsServiceBitsFilteringIn) {}
 };
 
 struct SeedSpec6 {
@@ -40,7 +41,7 @@ struct ChainTxData {
 
 /**
  * CChainParams defines various tweakable parameters of a given instance of the
- * Raven system. There are three: the main network on which people trade goods
+ * Memeium system. There are three: the main network on which people trade goods
  * and services, the public test network which gets reset from time to time and
  * a regression test mode which is intended for private networks only. It has
  * minimal difficulty to ensure that blocks can be found instantly.
@@ -62,7 +63,7 @@ public:
     const CMessageHeader::MessageStartChars& MessageStart() const { return pchMessageStart; }
     int GetDefaultPort() const { return nDefaultPort; }
 
-    bool MiningRequiresPeers() const {return fMiningRequiresPeers; }
+    bool MiningRequiresPeers() const { return fMiningRequiresPeers; }
     const CBlock& GenesisBlock() const { return genesis; }
     /** Default value for -checkmempool and -checkblockindex argument */
     bool DefaultConsistencyChecks() const { return fDefaultConsistencyChecks; }
@@ -90,7 +91,7 @@ public:
     bool BIP66();
     bool CSVEnabled() const;
 
-    /** RVN Start **/
+    /** MMM Start **/
     const CAmount& IssueAssetBurnAmount() const { return nIssueAssetBurnAmount; }
     const CAmount& ReissueAssetBurnAmount() const { return nReissueAssetBurnAmount; }
     const CAmount& IssueSubAssetBurnAmount() const { return nIssueSubAssetBurnAmount; }
@@ -113,20 +114,10 @@ public:
     const std::string& GlobalBurnAddress() const { return strGlobalBurnAddress; }
 
     //  Indicates whether or not the provided address is a burn address
-    bool IsBurnAddress(const std::string & p_address) const
+    bool IsBurnAddress(const std::string& p_address) const
     {
         if (
-            p_address == strIssueAssetBurnAddress
-            || p_address == strReissueAssetBurnAddress
-            || p_address == strIssueSubAssetBurnAddress
-            || p_address == strIssueUniqueAssetBurnAddress
-            || p_address == strIssueMsgChannelAssetBurnAddress
-            || p_address == strIssueQualifierAssetBurnAddress
-            || p_address == strIssueSubQualifierAssetBurnAddress
-            || p_address == strIssueRestrictedAssetBurnAddress
-            || p_address == strAddNullQualifierTagBurnAddress
-            || p_address == strGlobalBurnAddress
-        ) {
+            p_address == strIssueAssetBurnAddress || p_address == strReissueAssetBurnAddress || p_address == strIssueSubAssetBurnAddress || p_address == strIssueUniqueAssetBurnAddress || p_address == strIssueMsgChannelAssetBurnAddress || p_address == strIssueQualifierAssetBurnAddress || p_address == strIssueSubQualifierAssetBurnAddress || p_address == strIssueRestrictedAssetBurnAddress || p_address == strAddNullQualifierTagBurnAddress || p_address == strGlobalBurnAddress) {
             return true;
         }
 
@@ -142,7 +133,7 @@ public:
     int MinReorganizationAge() const { return nMinReorganizationAge; }
 
     int GetAssetActivationHeight() const { return nAssetActivationHeight; }
-    /** RVN End **/
+    /** MMM End **/
 
 protected:
     CChainParams() {}
@@ -164,7 +155,7 @@ protected:
     CCheckpointData checkpointData;
     ChainTxData chainTxData;
 
-    /** RVN Start **/
+    /** MMM Start **/
     // Burn Amounts
     CAmount nIssueAssetBurnAmount;
     CAmount nReissueAssetBurnAmount;
@@ -201,7 +192,7 @@ protected:
     int nAssetActivationHeight;
 
     uint32_t nKAAAWWWPOWActivationTime;
-    /** RVN End **/
+    /** MMM End **/
 };
 
 /**
@@ -215,7 +206,7 @@ std::unique_ptr<CChainParams> CreateChainParams(const std::string& chain);
  * Return the currently selected parameters. This won't change after app
  * startup, except for unit tests.
  */
-const CChainParams &GetParams();
+const CChainParams& GetParams();
 
 /**
  * Sets the params returned by Params() to those for the given BIP70 chain name.
@@ -238,4 +229,4 @@ void TurnOffBIP66();
 
 void TurnOffCSV();
 
-#endif // RAVEN_CHAINPARAMS_H
+#endif // MEMEIUM_CHAINPARAMS_H

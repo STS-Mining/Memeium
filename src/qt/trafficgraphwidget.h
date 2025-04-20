@@ -1,13 +1,14 @@
 // Copyright (c) 2011-2015 The Bitcoin Core developers
 // Copyright (c) 2017-2019 The Raven Core developers
+// Copyright (c) 2024-2025 The Memeium Core developers
 // Distributed under the MIT software license, see the accompanying
 // file COPYING or http://www.opensource.org/licenses/mit-license.php.
 
-#ifndef RAVEN_QT_TRAFFICGRAPHWIDGET_H
-#define RAVEN_QT_TRAFFICGRAPHWIDGET_H
+#ifndef MEMEIUM_QT_TRAFFICGRAPHWIDGET_H
+#define MEMEIUM_QT_TRAFFICGRAPHWIDGET_H
 
-#include <QWidget>
 #include <QQueue>
+#include <QWidget>
 
 class ClientModel;
 
@@ -21,12 +22,12 @@ class TrafficGraphWidget : public QWidget
     Q_OBJECT
 
 public:
-    explicit TrafficGraphWidget(QWidget *parent = 0);
-    void setClientModel(ClientModel *model);
+    explicit TrafficGraphWidget(QWidget* parent = 0);
+    void setClientModel(ClientModel* model);
     int getGraphRangeMins() const;
 
 protected:
-    void paintEvent(QPaintEvent *);
+    void paintEvent(QPaintEvent*);
 
 public Q_SLOTS:
     void updateRates();
@@ -34,16 +35,16 @@ public Q_SLOTS:
     void clear();
 
 private:
-    void paintPath(QPainterPath &path, QQueue<float> &samples);
+    void paintPath(QPainterPath& path, QQueue<float>& samples);
 
-    QTimer *timer;
+    QTimer* timer;
     float fMax;
     int nMins;
     QQueue<float> vSamplesIn;
     QQueue<float> vSamplesOut;
     quint64 nLastBytesIn;
     quint64 nLastBytesOut;
-    ClientModel *clientModel;
+    ClientModel* clientModel;
 };
 
-#endif // RAVEN_QT_TRAFFICGRAPHWIDGET_H
+#endif // MEMEIUM_QT_TRAFFICGRAPHWIDGET_H

@@ -1,5 +1,6 @@
 // Copyright (c) 2011-2016 The Bitcoin Core developers
 // Copyright (c) 2017-2021 The Raven Core developers
+// Copyright (c) 2024-2025 The Memeium Core developers
 // Distributed under the MIT software license, see the accompanying
 // file COPYING or http://www.opensource.org/licenses/mit-license.php.
 
@@ -47,15 +48,14 @@ public:
     void refreshBanlist()
     {
         banmap_t banMap;
-        if(g_connman)
+        if (g_connman)
             g_connman->GetBanned(banMap);
 
         cachedBanlist.clear();
 #if QT_VERSION >= 0x040700
         cachedBanlist.reserve(banMap.size());
 #endif
-        for (banmap_t::iterator it = banMap.begin(); it != banMap.end(); it++)
-        {
+        for (banmap_t::iterator it = banMap.begin(); it != banMap.end(); it++) {
             CCombinedBan banEntry;
             banEntry.subnet = (*it).first;
             banEntry.banEntry = (*it).second;
@@ -72,7 +72,7 @@ public:
         return cachedBanlist.size();
     }
 
-    CCombinedBan *index(int idx)
+    CCombinedBan* index(int idx)
     {
         if (idx >= 0 && idx < cachedBanlist.size())
             return &cachedBanlist[idx];
@@ -81,9 +81,8 @@ public:
     }
 };
 
-BanTableModel::BanTableModel(ClientModel *parent) :
-    QAbstractTableModel(parent),
-    clientModel(parent)
+BanTableModel::BanTableModel(ClientModel* parent) : QAbstractTableModel(parent),
+                                                    clientModel(parent)
 {
     columns << tr("IP/Netmask") << tr("Banned Until");
     priv.reset(new BanTablePriv());
@@ -99,24 +98,24 @@ BanTableModel::~BanTableModel()
     // Intentionally left empty
 }
 
-int BanTableModel::rowCount(const QModelIndex &parent) const
+int BanTableModel::rowCount(const QModelIndex& parent) const
 {
     Q_UNUSED(parent);
     return priv->size();
 }
 
-int BanTableModel::columnCount(const QModelIndex &parent) const
+int BanTableModel::columnCount(const QModelIndex& parent) const
 {
     Q_UNUSED(parent);
     return columns.length();
 }
 
-QVariant BanTableModel::data(const QModelIndex &index, int role) const
+QVariant BanTableModel::data(const QModelIndex& index, int role) const
 {
-    if(!index.isValid())
+    if (!index.isValid())
         return QVariant();
 
-    CCombinedBan *rec = static_cast<CCombinedBan*>(index.internalPointer());
+    CCombinedBan* rec = static_cast<CCombinedBan*>(index.internalPointer());
 
     const auto column = static_cast<ColumnIndex>(index.column());
     if (role == Qt::DisplayRole) {
@@ -136,28 +135,26 @@ QVariant BanTableModel::data(const QModelIndex &index, int role) const
 
 QVariant BanTableModel::headerData(int section, Qt::Orientation orientation, int role) const
 {
-    if(orientation == Qt::Horizontal)
-    {
-        if(role == Qt::DisplayRole && section < columns.size())
-        {
+    if (orientation == Qt::Horizontal) {
+        if (role == Qt::DisplayRole && section < columns.size()) {
             return columns[section];
         }
     }
     return QVariant();
 }
 
-Qt::ItemFlags BanTableModel::flags(const QModelIndex &index) const
+Qt::ItemFlags BanTableModel::flags(const QModelIndex& index) const
 {
-    if(!index.isValid()) return Qt::NoItemFlags;
+    if (!index.isValid()) return Qt::NoItemFlags;
 
     Qt::ItemFlags retval = Qt::ItemIsSelectable | Qt::ItemIsEnabled;
     return retval;
 }
 
-QModelIndex BanTableModel::index(int row, int column, const QModelIndex &parent) const
+QModelIndex BanTableModel::index(int row, int column, const QModelIndex& parent) const
 {
     Q_UNUSED(parent);
-    CCombinedBan *data = priv->index(row);
+    CCombinedBan* data = priv->index(row);
 
     if (data)
         return createIndex(row, column, data);

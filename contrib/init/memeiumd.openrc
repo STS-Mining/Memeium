@@ -1,0 +1,92 @@
+#!/sbin/runscript
+
+# backward compatibility for existing gentoo layout 
+#
+if [ -d "/var/lib/memeium/.memeium" ]; then
+	MEMEIUMD_DEFAULT_DATADIR="/var/lib/memeium/.memeium"
+else
+	MEMEIUMD_DEFAULT_DATADIR="/var/lib/memeiumd"
+fi
+
+MEMEIUMD_CONFIGFILE=${MEMEIUMD_CONFIGFILE:-/etc/memeium/memeium.conf}
+MEMEIUMD_PIDDIR=${MEMEIUMD_PIDDIR:-/var/run/memeiumd}
+MEMEIUMD_PIDFILE=${MEMEIUMD_PIDFILE:-${MEMEIUMD_PIDDIR}/memeiumd.pid}
+MEMEIUMD_DATADIR=${MEMEIUMD_DATADIR:-${MEMEIUMD_DEFAULT_DATADIR}}
+MEMEIUMD_USER=${MEMEIUMD_USER:-${MEMEIUM_USER:-memeium}}
+MEMEIUMD_GROUP=${MEMEIUMD_GROUP:-memeium}
+MEMEIUMD_BIN=${MEMEIUMD_BIN:-/usr/bin/memeiumd}
+MEMEIUMD_NICE=${MEMEIUMD_NICE:-${NICELEVEL:-0}}
+MEMEIUMD_OPTS="${MEMEIUMD_OPTS:-${MEMEIUM_OPTS}}"
+
+name="Memeium Core Daemon"
+description="Memeium cryptocurrency P2P network daemon"
+
+command="/usr/bin/memeiumd"
+command_args="-pid=\"${MEMEIUMD_PIDFILE}\" \
+		-conf=\"${MEMEIUMD_CONFIGFILE}\" \
+		-datadir=\"${MEMEIUMD_DATADIR}\" \
+		-daemon \
+		${MEMEIUMD_OPTS}"
+
+required_files="${MEMEIUMD_CONFIGFILE}"
+start_stop_daemon_args="-u ${MEMEIUMD_USER} \
+			-N ${MEMEIUMD_NICE} -w 2000"
+pidfile="${MEMEIUMD_PIDFILE}"
+
+# The retry schedule to use when stopping the daemon. Could be either
+# a timeout in seconds or multiple signal/timeout pairs (like
+# "SIGKILL/180 SIGTERM/300")
+retry="${MEMEIUMD_SIGTERM_TIMEOUT}"
+
+depend() {
+	need localmount net
+}
+
+# verify
+# 1) that the datadir exists and is writable (or create it)
+# 2) that a directory for the pid exists and is writable
+# 3) ownership and permissions on the config file
+start_pre() {
+	checkpath \
+	-d \
+	--mode 0750 \
+	--owner "${MEMEIUMD_USER}:${MEMEIUMD_GROUP}" \
+	"${MEMEIUMD_DATADIR}"
+
+	checkpath \
+	-d \
+	--mode 0755 \
+	--owner "${MEMEIUMD_USER}:${MEMEIUMD_GROUP}" \
+	"${MEMEIUMD_PIDDIR}"
+
+	checkpath -f \
+	-o ${MEMEIUMD_USER}:${MEMEIUMD_GROUP} \
+	-m 0660 \
+	${MEMEIUMD_CONFIGFILE}
+
+	checkconfig || return 1
+}
+
+checkconfig()
+{
+	if ! grep -qs '^rpcpassword=' "${MEMEIUMD_CONFIGFILE}" ; then
+		eerror ""
+		eerror "ERROR: You must set a secure rpcpassword to run memeiumd."
+		eerror "The setting must appear in ${MEMEIUMD_CONFIGFILE}"
+		eerror ""
+		eerror "This password is security critical to securing wallets "
+		eerror "and must not be the same as the rpcuser setting."
+		eerror "You can generate a suitable random password using the following "
+		eerror "command from the shell:"
+		eerror ""
+		eerror "bash -c 'tr -dc a-zA-Z0-9 < /dev/urandom | head -c32 && echo'"
+		eerror ""
+		eerror "It is recommended that you also set alertnotify so you are "
+		eerror "notified of problems:"
+		eerror ""
+		eerror "ie: alertnotify=echo %%s | mail -s \"Memeium Alert\"" \
+			"admin@foo.com"
+		eerror ""
+		return 1
+	fi
+}

@@ -1,15 +1,16 @@
 // Copyright (c) 2011-2016 The Bitcoin Core developers
 // Copyright (c) 2017-2021 The Raven Core developers
+// Copyright (c) 2024-2025 The Memeium Core developers
 // Distributed under the MIT software license, see the accompanying
 // file COPYING or http://www.opensource.org/licenses/mit-license.php.
 
-#ifndef RAVEN_QT_WALLETFRAME_H
-#define RAVEN_QT_WALLETFRAME_H
+#ifndef MEMEIUM_QT_WALLETFRAME_H
+#define MEMEIUM_QT_WALLETFRAME_H
 
 #include <QFrame>
 #include <QMap>
 
-class RavenGUI;
+class MemeiumGUI;
 class ClientModel;
 class PlatformStyle;
 class SendCoinsRecipient;
@@ -22,9 +23,9 @@ QT_END_NAMESPACE
 
 /**
  * A container for embedding all wallet-related
- * controls into RavenGUI. The purpose of this class is to allow future
+ * controls into MemeiumGUI. The purpose of this class is to allow future
  * refinements of the wallet controls with minimal need for further
- * modifications to RavenGUI, thus greatly simplifying merges while
+ * modifications to MemeiumGUI, thus greatly simplifying merges while
  * reducing the risk of breaking top-level stuff.
  */
 class WalletFrame : public QFrame
@@ -32,14 +33,14 @@ class WalletFrame : public QFrame
     Q_OBJECT
 
 public:
-    explicit WalletFrame(const PlatformStyle *platformStyle, RavenGUI *_gui = 0);
+    explicit WalletFrame(const PlatformStyle* platformStyle, MemeiumGUI* _gui = 0);
     ~WalletFrame();
 
-    void setClientModel(ClientModel *clientModel);
+    void setClientModel(ClientModel* clientModel);
 
-    bool addWallet(const QString& name, WalletModel *walletModel);
+    bool addWallet(const QString& name, WalletModel* walletModel);
     bool setCurrentWallet(const QString& name);
-    bool removeWallet(const QString &name);
+    bool removeWallet(const QString& name);
     void removeAllWallets();
 
     bool handlePaymentRequest(const SendCoinsRecipient& recipient);
@@ -51,16 +52,16 @@ Q_SIGNALS:
     void requestedSyncWarningInfo();
 
 private:
-    QStackedWidget *walletStack;
-    RavenGUI *gui;
-    ClientModel *clientModel;
+    QStackedWidget* walletStack;
+    MemeiumGUI* gui;
+    ClientModel* clientModel;
     QMap<QString, WalletView*> mapWalletViews;
 
     bool bOutOfSync;
 
-    const PlatformStyle *platformStyle;
+    const PlatformStyle* platformStyle;
 
-    WalletView *currentWalletView();
+    WalletView* currentWalletView();
 
 public Q_SLOTS:
     /** Switch to overview (home) page */
@@ -85,7 +86,7 @@ public Q_SLOTS:
     void changePassphrase();
     /** Ask for passphrase to unlock wallet temporarily */
     void unlockWallet();
-    
+
     /** Show the 12-words **/
     void getMyWords();
 
@@ -96,14 +97,14 @@ public Q_SLOTS:
     /** Pass on signal over requested out-of-sync-warning information */
     void outOfSyncWarningClicked();
 
-    /** RVN START */
+    /** MMM START */
 
     /** Switch to assets page */
     void gotoAssetsPage();
     void gotoCreateAssetsPage();
     void gotoManageAssetsPage();
     void gotoRestrictedAssetsPage();
-    /** RVN END */
+    /** MMM END */
 };
 
-#endif // RAVEN_QT_WALLETFRAME_H
+#endif // MEMEIUM_QT_WALLETFRAME_H

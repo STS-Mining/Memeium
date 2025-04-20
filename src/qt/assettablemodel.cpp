@@ -1,5 +1,6 @@
 // Copyright (c) 2011-2016 The Bitcoin Core developers
 // Copyright (c) 2017-2020 The Raven Core developers
+// Copyright (c) 2024-2025 The Memeium Core developers
 // Distributed under the MIT software license, see the accompanying
 // file COPYING or http://www.opensource.org/licenses/mit-license.php.
 
@@ -8,35 +9,35 @@
 
 #include "guiconstants.h"
 #include "guiutil.h"
-#include "walletmodel.h"
 #include "wallet/wallet.h"
+#include "walletmodel.h"
 
 #include "core_io.h"
 
 #include "amount.h"
 #include "assets/assets.h"
-#include "validation.h"
 #include "platformstyle.h"
+#include "validation.h"
 
 #include <QDebug>
 #include <QStringList>
 
 
-
-class AssetTablePriv {
+class AssetTablePriv
+{
 public:
-    AssetTablePriv(AssetTableModel *_parent) :
-            parent(_parent)
+    AssetTablePriv(AssetTableModel* _parent) : parent(_parent)
     {
     }
 
-    AssetTableModel *parent;
+    AssetTableModel* parent;
 
     QList<AssetRecord> cachedBalances;
 
     // loads all current balances into cache
 #ifdef ENABLE_WALLET
-    void refreshWallet() {
+    void refreshWallet()
+    {
         qDebug() << "AssetTablePriv::refreshWallet";
         cachedBalances.clear();
         auto currentActiveAssetCache = GetCurrentAssetCache();
@@ -44,7 +45,7 @@ public:
             {
                 LOCK(cs_main);
                 std::map<std::string, CAmount> balances;
-                std::map<std::string, std::vector<COutput> > outputs;
+                std::map<std::string, std::vector<COutput>> outputs;
                 if (!GetAllMyAssetBalances(outputs, balances)) {
                     qWarning("AssetTablePriv::refreshWallet: Error retrieving asset balances");
                     return;
@@ -92,23 +93,23 @@ public:
 #endif
 
 
-    int size() {
+    int size()
+    {
         return cachedBalances.size();
     }
 
-    AssetRecord *index(int idx) {
+    AssetRecord* index(int idx)
+    {
         if (idx >= 0 && idx < cachedBalances.size()) {
             return &cachedBalances[idx];
         }
         return 0;
     }
-
 };
 
-AssetTableModel::AssetTableModel(WalletModel *parent) :
-        QAbstractTableModel(parent),
-        walletModel(parent),
-        priv(new AssetTablePriv(this))
+AssetTableModel::AssetTableModel(WalletModel* parent) : QAbstractTableModel(parent),
+                                                        walletModel(parent),
+                                                        priv(new AssetTablePriv(this))
 {
     columns << tr("Name") << tr("Quantity");
 #ifdef ENABLE_WALLET
@@ -121,105 +122,101 @@ AssetTableModel::~AssetTableModel()
     delete priv;
 };
 
-void AssetTableModel::checkBalanceChanged() {
+void AssetTableModel::checkBalanceChanged()
+{
     qDebug() << "AssetTableModel::CheckBalanceChanged";
     // TODO: optimize by 1) updating cache incrementally; and 2) emitting more specific dataChanged signals
     Q_EMIT layoutAboutToBeChanged();
 #ifdef ENABLE_WALLET
     priv->refreshWallet();
 #endif
-    Q_EMIT dataChanged(index(0, 0, QModelIndex()), index(priv->size(), columns.length()-1, QModelIndex()));
+    Q_EMIT dataChanged(index(0, 0, QModelIndex()), index(priv->size(), columns.length() - 1, QModelIndex()));
     Q_EMIT layoutChanged();
 }
 
-int AssetTableModel::rowCount(const QModelIndex &parent) const
+int AssetTableModel::rowCount(const QModelIndex& parent) const
 {
     Q_UNUSED(parent);
     return priv->size();
 }
 
-int AssetTableModel::columnCount(const QModelIndex &parent) const
+int AssetTableModel::columnCount(const QModelIndex& parent) const
 {
     Q_UNUSED(parent);
     return 2;
 }
 
-QVariant AssetTableModel::data(const QModelIndex &index, int role) const
+QVariant AssetTableModel::data(const QModelIndex& index, int role) const
 {
     Q_UNUSED(role);
-    if(!index.isValid())
+    if (!index.isValid())
         return QVariant();
-    AssetRecord *rec = static_cast<AssetRecord*>(index.internalPointer());
+    AssetRecord* rec = static_cast<AssetRecord*>(index.internalPointer());
 
-    switch (role)
-    {
-        case AmountRole:
-            return (unsigned long long) rec->quantity;
-        case AssetNameRole:
-            return QString::fromStdString(rec->name);
-        case FormattedAmountRole:
-            return QString::fromStdString(rec->formattedQuantity());
-        case AdministratorRole:
-            return rec->fIsAdministrator;
-        case AssetIPFSHashRole:
-            return QString::fromStdString(rec->ipfshash);
-        case AssetIPFSHashDecorationRole:
-        {
-            if (index.column() == Quantity)
-                return QVariant();
-
-            if (rec->ipfshash.size() == 0)
-                return QVariant();
-
-            QPixmap pixmap;
-
-            if (darkModeEnabled)
-                pixmap = QPixmap::fromImage(QImage(":/icons/external_link_dark"));
-            else
-                pixmap = QPixmap::fromImage(QImage(":/icons/external_link"));
-
-            return pixmap;
-        }
-        case Qt::DecorationRole:
-        {
-            if (index.column() == Quantity)
-                return QVariant();
-
-            if (!rec->fIsAdministrator)
-                QVariant();
-
-            QPixmap pixmap;
-
-            if (darkModeEnabled)
-                pixmap = QPixmap::fromImage(QImage(":/icons/asset_administrator_dark"));
-            else
-                pixmap = QPixmap::fromImage(QImage(":/icons/asset_administrator"));
-
-            return pixmap;
-        }
-        case Qt::DisplayRole: {
-            if (index.column() == Name)
-                return QString::fromStdString(rec->name);
-            else if (index.column() == Quantity)
-                return QString::fromStdString(rec->formattedQuantity());
-        }
-        case Qt::ToolTipRole:
-            return formatTooltip(rec);
-        case Qt::TextAlignmentRole:
-        {
-            if (index.column() == Quantity) {
-                return Qt::AlignRight + Qt::AlignVCenter;
-            }
-        }
-        default:
+    switch (role) {
+    case AmountRole:
+        return (unsigned long long)rec->quantity;
+    case AssetNameRole:
+        return QString::fromStdString(rec->name);
+    case FormattedAmountRole:
+        return QString::fromStdString(rec->formattedQuantity());
+    case AdministratorRole:
+        return rec->fIsAdministrator;
+    case AssetIPFSHashRole:
+        return QString::fromStdString(rec->ipfshash);
+    case AssetIPFSHashDecorationRole: {
+        if (index.column() == Quantity)
             return QVariant();
+
+        if (rec->ipfshash.size() == 0)
+            return QVariant();
+
+        QPixmap pixmap;
+
+        if (darkModeEnabled)
+            pixmap = QPixmap::fromImage(QImage(":/icons/external_link_dark"));
+        else
+            pixmap = QPixmap::fromImage(QImage(":/icons/external_link"));
+
+        return pixmap;
+    }
+    case Qt::DecorationRole: {
+        if (index.column() == Quantity)
+            return QVariant();
+
+        if (!rec->fIsAdministrator)
+            QVariant();
+
+        QPixmap pixmap;
+
+        if (darkModeEnabled)
+            pixmap = QPixmap::fromImage(QImage(":/icons/asset_administrator_dark"));
+        else
+            pixmap = QPixmap::fromImage(QImage(":/icons/asset_administrator"));
+
+        return pixmap;
+    }
+    case Qt::DisplayRole: {
+        if (index.column() == Name)
+            return QString::fromStdString(rec->name);
+        else if (index.column() == Quantity)
+            return QString::fromStdString(rec->formattedQuantity());
+    }
+    case Qt::ToolTipRole:
+        return formatTooltip(rec);
+    case Qt::TextAlignmentRole: {
+        if (index.column() == Quantity) {
+            return Qt::AlignRight + Qt::AlignVCenter;
+        }
+    }
+    default:
+        return QVariant();
     }
 }
 
 QVariant AssetTableModel::headerData(int section, Qt::Orientation orientation, int role) const
 {
-    if (role == Qt::DisplayRole)
-    {
+    if (role == Qt::DisplayRole) {
         if (orientation == Qt::Horizontal) {
             if (section < columns.size())
                 return columns.at(section);
@@ -239,12 +236,11 @@ QVariant AssetTableModel::headerData(int section, Qt::Orientation orientation, i
     return QVariant();
 }
 
-QModelIndex AssetTableModel::index(int row, int column, const QModelIndex &parent) const
+QModelIndex AssetTableModel::index(int row, int column, const QModelIndex& parent) const
 {
     Q_UNUSED(parent);
-    AssetRecord *data = priv->index(row);
-    if(data)
-    {
+    AssetRecord* data = priv->index(row);
+    if (data) {
         QModelIndex idx = createIndex(row, column, priv->index(row));
         return idx;
     }
@@ -252,23 +248,23 @@ QModelIndex AssetTableModel::index(int row, int column, const QModelIndex &paren
     return QModelIndex();
 }
 
-QString AssetTableModel::formatTooltip(const AssetRecord *rec) const
+QString AssetTableModel::formatTooltip(const AssetRecord* rec) const
 {
     QString tooltip = formatAssetName(rec) + QString("\n") + formatAssetQuantity(rec) + QString("\n") + formatAssetData(rec);
     return tooltip;
 }
 
-QString AssetTableModel::formatAssetName(const AssetRecord *wtx) const
+QString AssetTableModel::formatAssetName(const AssetRecord* wtx) const
 {
     return QString::fromStdString(wtx->name);
 }
 
-QString AssetTableModel::formatAssetQuantity(const AssetRecord *wtx) const
+QString AssetTableModel::formatAssetQuantity(const AssetRecord* wtx) const
 {
     return QString::fromStdString(wtx->formattedQuantity());
 }
 
-QString AssetTableModel::formatAssetData(const AssetRecord *wtx) const
+QString AssetTableModel::formatAssetData(const AssetRecord* wtx) const
 {
     return QString::fromStdString(wtx->ipfshash);
 }

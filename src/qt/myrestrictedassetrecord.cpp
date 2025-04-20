@@ -1,5 +1,6 @@
 // Copyright (c) 2011-2016 The Bitcoin Core developers
 // Copyright (c) 2017-2019 The Raven Core developers
+// Copyright (c) 2024-2025 The Memeium Core developers
 // Distributed under the MIT software license, see the accompanying
 // file COPYING or http://www.opensource.org/licenses/mit-license.php.
 
@@ -8,8 +9,8 @@
 #include "assets/assets.h"
 #include "base58.h"
 #include "consensus/consensus.h"
-#include "validation.h"
 #include "timedata.h"
+#include "validation.h"
 #include "wallet/wallet.h"
 
 #include <stdint.h>
@@ -19,7 +20,7 @@
 
 /* Return positive answer if transaction should be shown in list.
  */
-bool MyRestrictedAssetRecord::showTransaction(const CWalletTx &wtx)
+bool MyRestrictedAssetRecord::showTransaction(const CWalletTx& wtx)
 {
     // There are currently no cases where we hide transactions, but
     // we may want to use this in the future for things like RBF.
@@ -30,15 +31,15 @@ bool MyRestrictedAssetRecord::showTransaction(const CWalletTx &wtx)
 /*
  * Decompose CWallet transaction to model transaction records.
  */
-QList<MyRestrictedAssetRecord> MyRestrictedAssetRecord::decomposeTransaction(const CWallet *wallet, const CWalletTx &wtx)
+QList<MyRestrictedAssetRecord> MyRestrictedAssetRecord::decomposeTransaction(const CWallet* wallet, const CWalletTx& wtx)
 {
     QList<MyRestrictedAssetRecord> parts;
     int64_t nTime = wtx.GetTxTime();
     uint256 hash = wtx.GetHash();
     std::map<std::string, std::string> mapValue = wtx.mapValue;
 
-    for(unsigned int i = 0; i < wtx.tx->vout.size(); i++) {
-        const CTxOut &txout = wtx.tx->vout[i];
+    for (unsigned int i = 0; i < wtx.tx->vout.size(); i++) {
+        const CTxOut& txout = wtx.tx->vout[i];
         isminetype mine = ISMINE_NO;
 
         if (txout.scriptPubKey.IsNullAssetTxDataScript()) {
@@ -55,13 +56,13 @@ QList<MyRestrictedAssetRecord> MyRestrictedAssetRecord::decomposeTransaction(con
                 sub.address = address;
 
                 if (IsAssetNameAQualifier(data.asset_name)) {
-                    if (data.flag == (int) QualifierType::ADD_QUALIFIER) {
+                    if (data.flag == (int)QualifierType::ADD_QUALIFIER) {
                         sub.type = MyRestrictedAssetRecord::Type::Tagged;
                     } else {
                         sub.type = MyRestrictedAssetRecord::Type::UnTagged;
                     }
                 } else if (IsAssetNameAnRestricted(data.asset_name)) {
-                    if (data.flag == (int) RestrictedType::FREEZE_ADDRESS) {
+                    if (data.flag == (int)RestrictedType::FREEZE_ADDRESS) {
                         sub.type = MyRestrictedAssetRecord::Type::Frozen;
                     } else {
                         sub.type = MyRestrictedAssetRecord::Type::UnFrozen;

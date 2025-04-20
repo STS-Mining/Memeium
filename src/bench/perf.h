@@ -1,5 +1,6 @@
 // Copyright (c) 2016 The Bitcoin Core developers
 // Copyright (c) 2017-2019 The Raven Core developers
+// Copyright (c) 2024-2025 The Memeium Core developers
 // Distributed under the MIT software license, see the accompanying
 // file COPYING or http://www.opensource.org/licenses/mit-license.php.
 
@@ -14,7 +15,7 @@
 static inline uint64_t perf_cpucycles(void)
 {
     uint64_t x;
-    __asm__ volatile (".byte 0x0f, 0x31" : "=A" (x));
+    __asm__ volatile(".byte 0x0f, 0x31" : "=A"(x));
     return x;
 }
 
@@ -23,8 +24,8 @@ static inline uint64_t perf_cpucycles(void)
 static inline uint64_t perf_cpucycles(void)
 {
     uint32_t hi, lo;
-    __asm__ __volatile__ ("rdtsc" : "=a"(lo), "=d"(hi));
-    return ((uint64_t)lo)|(((uint64_t)hi)<<32);
+    __asm__ __volatile__("rdtsc" : "=a"(lo), "=d"(hi));
+    return ((uint64_t)lo) | (((uint64_t)hi) << 32);
 }
 #else
 

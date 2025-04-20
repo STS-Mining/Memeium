@@ -1,16 +1,17 @@
 // Copyright (c) 2015 The Bitcoin Core developers
 // Copyright (c) 2017-2019 The Raven Core developers
+// Copyright (c) 2024-2025 The Memeium Core developers
 // Distributed under the MIT software license, see the accompanying
 // file COPYING or http://www.opensource.org/licenses/mit-license.php.
 
-#ifndef RAVEN_MERKLE
-#define RAVEN_MERKLE
+#ifndef MEMEIUM_MERKLE
+#define MEMEIUM_MERKLE
 
 #include <stdint.h>
 #include <vector>
 
-#include "primitives/transaction.h"
 #include "primitives/block.h"
+#include "primitives/transaction.h"
 #include "uint256.h"
 
 uint256 ComputeMerkleRoot(const std::vector<uint256>& leaves, bool* mutated = nullptr);

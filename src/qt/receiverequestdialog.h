@@ -1,10 +1,11 @@
 // Copyright (c) 2011-2016 The Bitcoin Core developers
 // Copyright (c) 2017-2019 The Raven Core developers
+// Copyright (c) 2024-2025 The Memeium Core developers
 // Distributed under the MIT software license, see the accompanying
 // file COPYING or http://www.opensource.org/licenses/mit-license.php.
 
-#ifndef RAVEN_QT_RECEIVEREQUESTDIALOG_H
-#define RAVEN_QT_RECEIVEREQUESTDIALOG_H
+#ifndef MEMEIUM_QT_RECEIVEREQUESTDIALOG_H
+#define MEMEIUM_QT_RECEIVEREQUESTDIALOG_H
 
 #include "walletmodel.h"
 
@@ -15,8 +16,9 @@
 
 class OptionsModel;
 
-namespace Ui {
-    class ReceiveRequestDialog;
+namespace Ui
+{
+class ReceiveRequestDialog;
 }
 
 QT_BEGIN_NAMESPACE
@@ -31,7 +33,7 @@ class QRImageWidget : public QLabel
     Q_OBJECT
 
 public:
-    explicit QRImageWidget(QWidget *parent = 0);
+    explicit QRImageWidget(QWidget* parent = 0);
     QImage exportImage();
 
 public Q_SLOTS:
@@ -39,11 +41,11 @@ public Q_SLOTS:
     void copyImage();
 
 protected:
-    virtual void mousePressEvent(QMouseEvent *event);
-    virtual void contextMenuEvent(QContextMenuEvent *event);
+    virtual void mousePressEvent(QMouseEvent* event);
+    virtual void contextMenuEvent(QContextMenuEvent* event);
 
 private:
-    QMenu *contextMenu;
+    QMenu* contextMenu;
 };
 
 class ReceiveRequestDialog : public QDialog
@@ -51,11 +53,11 @@ class ReceiveRequestDialog : public QDialog
     Q_OBJECT
 
 public:
-    explicit ReceiveRequestDialog(QWidget *parent = 0);
+    explicit ReceiveRequestDialog(QWidget* parent = 0);
     ~ReceiveRequestDialog();
 
-    void setModel(OptionsModel *model);
-    void setInfo(const SendCoinsRecipient &info);
+    void setModel(OptionsModel* model);
+    void setInfo(const SendCoinsRecipient& info);
 
 private Q_SLOTS:
     void on_btnCopyURI_clicked();
@@ -64,9 +66,9 @@ private Q_SLOTS:
     void update();
 
 private:
-    Ui::ReceiveRequestDialog *ui;
-    OptionsModel *model;
+    Ui::ReceiveRequestDialog* ui;
+    OptionsModel* model;
     SendCoinsRecipient info;
 };
 
-#endif // RAVEN_QT_RECEIVEREQUESTDIALOG_H
+#endif // MEMEIUM_QT_RECEIVEREQUESTDIALOG_H

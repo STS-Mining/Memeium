@@ -1,16 +1,18 @@
 // Copyright (c) 2016 The Bitcoin Core developers
 // Copyright (c) 2017-2019 The Raven Core developers
+// Copyright (c) 2024-2025 The Memeium Core developers
 // Distributed under the MIT software license, see the accompanying
 // file COPYING or http://www.opensource.org/licenses/mit-license.php.
 
 #include "bench.h"
 
 #include "chainparams.h"
-#include "validation.h"
-#include "streams.h"
 #include "consensus/validation.h"
+#include "streams.h"
+#include "validation.h"
 
-namespace block_bench {
+namespace block_bench
+{
 #include "bench/data/block566553.raw.h"
 
 } // namespace block_bench
@@ -22,8 +24,8 @@ namespace block_bench {
 static void DeserializeBlockTest(benchmark::State& state)
 {
     CDataStream stream((const char*)block_bench::block566553,
-            (const char*)&block_bench::block566553[sizeof(block_bench::block566553)],
-            SER_NETWORK, PROTOCOL_VERSION);
+        (const char*)&block_bench::block566553[sizeof(block_bench::block566553)],
+        SER_NETWORK, PROTOCOL_VERSION);
     char a = '\0';
     stream.write(&a, 1); // Prevent compaction
 
@@ -37,8 +39,8 @@ static void DeserializeBlockTest(benchmark::State& state)
 static void DeserializeAndCheckBlockTest(benchmark::State& state)
 {
     CDataStream stream((const char*)block_bench::block566553,
-            (const char*)&block_bench::block566553[sizeof(block_bench::block566553)],
-            SER_NETWORK, PROTOCOL_VERSION);
+        (const char*)&block_bench::block566553[sizeof(block_bench::block566553)],
+        SER_NETWORK, PROTOCOL_VERSION);
     char a = '\0';
     stream.write(&a, 1); // Prevent compaction
 

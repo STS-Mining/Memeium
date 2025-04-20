@@ -1,11 +1,12 @@
 // Copyright (c) 2009-2010 Satoshi Nakamoto
 // Copyright (c) 2009-2016 The Bitcoin Core developers
 // Copyright (c) 2017-2019 The Raven Core developers
+// Copyright (c) 2024-2025 The Memeium Core developers
 // Distributed under the MIT software license, see the accompanying
 // file COPYING or http://www.opensource.org/licenses/mit-license.php.
 
-#ifndef RAVEN_SCRIPT_ISMINE_H
-#define RAVEN_SCRIPT_ISMINE_H
+#ifndef MEMEIUM_SCRIPT_ISMINE_H
+#define MEMEIUM_SCRIPT_ISMINE_H
 
 #include "script/standard.h"
 
@@ -15,8 +16,7 @@ class CKeyStore;
 class CScript;
 
 /** IsMine() return codes */
-enum isminetype
-{
+enum isminetype {
     ISMINE_NO = 0,
     //! Indicates that we don't know how to create a scriptSig that would solve this if we were given the appropriate private keys
     ISMINE_WATCH_UNSOLVABLE = 1,
@@ -39,4 +39,4 @@ isminetype IsMine(const CKeyStore& keystore, const CScript& scriptPubKey, SigVer
 isminetype IsMine(const CKeyStore& keystore, const CTxDestination& dest, bool& isInvalid, SigVersion = SIGVERSION_BASE);
 isminetype IsMine(const CKeyStore& keystore, const CTxDestination& dest, SigVersion = SIGVERSION_BASE);
 
-#endif // RAVEN_SCRIPT_ISMINE_H
+#endif // MEMEIUM_SCRIPT_ISMINE_H

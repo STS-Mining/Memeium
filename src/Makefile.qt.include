@@ -1,98 +1,99 @@
 # Copyright (c) 2013-2016 The Bitcoin Core developers
 # Copyright (c) 2017-2019 The Raven Core developers
+# Copyright (c) 2024-2025 The Memeium Core developers
 # Distributed under the MIT software license, see the accompanying
 # file COPYING or http://www.opensource.org/licenses/mit-license.php.
 
-bin_PROGRAMS += qt/raven-qt
-EXTRA_LIBRARIES += qt/libravenqt.a
+bin_PROGRAMS += qt/memeium-qt
+EXTRA_LIBRARIES += qt/libmemeiumqt.a
 
-# raven qt core #
+# memeium qt core #
 QT_TS = \
-  qt/locale/raven_af.ts \
-  qt/locale/raven_af_ZA.ts \
-  qt/locale/raven_ar.ts \
-  qt/locale/raven_be_BY.ts \
-  qt/locale/raven_bg_BG.ts \
-  qt/locale/raven_bg.ts \
-  qt/locale/raven_ca_ES.ts \
-  qt/locale/raven_ca.ts \
-  qt/locale/raven_ca@valencia.ts \
-  qt/locale/raven_cs.ts \
-  qt/locale/raven_cy.ts \
-  qt/locale/raven_da.ts \
-  qt/locale/raven_de.ts \
-  qt/locale/raven_el_GR.ts \
-  qt/locale/raven_el.ts \
-  qt/locale/raven_en_GB.ts \
-  qt/locale/raven_en.ts \
-  qt/locale/raven_eo.ts \
-  qt/locale/raven_es_AR.ts \
-  qt/locale/raven_es_CL.ts \
-  qt/locale/raven_es_CO.ts \
-  qt/locale/raven_es_DO.ts \
-  qt/locale/raven_es_ES.ts \
-  qt/locale/raven_es_MX.ts \
-  qt/locale/raven_es.ts \
-  qt/locale/raven_es_UY.ts \
-  qt/locale/raven_es_VE.ts \
-  qt/locale/raven_et_EE.ts \
-  qt/locale/raven_et.ts \
-  qt/locale/raven_eu_ES.ts \
-  qt/locale/raven_fa_IR.ts \
-  qt/locale/raven_fa.ts \
-  qt/locale/raven_fi.ts \
-  qt/locale/raven_fr_CA.ts \
-  qt/locale/raven_fr_FR.ts \
-  qt/locale/raven_fr.ts \
-  qt/locale/raven_gl.ts \
-  qt/locale/raven_he.ts \
-  qt/locale/raven_hi_IN.ts \
-  qt/locale/raven_hr.ts \
-  qt/locale/raven_hu.ts \
-  qt/locale/raven_id_ID.ts \
-  qt/locale/raven_it_IT.ts \
-  qt/locale/raven_it.ts \
-  qt/locale/raven_ja.ts \
-  qt/locale/raven_ka.ts \
-  qt/locale/raven_kk_KZ.ts \
-  qt/locale/raven_ko_KR.ts \
-  qt/locale/raven_ku_IQ.ts \
-  qt/locale/raven_ky.ts \
-  qt/locale/raven_la.ts \
-  qt/locale/raven_lt.ts \
-  qt/locale/raven_lv_LV.ts \
-  qt/locale/raven_mk_MK.ts \
-  qt/locale/raven_mn.ts \
-  qt/locale/raven_ms_MY.ts \
-  qt/locale/raven_nb.ts \
-  qt/locale/raven_ne.ts \
-  qt/locale/raven_nl.ts \
-  qt/locale/raven_pl.ts \
-  qt/locale/raven_pt_BR.ts \
-  qt/locale/raven_pt_PT.ts \
-  qt/locale/raven_ro_RO.ts \
-  qt/locale/raven_ro.ts \
-  qt/locale/raven_ru_RU.ts \
-  qt/locale/raven_ru.ts \
-  qt/locale/raven_sk.ts \
-  qt/locale/raven_sl_SI.ts \
-  qt/locale/raven_sq.ts \
-  qt/locale/raven_sr@latin.ts \
-  qt/locale/raven_sr.ts \
-  qt/locale/raven_sv.ts \
-  qt/locale/raven_ta.ts \
-  qt/locale/raven_th_TH.ts \
-  qt/locale/raven_tr_TR.ts \
-  qt/locale/raven_tr.ts \
-  qt/locale/raven_uk.ts \
-  qt/locale/raven_ur_PK.ts \
-  qt/locale/raven_uz@Cyrl.ts \
-  qt/locale/raven_vi.ts \
-  qt/locale/raven_vi_VN.ts \
-  qt/locale/raven_zh_CN.ts \
-  qt/locale/raven_zh_HK.ts \
-  qt/locale/raven_zh.ts \
-  qt/locale/raven_zh_TW.ts
+  qt/locale/memeium_af.ts \
+  qt/locale/memeium_af_ZA.ts \
+  qt/locale/memeium_ar.ts \
+  qt/locale/memeium_be_BY.ts \
+  qt/locale/memeium_bg_BG.ts \
+  qt/locale/memeium_bg.ts \
+  qt/locale/memeium_ca_ES.ts \
+  qt/locale/memeium_ca.ts \
+  qt/locale/memeium_ca@valencia.ts \
+  qt/locale/memeium_cs.ts \
+  qt/locale/memeium_cy.ts \
+  qt/locale/memeium_da.ts \
+  qt/locale/memeium_de.ts \
+  qt/locale/memeium_el_GR.ts \
+  qt/locale/memeium_el.ts \
+  qt/locale/memeium_en_GB.ts \
+  qt/locale/memeium_en.ts \
+  qt/locale/memeium_eo.ts \
+  qt/locale/memeium_es_AR.ts \
+  qt/locale/memeium_es_CL.ts \
+  qt/locale/memeium_es_CO.ts \
+  qt/locale/memeium_es_DO.ts \
+  qt/locale/memeium_es_ES.ts \
+  qt/locale/memeium_es_MX.ts \
+  qt/locale/memeium_es.ts \
+  qt/locale/memeium_es_UY.ts \
+  qt/locale/memeium_es_VE.ts \
+  qt/locale/memeium_et_EE.ts \
+  qt/locale/memeium_et.ts \
+  qt/locale/memeium_eu_ES.ts \
+  qt/locale/memeium_fa_IR.ts \
+  qt/locale/memeium_fa.ts \
+  qt/locale/memeium_fi.ts \
+  qt/locale/memeium_fr_CA.ts \
+  qt/locale/memeium_fr_FR.ts \
+  qt/locale/memeium_fr.ts \
+  qt/locale/memeium_gl.ts \
+  qt/locale/memeium_he.ts \
+  qt/locale/memeium_hi_IN.ts \
+  qt/locale/memeium_hr.ts \
+  qt/locale/memeium_hu.ts \
+  qt/locale/memeium_id_ID.ts \
+  qt/locale/memeium_it_IT.ts \
+  qt/locale/memeium_it.ts \
+  qt/locale/memeium_ja.ts \
+  qt/locale/memeium_ka.ts \
+  qt/locale/memeium_kk_KZ.ts \
+  qt/locale/memeium_ko_KR.ts \
+  qt/locale/memeium_ku_IQ.ts \
+  qt/locale/memeium_ky.ts \
+  qt/locale/memeium_la.ts \
+  qt/locale/memeium_lt.ts \
+  qt/locale/memeium_lv_LV.ts \
+  qt/locale/memeium_mk_MK.ts \
+  qt/locale/memeium_mn.ts \
+  qt/locale/memeium_ms_MY.ts \
+  qt/locale/memeium_nb.ts \
+  qt/locale/memeium_ne.ts \
+  qt/locale/memeium_nl.ts \
+  qt/locale/memeium_pl.ts \
+  qt/locale/memeium_pt_BR.ts \
+  qt/locale/memeium_pt_PT.ts \
+  qt/locale/memeium_ro_RO.ts \
+  qt/locale/memeium_ro.ts \
+  qt/locale/memeium_ru_RU.ts \
+  qt/locale/memeium_ru.ts \
+  qt/locale/memeium_sk.ts \
+  qt/locale/memeium_sl_SI.ts \
+  qt/locale/memeium_sq.ts \
+  qt/locale/memeium_sr@latin.ts \
+  qt/locale/memeium_sr.ts \
+  qt/locale/memeium_sv.ts \
+  qt/locale/memeium_ta.ts \
+  qt/locale/memeium_th_TH.ts \
+  qt/locale/memeium_tr_TR.ts \
+  qt/locale/memeium_tr.ts \
+  qt/locale/memeium_uk.ts \
+  qt/locale/memeium_ur_PK.ts \
+  qt/locale/memeium_uz@Cyrl.ts \
+  qt/locale/memeium_vi.ts \
+  qt/locale/memeium_vi_VN.ts \
+  qt/locale/memeium_zh_CN.ts \
+  qt/locale/memeium_zh_HK.ts \
+  qt/locale/memeium_zh.ts \
+  qt/locale/memeium_zh_TW.ts
 
 QT_FORMS_UI = \
   qt/forms/addressbookpage.ui \
@@ -132,10 +133,10 @@ QT_MOC_CPP = \
   qt/moc_assetcontroltreewidget.cpp \
   qt/moc_assetfilterproxy.cpp \
   qt/moc_bantablemodel.cpp \
-  qt/moc_ravenaddressvalidator.cpp \
-  qt/moc_ravenamountfield.cpp \
-  qt/moc_ravengui.cpp \
-  qt/moc_ravenunits.cpp \
+  qt/moc_memeiumaddressvalidator.cpp \
+  qt/moc_memeiumamountfield.cpp \
+  qt/moc_memeiumgui.cpp \
+  qt/moc_memeiumunits.cpp \
   qt/moc_callback.cpp \
   qt/moc_clientmodel.cpp \
   qt/moc_coincontroldialog.cpp \
@@ -186,28 +187,28 @@ QT_MOC_CPP = \
   qt/moc_sendassetsentry.cpp \
   qt/moc_mnemonicdialog.cpp
 
-RAVEN_MM = \
+MEMEIUM_MM = \
   qt/macdockiconhandler.mm \
   qt/macnotificationhandler.mm
 
 QT_MOC = \
-  qt/raven.moc \
-  qt/ravenamountfield.moc \
+  qt/memeium.moc \
+  qt/memeiumamountfield.moc \
   qt/callback.moc \
   qt/intro.moc \
   qt/overviewpage.moc \
   qt/rpcconsole.moc
 
-QT_QRC_CPP = qt/qrc_raven.cpp
-QT_QRC = qt/raven.qrc
-QT_QRC_LOCALE_CPP = qt/qrc_raven_locale.cpp
-QT_QRC_LOCALE = qt/raven_locale.qrc
+QT_QRC_CPP = qt/qrc_memeium.cpp
+QT_QRC = qt/memeium.qrc
+QT_QRC_LOCALE_CPP = qt/qrc_memeium_locale.cpp
+QT_QRC_LOCALE = qt/memeium_locale.qrc
 
 PROTOBUF_CC = qt/paymentrequest.pb.cc
 PROTOBUF_H = qt/paymentrequest.pb.h
 PROTOBUF_PROTO = qt/paymentrequest.proto
 
-RAVEN_QT_H = \
+MEMEIUM_QT_H = \
   qt/addressbookpage.h \
   qt/addresstablemodel.h \
   qt/askpassphrasedialog.h \
@@ -218,10 +219,10 @@ RAVEN_QT_H = \
   qt/assetsdialog.h \
   qt/createassetdialog.h \
   qt/bantablemodel.h \
-  qt/ravenaddressvalidator.h \
-  qt/ravenamountfield.h \
-  qt/ravengui.h \
-  qt/ravenunits.h \
+  qt/memeiumaddressvalidator.h \
+  qt/memeiumamountfield.h \
+  qt/memeiumgui.h \
+  qt/memeiumunits.h \
   qt/callback.h \
   qt/clientmodel.h \
   qt/coincontroldialog.h \
@@ -292,10 +293,10 @@ RES_ICONS = \
   qt/res/icons/asset_manage_selected.png \
   qt/res/icons/asset_transfer.png \
   qt/res/icons/asset_transfer_selected.png \
-  qt/res/icons/ravencointext.png \
-  qt/res/icons/raven.ico \
-  qt/res/icons/raven_testnet.ico \
-  qt/res/icons/raven.png \
+  qt/res/icons/memeiumtext.png \
+  qt/res/icons/memeium.ico \
+  qt/res/icons/memeium_testnet.ico \
+  qt/res/icons/memeium.png \
   qt/res/icons/chevron.png \
   qt/res/icons/clock1.png \
   qt/res/icons/clock2.png \
@@ -391,12 +392,12 @@ RES_ICONS = \
   qt/res/fonts/OpenSans-SemiBoldItalic.ttf
 
 
-RAVEN_QT_BASE_CPP = \
+MEMEIUM_QT_BASE_CPP = \
   qt/bantablemodel.cpp \
-  qt/ravenaddressvalidator.cpp \
-  qt/ravenamountfield.cpp \
-  qt/ravengui.cpp \
-  qt/ravenunits.cpp \
+  qt/memeiumaddressvalidator.cpp \
+  qt/memeiumamountfield.cpp \
+  qt/memeiumgui.cpp \
+  qt/memeiumunits.cpp \
   qt/clientmodel.cpp \
   qt/csvmodelwriter.cpp \
   qt/darkstyle.cpp \
@@ -417,9 +418,9 @@ RAVEN_QT_BASE_CPP = \
   qt/trafficgraphwidget.cpp \
   qt/utilitydialog.cpp
 
-RAVEN_QT_WINDOWS_CPP = qt/winshutdownmonitor.cpp
+MEMEIUM_QT_WINDOWS_CPP = qt/winshutdownmonitor.cpp
 
-RAVEN_QT_WALLET_CPP = \
+MEMEIUM_QT_WALLET_CPP = \
   qt/addressbookpage.cpp \
   qt/addresstablemodel.cpp \
   qt/askpassphrasedialog.cpp \
@@ -460,31 +461,31 @@ RAVEN_QT_WALLET_CPP = \
   qt/walletview.cpp \
   qt/mnemonicdialog.cpp
 
-RAVEN_QT_CPP = $(RAVEN_QT_BASE_CPP)
+MEMEIUM_QT_CPP = $(MEMEIUM_QT_BASE_CPP)
 if TARGET_WINDOWS
-RAVEN_QT_CPP += $(RAVEN_QT_WINDOWS_CPP)
+MEMEIUM_QT_CPP += $(MEMEIUM_QT_WINDOWS_CPP)
 endif
 if ENABLE_WALLET
-RAVEN_QT_CPP += $(RAVEN_QT_WALLET_CPP)
+MEMEIUM_QT_CPP += $(MEMEIUM_QT_WALLET_CPP)
 endif
 
 RES_IMAGES = 
 
 RES_MOVIES = $(wildcard $(srcdir)/qt/res/movies/spinner-*.png)
 
-RAVEN_RC = qt/res/raven-qt-res.rc
+MEMEIUM_RC = qt/res/memeium-qt-res.rc
 
-RAVEN_QT_INCLUDES = -I$(builddir)/qt -I$(srcdir)/qt -I$(srcdir)/qt/forms \
+MEMEIUM_QT_INCLUDES = -I$(builddir)/qt -I$(srcdir)/qt -I$(srcdir)/qt/forms \
   -I$(builddir)/qt/forms -DQT_NO_KEYWORDS
 
-qt_libravenqt_a_CPPFLAGS = $(AM_CPPFLAGS) $(RAVEN_INCLUDES) $(RAVEN_QT_INCLUDES) \
+qt_libmemeiumqt_a_CPPFLAGS = $(AM_CPPFLAGS) $(MEMEIUM_INCLUDES) $(MEMEIUM_QT_INCLUDES) \
   $(QT_INCLUDES) $(QT_DBUS_INCLUDES) $(PROTOBUF_CFLAGS) $(QR_CFLAGS)
-qt_libravenqt_a_CXXFLAGS = $(AM_CXXFLAGS) $(QT_PIE_FLAGS)
+qt_libmemeiumqt_a_CXXFLAGS = $(AM_CXXFLAGS) $(QT_PIE_FLAGS)
 
-qt_libravenqt_a_SOURCES = $(RAVEN_QT_CPP) $(RAVEN_QT_H) $(QT_FORMS_UI) \
+qt_libmemeiumqt_a_SOURCES = $(MEMEIUM_QT_CPP) $(MEMEIUM_QT_H) $(QT_FORMS_UI) \
   $(QT_QRC) $(QT_QRC_LOCALE) $(QT_TS) $(PROTOBUF_PROTO) $(RES_ICONS) $(RES_IMAGES) $(RES_MOVIES)
 
-nodist_qt_libravenqt_a_SOURCES = $(QT_MOC_CPP) $(QT_MOC) $(PROTOBUF_CC) \
+nodist_qt_libmemeiumqt_a_SOURCES = $(QT_MOC_CPP) $(QT_MOC) $(PROTOBUF_CC) \
   $(PROTOBUF_H) $(QT_QRC_CPP) $(QT_QRC_LOCALE_CPP)
 
 # forms/foo.h -> forms/ui_foo.h
@@ -493,71 +494,71 @@ QT_FORMS_H=$(join $(dir $(QT_FORMS_UI)),$(addprefix ui_, $(notdir $(QT_FORMS_UI:
 # Most files will depend on the forms and moc files as includes. Generate them
 # before anything else.
 $(QT_MOC): $(QT_FORMS_H)
-$(qt_libravenqt_a_OBJECTS) $(qt_raven_qt_OBJECTS) : | $(QT_MOC)
+$(qt_libmemeiumqt_a_OBJECTS) $(qt_memeium_qt_OBJECTS) : | $(QT_MOC)
 
 #Generating these with a half-written protobuf header leads to wacky results.
 #This makes sure it's done.
 $(QT_MOC): $(PROTOBUF_H)
 $(QT_MOC_CPP): $(PROTOBUF_H)
 
-# raven-qt binary #
-qt_raven_qt_CPPFLAGS = $(AM_CPPFLAGS) $(RAVEN_INCLUDES) $(RAVEN_QT_INCLUDES) \
+# memeium-qt binary #
+qt_memeium_qt_CPPFLAGS = $(AM_CPPFLAGS) $(MEMEIUM_INCLUDES) $(MEMEIUM_QT_INCLUDES) \
   $(QT_INCLUDES) $(PROTOBUF_CFLAGS) $(QR_CFLAGS)
-qt_raven_qt_CXXFLAGS = $(AM_CXXFLAGS) $(QT_PIE_FLAGS)
+qt_memeium_qt_CXXFLAGS = $(AM_CXXFLAGS) $(QT_PIE_FLAGS)
 
-qt_raven_qt_SOURCES = qt/raven.cpp
+qt_memeium_qt_SOURCES = qt/memeium.cpp
 if TARGET_DARWIN
-  qt_raven_qt_SOURCES += $(RAVEN_MM)
+  qt_memeium_qt_SOURCES += $(MEMEIUM_MM)
 endif
 if TARGET_WINDOWS
-  qt_raven_qt_SOURCES += $(RAVEN_RC)
+  qt_memeium_qt_SOURCES += $(MEMEIUM_RC)
 endif
-qt_raven_qt_LDADD = qt/libravenqt.a $(LIBRAVEN_SERVER)
+qt_memeium_qt_LDADD = qt/libmemeiumqt.a $(LIBMEMEIUM_SERVER)
 if ENABLE_WALLET
-qt_raven_qt_LDADD += $(LIBRAVEN_WALLET)
+qt_memeium_qt_LDADD += $(LIBMEMEIUM_WALLET)
 endif
 if ENABLE_ZMQ
-qt_raven_qt_LDADD += $(LIBRAVEN_ZMQ) $(ZMQ_LIBS)
+qt_memeium_qt_LDADD += $(LIBMEMEIUM_ZMQ) $(ZMQ_LIBS)
 endif
-qt_raven_qt_LDADD += $(LIBRAVEN_CLI) $(LIBRAVEN_COMMON) $(LIBRAVEN_UTIL) $(LIBRAVEN_CONSENSUS) $(LIBRAVEN_CRYPTO) $(LIBUNIVALUE) $(LIBLEVELDB) $(LIBLEVELDB_SSE42) $(LIBMEMENV) \
+qt_memeium_qt_LDADD += $(LIBMEMEIUM_CLI) $(LIBMEMEIUM_COMMON) $(LIBMEMEIUM_UTIL) $(LIBMEMEIUM_CONSENSUS) $(LIBMEMEIUM_CRYPTO) $(LIBUNIVALUE) $(LIBLEVELDB) $(LIBLEVELDB_SSE42) $(LIBMEMENV) \
   $(BOOST_LIBS) $(QT_LIBS) $(QT_DBUS_LIBS) $(QR_LIBS) $(PROTOBUF_LIBS) $(BDB_LIBS) $(SSL_LIBS) $(CRYPTO_LIBS) $(MINIUPNPC_LIBS) $(LIBSECP256K1) \
   $(EVENT_PTHREADS_LIBS) $(EVENT_LIBS)
-qt_raven_qt_LDFLAGS = $(RELDFLAGS) $(AM_LDFLAGS) $(QT_LDFLAGS) $(LIBTOOL_APP_LDFLAGS)
-qt_raven_qt_LIBTOOLFLAGS = --tag CXX
+qt_memeium_qt_LDFLAGS = $(RELDFLAGS) $(AM_LDFLAGS) $(QT_LDFLAGS) $(LIBTOOL_APP_LDFLAGS)
+qt_memeium_qt_LIBTOOLFLAGS = --tag CXX
 
 #locale/foo.ts -> locale/foo.qm
 QT_QM=$(QT_TS:.ts=.qm)
 
 SECONDARY: $(QT_QM)
 
-$(srcdir)/qt/ravenstrings.cpp: $(libraven_server_a_SOURCES) $(libraven_wallet_a_SOURCES) $(libraven_common_a_SOURCES) $(libraven_zmq_a_SOURCES) $(libraven_consensus_a_SOURCES) $(libraven_util_a_SOURCES)
+$(srcdir)/qt/memeiumstrings.cpp: $(libmemeium_server_a_SOURCES) $(libmemeium_wallet_a_SOURCES) $(libmemeium_common_a_SOURCES) $(libmemeium_zmq_a_SOURCES) $(libmemeium_consensus_a_SOURCES) $(libmemeium_util_a_SOURCES)
 	@test -n $(XGETTEXT) || echo "xgettext is required for updating translations"
 	$(AM_V_GEN) cd $(srcdir); XGETTEXT=$(XGETTEXT) PACKAGE_NAME="$(PACKAGE_NAME)" COPYRIGHT_HOLDERS="$(COPYRIGHT_HOLDERS)" COPYRIGHT_HOLDERS_SUBSTITUTION="$(COPYRIGHT_HOLDERS_SUBSTITUTION)" $(PYTHON) ../share/qt/extract_strings_qt.py $^
 
-translate: $(srcdir)/qt/ravenstrings.cpp $(QT_FORMS_UI) $(QT_FORMS_UI) $(RAVEN_QT_BASE_CPP) qt/raven.cpp $(RAVEN_QT_WINDOWS_CPP) $(RAVEN_QT_WALLET_CPP) $(RAVEN_QT_H) $(RAVEN_MM)
+translate: $(srcdir)/qt/memeiumstrings.cpp $(QT_FORMS_UI) $(QT_FORMS_UI) $(MEMEIUM_QT_BASE_CPP) qt/memeium.cpp $(MEMEIUM_QT_WINDOWS_CPP) $(MEMEIUM_QT_WALLET_CPP) $(MEMEIUM_QT_H) $(MEMEIUM_MM)
 	@test -n $(LUPDATE) || echo "lupdate is required for updating translations"
-	$(AM_V_GEN) QT_SELECT=$(QT_SELECT) $(LUPDATE) $^ -locations relative -no-obsolete -ts $(srcdir)/qt/locale/raven_en.ts
+	$(AM_V_GEN) QT_SELECT=$(QT_SELECT) $(LUPDATE) $^ -locations relative -no-obsolete -ts $(srcdir)/qt/locale/memeium_en.ts
 
 $(QT_QRC_LOCALE_CPP): $(QT_QRC_LOCALE) $(QT_QM)
 	@test -f $(RCC)
 	@cp -f $< $(@D)/temp_$(<F)
-	$(AM_V_GEN) QT_SELECT=$(QT_SELECT) $(RCC) -name raven_locale $(@D)/temp_$(<F) | \
+	$(AM_V_GEN) QT_SELECT=$(QT_SELECT) $(RCC) -name memeium_locale $(@D)/temp_$(<F) | \
 	  $(SED) -e '/^\*\*.*Created:/d' -e '/^\*\*.*by:/d' > $@
 	@rm $(@D)/temp_$(<F)
 
 $(QT_QRC_CPP): $(QT_QRC) $(QT_FORMS_H) $(RES_ICONS) $(RES_IMAGES) $(RES_MOVIES) $(PROTOBUF_H)
 	@test -f $(RCC)
-	$(AM_V_GEN) QT_SELECT=$(QT_SELECT) $(RCC) -name raven $< | \
+	$(AM_V_GEN) QT_SELECT=$(QT_SELECT) $(RCC) -name memeium $< | \
 	  $(SED) -e '/^\*\*.*Created:/d' -e '/^\*\*.*by:/d' > $@
 
-CLEAN_QT = $(nodist_qt_libravenqt_a_SOURCES) $(QT_QM) $(QT_FORMS_H) qt/*.gcda qt/*.gcno
+CLEAN_QT = $(nodist_qt_libmemeiumqt_a_SOURCES) $(QT_QM) $(QT_FORMS_H) qt/*.gcda qt/*.gcno
 
 CLEANFILES += $(CLEAN_QT)
 
-raven_qt_clean: FORCE
-	rm -f $(CLEAN_QT) $(qt_libravenqt_a_OBJECTS) $(qt_raven_qt_OBJECTS) qt/raven-qt$(EXEEXT) $(LIBRAVENQT)
+memeium_qt_clean: FORCE
+	rm -f $(CLEAN_QT) $(qt_libmemeiumqt_a_OBJECTS) $(qt_memeium_qt_OBJECTS) qt/memeium-qt$(EXEEXT) $(LIBMEMEIUMQT)
 
-raven_qt : qt/raven-qt$(EXEEXT)
+memeium_qt : qt/memeium-qt$(EXEEXT)
 
 ui_%.h: %.ui
 	@test -f $(UIC)

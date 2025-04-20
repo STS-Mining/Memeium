@@ -1,11 +1,12 @@
 // Copyright (c) 2009-2010 Satoshi Nakamoto
 // Copyright (c) 2009-2016 The Bitcoin Core developers
 // Copyright (c) 2017-2019 The Raven Core developers
+// Copyright (c) 2024-2025 The Memeium Core developers
 // Distributed under the MIT software license, see the accompanying
 // file COPYING or http://www.opensource.org/licenses/mit-license.php.
 
-#ifndef RAVEN_VALIDATIONINTERFACE_H
-#define RAVEN_VALIDATIONINTERFACE_H
+#ifndef MEMEIUM_VALIDATIONINTERFACE_H
+#define MEMEIUM_VALIDATIONINTERFACE_H
 
 #include <memory>
 
@@ -32,27 +33,28 @@ void UnregisterValidationInterface(CValidationInterface* pwalletIn);
 /** Unregister all wallets from core */
 void UnregisterAllValidationInterfaces();
 
-class CValidationInterface {
+class CValidationInterface
+{
 protected:
     /**
-    * Protected destructor so that instances can only be deleted by derived
-    * classes. If that restriction is no longer desired, this should be made
-    * public and virtual.
-    */
+     * Protected destructor so that instances can only be deleted by derived
+     * classes. If that restriction is no longer desired, this should be made
+     * public and virtual.
+     */
     ~CValidationInterface() = default;
     /** Notifies listeners of updated block chain tip */
-    virtual void UpdatedBlockTip(const CBlockIndex *pindexNew, const CBlockIndex *pindexFork, bool fInitialDownload) {}
+    virtual void UpdatedBlockTip(const CBlockIndex* pindexNew, const CBlockIndex* pindexFork, bool fInitialDownload) {}
     /** Notifies listeners of a transaction having been added to mempool. */
-    virtual void TransactionAddedToMempool(const CTransactionRef &ptxn) {}
+    virtual void TransactionAddedToMempool(const CTransactionRef& ptxn) {}
     /**
      * Notifies listeners of a block being connected.
      * Provides a vector of transactions evicted from the mempool as a result.
      */
-    virtual void BlockConnected(const std::shared_ptr<const CBlock> &block, const CBlockIndex *pindex, const std::vector<CTransactionRef> &txnConflicted) {}
+    virtual void BlockConnected(const std::shared_ptr<const CBlock>& block, const CBlockIndex* pindex, const std::vector<CTransactionRef>& txnConflicted) {}
     /** Notifies listeners of a block being disconnected */
-    virtual void BlockDisconnected(const std::shared_ptr<const CBlock> &block) {}
+    virtual void BlockDisconnected(const std::shared_ptr<const CBlock>& block) {}
     /** Notifies listeners of the new active block chain on-disk. */
-    virtual void SetBestChain(const CBlockLocator &locator) {}
+    virtual void SetBestChain(const CBlockLocator& locator) {}
     /** Tells listeners to broadcast their data. */
     virtual void ResendWalletTransactions(int64_t nBestBlockTime, CConnman* connman) {}
     /**
@@ -65,12 +67,12 @@ protected:
     /**
      * Notifies listeners that a block which builds directly on our current tip
      * has been received and connected to the headers tree, though not validated yet */
-    virtual void NewPoWValidBlock(const CBlockIndex *pindex, const std::shared_ptr<const CBlock>& block) {};
+    virtual void NewPoWValidBlock(const CBlockIndex* pindex, const std::shared_ptr<const CBlock>& block) {};
 
-    virtual void BlockFound(const uint256 &hash) {};
-    virtual void NewAssetMessage(const CMessage &message) {};
+    virtual void BlockFound(const uint256& hash) {};
+    virtual void NewAssetMessage(const CMessage& message) {};
 
-//    virtual void GetScriptForMining(std::shared_ptr<CReserveScript>&) {};
+    //    virtual void GetScriptForMining(std::shared_ptr<CReserveScript>&) {};
 
     friend void ::RegisterValidationInterface(CValidationInterface*);
     friend void ::UnregisterValidationInterface(CValidationInterface*);
@@ -79,7 +81,8 @@ protected:
 
 struct MainSignalsInstance;
 
-class CMainSignals {
+class CMainSignals
+{
 private:
     std::unique_ptr<MainSignalsInstance> m_internals;
 
@@ -95,20 +98,19 @@ public:
     /** Call any remaining callbacks on the calling thread */
     void FlushBackgroundCallbacks();
 
-    void UpdatedBlockTip(const CBlockIndex *, const CBlockIndex *, bool fInitialDownload);
-    void TransactionAddedToMempool(const CTransactionRef &);
-    void BlockConnected(const std::shared_ptr<const CBlock> &, const CBlockIndex *pindex, const std::vector<CTransactionRef> &);
-    void BlockDisconnected(const std::shared_ptr<const CBlock> &);
-    void SetBestChain(const CBlockLocator &);
+    void UpdatedBlockTip(const CBlockIndex*, const CBlockIndex*, bool fInitialDownload);
+    void TransactionAddedToMempool(const CTransactionRef&);
+    void BlockConnected(const std::shared_ptr<const CBlock>&, const CBlockIndex* pindex, const std::vector<CTransactionRef>&);
+    void BlockDisconnected(const std::shared_ptr<const CBlock>&);
+    void SetBestChain(const CBlockLocator&);
     void Broadcast(int64_t nBestBlockTime, CConnman* connman);
     void BlockChecked(const CBlock&, const CValidationState&);
-    void NewPoWValidBlock(const CBlockIndex *, const std::shared_ptr<const CBlock>&);
-    void BlockFound(const uint256 &);
+    void NewPoWValidBlock(const CBlockIndex*, const std::shared_ptr<const CBlock>&);
+    void BlockFound(const uint256&);
     void NewAssetMessage(const CMessage&);
-//    void ScriptForMining(std::shared_ptr<CReserveScript>&);
-
+    //    void ScriptForMining(std::shared_ptr<CReserveScript>&);
 };
 
 CMainSignals& GetMainSignals();
 
-#endif // RAVEN_VALIDATIONINTERFACE_H
+#endif // MEMEIUM_VALIDATIONINTERFACE_H

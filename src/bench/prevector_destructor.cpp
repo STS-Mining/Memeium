@@ -1,5 +1,6 @@
 // Copyright (c) 2015-2017 The Bitcoin Core developers
 // Copyright (c) 2017-2019 The Raven Core developers
+// Copyright (c) 2024-2025 The Memeium Core developers
 // Distributed under the MIT software license, see the accompanying
 // file COPYING or http://www.opensource.org/licenses/mit-license.php.
 
@@ -20,7 +21,6 @@ static void PrevectorDestructor(benchmark::State& state)
 
 static void PrevectorClear(benchmark::State& state)
 {
-
     while (state.KeepRunning()) {
         for (auto x = 0; x < 1000; ++x) {
             prevector<28, unsigned char> t0;

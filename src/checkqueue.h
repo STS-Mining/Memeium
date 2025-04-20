@@ -1,10 +1,11 @@
 // Copyright (c) 2012-2015 The Bitcoin Core developers
 // Copyright (c) 2017-2019 The Raven Core developers
+// Copyright (c) 2024-2025 The Memeium Core developers
 // Distributed under the MIT software license, see the accompanying
 // file COPYING or http://www.opensource.org/licenses/mit-license.php.
 
-#ifndef RAVEN_CHECKQUEUE_H
-#define RAVEN_CHECKQUEUE_H
+#ifndef MEMEIUM_CHECKQUEUE_H
+#define MEMEIUM_CHECKQUEUE_H
 
 #include "sync.h"
 
@@ -17,16 +18,16 @@
 template <typename T>
 class CCheckQueueControl;
 
-/** 
+/**
  * Queue for verifications that have to be performed.
-  * The verifications are represented by a type T, which must provide an
-  * operator(), returning a bool.
-  *
-  * One thread (the master) is assumed to push batches of verifications
-  * onto the queue, where they are processed by N-1 worker threads. When
-  * the master is done adding work, it temporarily joins the worker pool
-  * as an N'th worker, until all jobs are done.
-  */
+ * The verifications are represented by a type T, which must provide an
+ * operator(), returning a bool.
+ *
+ * One thread (the master) is assumed to push batches of verifications
+ * onto the queue, where they are processed by N-1 worker threads. When
+ * the master is done adding work, it temporarily joins the worker pool
+ * as an N'th worker, until all jobs are done.
+ */
 template <typename T>
 class CCheckQueue
 {
@@ -164,10 +165,9 @@ public:
     ~CCheckQueue()
     {
     }
-
 };
 
-/** 
+/**
  * RAII-style controller object for a CCheckQueue that guarantees the passed
  * queue is finished before continuing.
  */
@@ -175,14 +175,14 @@ template <typename T>
 class CCheckQueueControl
 {
 private:
-    CCheckQueue<T> * const pqueue;
+    CCheckQueue<T>* const pqueue;
     bool fDone;
 
 public:
     CCheckQueueControl() = delete;
     CCheckQueueControl(const CCheckQueueControl&) = delete;
     CCheckQueueControl& operator=(const CCheckQueueControl&) = delete;
-    explicit CCheckQueueControl(CCheckQueue<T> * const pqueueIn) : pqueue(pqueueIn), fDone(false)
+    explicit CCheckQueueControl(CCheckQueue<T>* const pqueueIn) : pqueue(pqueueIn), fDone(false)
     {
         // passed queue is supposed to be unused, or nullptr
         if (pqueue != nullptr) {
@@ -215,4 +215,4 @@ public:
     }
 };
 
-#endif // RAVEN_CHECKQUEUE_H
+#endif // MEMEIUM_CHECKQUEUE_H

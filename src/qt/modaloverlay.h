@@ -1,10 +1,11 @@
 // Copyright (c) 2016 The Bitcoin Core developers
 // Copyright (c) 2017-2019 The Raven Core developers
+// Copyright (c) 2024-2025 The Memeium Core developers
 // Distributed under the MIT software license, see the accompanying
 // file COPYING or http://www.opensource.org/licenses/mit-license.php.
 
-#ifndef RAVEN_QT_MODALOVERLAY_H
-#define RAVEN_QT_MODALOVERLAY_H
+#ifndef MEMEIUM_QT_MODALOVERLAY_H
+#define MEMEIUM_QT_MODALOVERLAY_H
 
 #include <QDateTime>
 #include <QWidget>
@@ -12,8 +13,9 @@
 //! The required delta of headers to the estimated number of available headers until we show the IBD progress
 static constexpr int HEADER_HEIGHT_DELTA_SYNC = 24;
 
-namespace Ui {
-    class ModalOverlay;
+namespace Ui
+{
+class ModalOverlay;
 }
 
 /** Modal overlay to display information about the chain-sync state */
@@ -22,7 +24,7 @@ class ModalOverlay : public QWidget
     Q_OBJECT
 
 public:
-    explicit ModalOverlay(QWidget *parent);
+    explicit ModalOverlay(QWidget* parent);
     ~ModalOverlay();
 
 public Q_SLOTS:
@@ -36,16 +38,16 @@ public Q_SLOTS:
     bool isLayerVisible() const { return layerIsVisible; }
 
 protected:
-    bool eventFilter(QObject * obj, QEvent * ev);
+    bool eventFilter(QObject* obj, QEvent* ev);
     bool event(QEvent* ev);
 
 private:
-    Ui::ModalOverlay *ui;
-    int bestHeaderHeight; //best known height (based on the headers)
+    Ui::ModalOverlay* ui;
+    int bestHeaderHeight; // best known height (based on the headers)
     QDateTime bestHeaderDate;
-    QVector<QPair<qint64, double> > blockProcessTime;
+    QVector<QPair<qint64, double>> blockProcessTime;
     bool layerIsVisible;
     bool userClosed;
 };
 
-#endif // RAVEN_QT_MODALOVERLAY_H
+#endif // MEMEIUM_QT_MODALOVERLAY_H

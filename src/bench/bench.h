@@ -1,10 +1,11 @@
 // Copyright (c) 2015-2016 The Bitcoin Core developers
 // Copyright (c) 2017-2019 The Raven Core developers
+// Copyright (c) 2024-2025 The Memeium Core developers
 // Distributed under the MIT software license, see the accompanying
 // file COPYING or http://www.opensource.org/licenses/mit-license.php.
 
-#ifndef RAVEN_BENCH_BENCH_H
-#define RAVEN_BENCH_BENCH_H
+#ifndef MEMEIUM_BENCH_BENCH_H
+#define MEMEIUM_BENCH_BENCH_H
 
 #include <functional>
 #include <limits>
@@ -35,47 +36,51 @@ static void CODE_TO_TIME(benchmark::State& state)
 BENCHMARK(CODE_TO_TIME);
 
  */
- 
-namespace benchmark {
 
-    class State {
-        std::string name;
-        double maxElapsed;
-        double beginTime;
-        double lastTime, minTime, maxTime;
-        uint64_t count;
-        uint64_t countMask;
-        uint64_t beginCycles;
-        uint64_t lastCycles;
-        uint64_t minCycles;
-        uint64_t maxCycles;
-    public:
-        State(std::string _name, double _maxElapsed) : name(_name), maxElapsed(_maxElapsed), count(0) {
-            minTime = std::numeric_limits<double>::max();
-            maxTime = std::numeric_limits<double>::min();
-            minCycles = std::numeric_limits<uint64_t>::max();
-            maxCycles = std::numeric_limits<uint64_t>::min();
-            countMask = 1;
-        }
-        bool KeepRunning();
-    };
+namespace benchmark
+{
 
-    typedef std::function<void(State&)> BenchFunction;
+class State
+{
+    std::string name;
+    double maxElapsed;
+    double beginTime;
+    double lastTime, minTime, maxTime;
+    uint64_t count;
+    uint64_t countMask;
+    uint64_t beginCycles;
+    uint64_t lastCycles;
+    uint64_t minCycles;
+    uint64_t maxCycles;
 
-    class BenchRunner
+public:
+    State(std::string _name, double _maxElapsed) : name(_name), maxElapsed(_maxElapsed), count(0)
     {
-        typedef std::map<std::string, BenchFunction> BenchmarkMap;
-        static BenchmarkMap &benchmarks();
+        minTime = std::numeric_limits<double>::max();
+        maxTime = std::numeric_limits<double>::min();
+        minCycles = std::numeric_limits<uint64_t>::max();
+        maxCycles = std::numeric_limits<uint64_t>::min();
+        countMask = 1;
+    }
+    bool KeepRunning();
+};
 
-    public:
-        BenchRunner(std::string name, BenchFunction func);
+typedef std::function<void(State&)> BenchFunction;
 
-        static void RunAll(double elapsedTimeForOne=1.0);
-    };
-}
+class BenchRunner
+{
+    typedef std::map<std::string, BenchFunction> BenchmarkMap;
+    static BenchmarkMap& benchmarks();
+
+public:
+    BenchRunner(std::string name, BenchFunction func);
+
+    static void RunAll(double elapsedTimeForOne = 1.0);
+};
+} // namespace benchmark
 
 // BENCHMARK(foo) expands to:  benchmark::BenchRunner bench_11foo("foo", foo);
 #define BENCHMARK(n) \
     benchmark::BenchRunner BOOST_PP_CAT(bench_, BOOST_PP_CAT(__LINE__, n))(BOOST_PP_STRINGIZE(n), n);
 
-#endif // RAVEN_BENCH_BENCH_H
+#endif // MEMEIUM_BENCH_BENCH_H

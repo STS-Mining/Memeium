@@ -1,13 +1,14 @@
 // Copyright (c) 2017-2019 The Raven Core developers
+// Copyright (c) 2024-2025 The Memeium Core developers
 // Distributed under the MIT software license, see the accompanying
 // file COPYING or http://www.opensource.org/licenses/mit-license.php.
 
-#include "assets/assets.h"
-#include "assets/assetdb.h"
 #include "assets/messages.h"
+#include "assets/assetdb.h"
+#include "assets/assets.h"
 #include "assets/myassetsdb.h"
-#include <map>
 #include "tinyformat.h"
+#include <map>
 
 #include "amount.h"
 #include "base58.h"
@@ -15,7 +16,6 @@
 #include "consensus/validation.h"
 #include "core_io.h"
 #include "httpserver.h"
-#include "validation.h"
 #include "net.h"
 #include "policy/feerate.h"
 #include "policy/fees.h"
@@ -28,6 +28,7 @@
 #include "timedata.h"
 #include "util.h"
 #include "utilmoneystr.h"
+#include "validation.h"
 #include "wallet/coincontrol.h"
 #include "wallet/feebumper.h"
 #include "wallet/wallet.h"
@@ -35,34 +36,32 @@
 
 std::string MessageActivationWarning()
 {
-    return AreMessagesDeployed() ? "" : "\nTHIS COMMAND IS NOT YET ACTIVE!\nhttps://github.com/RavenProject/rips/blob/master/rip-0005.mediawiki\n";
+    return AreMessagesDeployed() ? "" : "\nTHIS COMMAND IS NOT YET ACTIVE!\nhttps://github.com/STS-Mining/rips/blob/master/rip-0005.mediawiki\n";
 }
 
-UniValue viewallmessages(const JSONRPCRequest& request) {
+UniValue viewallmessages(const JSONRPCRequest& request)
+{
     if (request.fHelp || !AreMessagesDeployed() || request.params.size() != 0)
         throw std::runtime_error(
-                "viewallmessages \n"
-                + MessageActivationWarning() +
-                "\nView all messages that the wallet contains\n"
+            "viewallmessages \n" + MessageActivationWarning() +
+            "\nView all messages that the wallet contains\n"
 
-                "\nResult:\n"
-                "\"Asset Name:\"                     (string) The name of the asset the message was sent on\n"
-                "\"Message:\"                        (string) The IPFS hash of the message\n"
-                "\"Time:\"                           (Date) The time as a date in the format (YY-mm-dd Hour-minute-second)\n"
-                "\"Block Height:\"                   (number) The height of the block the message was included in\n"
-                "\"Status:\"                         (string) Status of the message (READ, UNREAD, ORPHAN, EXPIRED, SPAM, HIDDEN, ERROR)\n"
-                "\"Expire Time:\"                    (Date, optional) If the message had an expiration date assigned, it will be shown here in the format (YY-mm-dd Hour-minute-second)\n"
-                "\"Expire UTC Time:\"                (Date, optional) If the message contains an expire date that is too large, the UTC number will be displayed\n"
+            "\nResult:\n"
+            "\"Asset Name:\"                     (string) The name of the asset the message was sent on\n"
+            "\"Message:\"                        (string) The IPFS hash of the message\n"
+            "\"Time:\"                           (Date) The time as a date in the format (YY-mm-dd Hour-minute-second)\n"
+            "\"Block Height:\"                   (number) The height of the block the message was included in\n"
+            "\"Status:\"                         (string) Status of the message (READ, UNREAD, ORPHAN, EXPIRED, SPAM, HIDDEN, ERROR)\n"
+            "\"Expire Time:\"                    (Date, optional) If the message had an expiration date assigned, it will be shown here in the format (YY-mm-dd Hour-minute-second)\n"
+            "\"Expire UTC Time:\"                (Date, optional) If the message contains an expire date that is too large, the UTC number will be displayed\n"
 
 
-                "\nExamples:\n"
-                + HelpExampleCli("viewallmessages", "")
-                + HelpExampleRpc("viewallmessages", "")
-        );
+            "\nExamples:\n" +
+            HelpExampleCli("viewallmessages", "") + HelpExampleRpc("viewallmessages", ""));
 
     if (!fMessaging) {
         UniValue ret(UniValue::VSTR);
-        ret.push_back("Messaging is disabled. To enable messaging, run the wallet without -disablemessaging or remove disablemessaging from your raven.conf");
+        ret.push_back("Messaging is disabled. To enable messaging, run the wallet without -disablemessaging or remove disablemessaging from your memeium.conf");
         return ret;
     }
 
@@ -120,24 +119,22 @@ UniValue viewallmessages(const JSONRPCRequest& request) {
     return messages;
 }
 
-UniValue viewallmessagechannels(const JSONRPCRequest& request) {
+UniValue viewallmessagechannels(const JSONRPCRequest& request)
+{
     if (request.fHelp || request.params.size() != 0)
         throw std::runtime_error(
-                "viewallmessagechannels \n"
-                + MessageActivationWarning() +
-                "\nView all message channels the wallet is subscribed to\n"
+            "viewallmessagechannels \n" + MessageActivationWarning() +
+            "\nView all message channels the wallet is subscribed to\n"
 
-                "\nResult:[\n"
-                "\"Asset Name\"                      (string) The asset channel name\n"
-                "\n]\n"
-                "\nExamples:\n"
-                + HelpExampleCli("viewallmessagechannels", "")
-                + HelpExampleRpc("viewallmessagechannels", "")
-        );
+            "\nResult:[\n"
+            "\"Asset Name\"                      (string) The asset channel name\n"
+            "\n]\n"
+            "\nExamples:\n" +
+            HelpExampleCli("viewallmessagechannels", "") + HelpExampleRpc("viewallmessagechannels", ""));
 
     if (!fMessaging) {
         UniValue ret(UniValue::VSTR);
-        ret.push_back("Messaging is disabled. To enable messaging, run the wallet without -disablemessaging or remove disablemessaging from your raven.conf");
+        ret.push_back("Messaging is disabled. To enable messaging, run the wallet without -disablemessaging or remove disablemessaging from your memeium.conf");
         return ret;
     }
 
@@ -170,25 +167,23 @@ UniValue viewallmessagechannels(const JSONRPCRequest& request) {
     return channels;
 }
 
-UniValue subscribetochannel(const JSONRPCRequest& request) {
+UniValue subscribetochannel(const JSONRPCRequest& request)
+{
     if (request.fHelp || request.params.size() != 1)
         throw std::runtime_error(
-                "subscribetochannel \n"
-                + MessageActivationWarning() +
-                "\nSubscribe to a certain message channel\n"
+            "subscribetochannel \n" + MessageActivationWarning() +
+            "\nSubscribe to a certain message channel\n"
 
-                "\nArguments:\n"
-                "1. \"channel_name\"            (string, required) The channel name to subscribe to, it must end with '!' or have an '~' in the name\n"
+            "\nArguments:\n"
+            "1. \"channel_name\"            (string, required) The channel name to subscribe to, it must end with '!' or have an '~' in the name\n"
 
-                "\nResult:[\n"
-                "\n]\n"
-                "\nExamples:\n"
-                + HelpExampleCli("subscribetochannel", "\"ASSET_NAME!\"")
-                + HelpExampleRpc("subscribetochannel", "\"ASSET_NAME!\"")
-        );
+            "\nResult:[\n"
+            "\n]\n"
+            "\nExamples:\n" +
+            HelpExampleCli("subscribetochannel", "\"ASSET_NAME!\"") + HelpExampleRpc("subscribetochannel", "\"ASSET_NAME!\""));
 
     if (!fMessaging) {
-        throw JSONRPCError(RPC_DATABASE_ERROR, "Messaging is disabled. To enable messaging, run the wallet without -disablemessaging or remove disablemessaging from your raven.conf");
+        throw JSONRPCError(RPC_DATABASE_ERROR, "Messaging is disabled. To enable messaging, run the wallet without -disablemessaging or remove disablemessaging from your memeium.conf");
     }
 
     if (!pMessageSubscribedChannelsCache || !pmessagechanneldb) {
@@ -200,19 +195,19 @@ UniValue subscribetochannel(const JSONRPCRequest& request) {
     AssetType type;
     if (!IsAssetNameValid(channel_name, type))
         throw JSONRPCError(
-                RPC_INVALID_PARAMETER, "Channel Name is not valid.");
+            RPC_INVALID_PARAMETER, "Channel Name is not valid.");
 
     // if the given asset name is a root of sub asset, subscribe to that assets owner token
     if (type == AssetType::ROOT || type == AssetType::SUB) {
         channel_name += "!";
         if (!IsAssetNameValid(channel_name, type))
-        throw JSONRPCError(
+            throw JSONRPCError(
                 RPC_INVALID_PARAMETER, "Channel Name is not valid.");
     }
 
     if (type != AssetType::OWNER && type != AssetType::MSGCHANNEL)
         throw JSONRPCError(
-                RPC_INVALID_PARAMETER, "Channel Name must be a owner asset, or a message channel asset e.g OWNER!, MSG_CHANNEL~123.");
+            RPC_INVALID_PARAMETER, "Channel Name must be a owner asset, or a message channel asset e.g OWNER!, MSG_CHANNEL~123.");
 
     AddChannel(channel_name);
 
@@ -220,25 +215,23 @@ UniValue subscribetochannel(const JSONRPCRequest& request) {
 }
 
 
-UniValue unsubscribefromchannel(const JSONRPCRequest& request) {
+UniValue unsubscribefromchannel(const JSONRPCRequest& request)
+{
     if (request.fHelp || !AreMessagesDeployed() || request.params.size() != 1)
         throw std::runtime_error(
-                "unsubscribefromchannel \n"
-                + MessageActivationWarning() +
-                "\nUnsubscribe from a certain message channel\n"
+            "unsubscribefromchannel \n" + MessageActivationWarning() +
+            "\nUnsubscribe from a certain message channel\n"
 
-                "\nArguments:\n"
-                "1. \"channel_name\"            (string, required) The channel name to unsubscribe from, must end with '!' or have an '~' in the name\n"
+            "\nArguments:\n"
+            "1. \"channel_name\"            (string, required) The channel name to unsubscribe from, must end with '!' or have an '~' in the name\n"
 
-                "\nResult:[\n"
-                "\n]\n"
-                "\nExamples:\n"
-                + HelpExampleCli("unsubscribefromchannel", "\"ASSET_NAME!\"")
-                + HelpExampleRpc("unsubscribefromchannel", "\"ASSET_NAME!\"")
-        );
+            "\nResult:[\n"
+            "\n]\n"
+            "\nExamples:\n" +
+            HelpExampleCli("unsubscribefromchannel", "\"ASSET_NAME!\"") + HelpExampleRpc("unsubscribefromchannel", "\"ASSET_NAME!\""));
 
     if (!fMessaging) {
-        throw JSONRPCError(RPC_DATABASE_ERROR, "Messaging is disabled. To enable messaging, run the wallet without -disablemessaging or remove disablemessaging from your raven.conf");
+        throw JSONRPCError(RPC_DATABASE_ERROR, "Messaging is disabled. To enable messaging, run the wallet without -disablemessaging or remove disablemessaging from your memeium.conf");
     }
 
     if (!pMessageSubscribedChannelsCache || !pmessagechanneldb) {
@@ -250,42 +243,40 @@ UniValue unsubscribefromchannel(const JSONRPCRequest& request) {
     AssetType type;
     if (!IsAssetNameValid(channel_name, type))
         throw JSONRPCError(
-                RPC_INVALID_PARAMETER, "Channel Name is not valid.");
+            RPC_INVALID_PARAMETER, "Channel Name is not valid.");
 
     // if the given asset name is a root of sub asset, subscribe to that assets owner token
     if (type == AssetType::ROOT || type == AssetType::SUB) {
         channel_name += "!";
 
         if (!IsAssetNameValid(channel_name, type))
-        throw JSONRPCError(
+            throw JSONRPCError(
                 RPC_INVALID_PARAMETER, "Channel Name is not valid.");
     }
 
     if (type != AssetType::OWNER && type != AssetType::MSGCHANNEL)
         throw JSONRPCError(
-                RPC_INVALID_PARAMETER, "Channel Name must be a owner asset, or a message channel asset e.g OWNER!, MSG_CHANNEL~123.");
+            RPC_INVALID_PARAMETER, "Channel Name must be a owner asset, or a message channel asset e.g OWNER!, MSG_CHANNEL~123.");
 
     RemoveChannel(channel_name);
 
     return "Unsubscribed from channel: " + channel_name;
 }
 
-UniValue clearmessages(const JSONRPCRequest& request) {
+UniValue clearmessages(const JSONRPCRequest& request)
+{
     if (request.fHelp || !AreMessagesDeployed() || request.params.size() != 0)
         throw std::runtime_error(
-                "clearmessages \n"
-                + MessageActivationWarning() +
-                "\nDelete current database of messages\n"
+            "clearmessages \n" + MessageActivationWarning() +
+            "\nDelete current database of messages\n"
 
-                "\nResult:[\n"
-                "\n]\n"
-                "\nExamples:\n"
-                + HelpExampleCli("clearmessages", "")
-                + HelpExampleRpc("clearmessages", "")
-        );
+            "\nResult:[\n"
+            "\n]\n"
+            "\nExamples:\n" +
+            HelpExampleCli("clearmessages", "") + HelpExampleRpc("clearmessages", ""));
 
     if (!fMessaging) {
-        throw JSONRPCError(RPC_DATABASE_ERROR, "Messaging is disabled. To enable messaging, run the wallet without -disablemessaging or remove disablemessaging from your raven.conf");
+        throw JSONRPCError(RPC_DATABASE_ERROR, "Messaging is disabled. To enable messaging, run the wallet without -disablemessaging or remove disablemessaging from your memeium.conf");
     }
 
     if (!pMessagesCache || !pmessagedb) {
@@ -305,28 +296,26 @@ UniValue clearmessages(const JSONRPCRequest& request) {
 }
 
 #ifdef ENABLE_WALLET
-UniValue sendmessage(const JSONRPCRequest& request) {
+UniValue sendmessage(const JSONRPCRequest& request)
+{
     if (request.fHelp || !AreMessagesDeployed() || request.params.size() < 2 || request.params.size() > 3)
         throw std::runtime_error(
-                "sendmessage \"channel_name\" \"ipfs_hash\" (expire_time)\n"
-                + MessageActivationWarning() +
-                "\nCreates and broadcasts a message transaction to the network for a channel this wallet owns"
+            "sendmessage \"channel_name\" \"ipfs_hash\" (expire_time)\n" + MessageActivationWarning() +
+            "\nCreates and broadcasts a message transaction to the network for a channel this wallet owns"
 
-                "\nArguments:\n"
-                "1. \"channel_name\"             (string, required) Name of the channel that you want to send a message with (message channel, administrator asset), if a non administrator asset name is given, the administrator '!' will be added to it\n"
-                "2. \"ipfs_hash\"                (string, required) The IPFS hash of the message\n"
-                "3. \"expire_time\"              (numeric, optional) UTC timestamp of when the message expires\n"
+            "\nArguments:\n"
+            "1. \"channel_name\"             (string, required) Name of the channel that you want to send a message with (message channel, administrator asset), if a non administrator asset name is given, the administrator '!' will be added to it\n"
+            "2. \"ipfs_hash\"                (string, required) The IPFS hash of the message\n"
+            "3. \"expire_time\"              (numeric, optional) UTC timestamp of when the message expires\n"
 
-                "\nResult:[\n"
-                "txid\n"
-                "]\n"
+            "\nResult:[\n"
+            "txid\n"
+            "]\n"
 
-                "\nExamples:\n"
-                + HelpExampleCli("sendmessage", "\"ASSET_NAME!\" \"QmTqu3Lk3gmTsQVtjU7rYYM37EAW4xNmbuEAp2Mjr4AV7E\" 15863654")
-                + HelpExampleCli("sendmessage", "\"ASSET_NAME!\" \"QmTqu3Lk3gmTsQVtjU7rYYM37EAW4xNmbuEAp2Mjr4AV7E\" 15863654")
-        );
+            "\nExamples:\n" +
+            HelpExampleCli("sendmessage", "\"ASSET_NAME!\" \"QmTqu3Lk3gmTsQVtjU7rYYM37EAW4xNmbuEAp2Mjr4AV7E\" 15863654") + HelpExampleCli("sendmessage", "\"ASSET_NAME!\" \"QmTqu3Lk3gmTsQVtjU7rYYM37EAW4xNmbuEAp2Mjr4AV7E\" 15863654"));
 
-    CWallet * const pwallet = GetWalletForJSONRPCRequest(request);
+    CWallet* const pwallet = GetWalletForJSONRPCRequest(request);
     if (!EnsureWalletIsAvailable(pwallet, request.fHelp)) {
         return NullUniValue;
     }
@@ -359,9 +348,9 @@ UniValue sendmessage(const JSONRPCRequest& request) {
         asset_name += OWNER_TAG;
 
     std::pair<int, std::string> error;
-    std::vector< std::pair<CAssetTransfer, std::string> >vTransfers;
+    std::vector<std::pair<CAssetTransfer, std::string>> vTransfers;
 
-    std::map<std::string, std::vector<COutput> > mapAssetCoins;
+    std::map<std::string, std::vector<COutput>> mapAssetCoins;
     pwallet->AvailableAssets(mapAssetCoins);
 
     if (!mapAssetCoins.count(asset_name)) {
@@ -395,27 +384,25 @@ UniValue sendmessage(const JSONRPCRequest& request) {
     return result;
 }
 
-UniValue viewmytaggedaddresses(const JSONRPCRequest& request) {
+UniValue viewmytaggedaddresses(const JSONRPCRequest& request)
+{
     if (request.fHelp || !AreRestrictedAssetsDeployed() || request.params.size() != 0)
         throw std::runtime_error(
-                "viewmytaggedaddresses \n"
-                + MessageActivationWarning() +
-                "\nView all addresses this wallet owns that have been tagged\n"
+            "viewmytaggedaddresses \n" + MessageActivationWarning() +
+            "\nView all addresses this wallet owns that have been tagged\n"
 
-                "\nResult:\n"
-                "{\n"
-                "\"Address:\"                        (string) The address that was tagged\n"
-                "\"Tag Name:\"                       (string) The asset name\n"
-                "\"[Assigned|Removed]:\"             (Date) The UTC datetime of the assignment or removal of the tag in the format (YY-mm-dd HH:MM:SS)\n"
-                "                                         (Only the most recent tagging/untagging event will be returned for each address)\n"
-                "}...\n"
+            "\nResult:\n"
+            "{\n"
+            "\"Address:\"                        (string) The address that was tagged\n"
+            "\"Tag Name:\"                       (string) The asset name\n"
+            "\"[Assigned|Removed]:\"             (Date) The UTC datetime of the assignment or removal of the tag in the format (YY-mm-dd HH:MM:SS)\n"
+            "                                         (Only the most recent tagging/untagging event will be returned for each address)\n"
+            "}...\n"
 
-                "\nExamples:\n"
-                + HelpExampleCli("viewmytaggedaddresses", "")
-                + HelpExampleRpc("viewmytaggedaddresses", "")
-        );
+            "\nExamples:\n" +
+            HelpExampleCli("viewmytaggedaddresses", "") + HelpExampleRpc("viewmytaggedaddresses", ""));
 
-    std::vector<std::tuple<std::string, std::string, bool, uint32_t> > myTaggedAddresses;
+    std::vector<std::tuple<std::string, std::string, bool, uint32_t>> myTaggedAddresses;
 
     if (!pmyrestricteddb)
         throw JSONRPCError(RPC_DATABASE_ERROR, "My restricted database is not available");
@@ -439,27 +426,25 @@ UniValue viewmytaggedaddresses(const JSONRPCRequest& request) {
     return myTags;
 }
 
-UniValue viewmyrestrictedaddresses(const JSONRPCRequest& request) {
+UniValue viewmyrestrictedaddresses(const JSONRPCRequest& request)
+{
     if (request.fHelp || !AreRestrictedAssetsDeployed() || request.params.size() != 0)
         throw std::runtime_error(
-                "viewmyrestrictedaddresses \n"
-                + MessageActivationWarning() +
-                "\nView all addresses this wallet owns that have been restricted\n"
+            "viewmyrestrictedaddresses \n" + MessageActivationWarning() +
+            "\nView all addresses this wallet owns that have been restricted\n"
 
-                "\nResult:\n"
-                "{\n"
-                "\"Address:\"                        (string) The address that was restricted\n"
-                "\"Asset Name:\"                     (string) The asset that the restriction applies to\n"
-                "\"[Restricted|Derestricted]:\"      (Date) The UTC datetime of the restriction or derestriction in the format (YY-mm-dd HH:MM:SS))\n"
-                "                                         (Only the most recent restriction/derestriction event will be returned for each address)\n"
-                "}...\n"
+            "\nResult:\n"
+            "{\n"
+            "\"Address:\"                        (string) The address that was restricted\n"
+            "\"Asset Name:\"                     (string) The asset that the restriction applies to\n"
+            "\"[Restricted|Derestricted]:\"      (Date) The UTC datetime of the restriction or derestriction in the format (YY-mm-dd HH:MM:SS))\n"
+            "                                         (Only the most recent restriction/derestriction event will be returned for each address)\n"
+            "}...\n"
 
-                "\nExamples:\n"
-                + HelpExampleCli("viewmyrestrictedaddresses", "")
-                + HelpExampleRpc("viewmyrestrictedaddresses", "")
-        );
+            "\nExamples:\n" +
+            HelpExampleCli("viewmyrestrictedaddresses", "") + HelpExampleRpc("viewmyrestrictedaddresses", ""));
 
-    std::vector<std::tuple<std::string, std::string, bool, uint32_t> > myRestrictedAddresses;
+    std::vector<std::tuple<std::string, std::string, bool, uint32_t>> myRestrictedAddresses;
 
     if (!pmyrestricteddb)
         throw JSONRPCError(RPC_DATABASE_ERROR, "My restricted database is not available");
@@ -486,21 +471,22 @@ UniValue viewmyrestrictedaddresses(const JSONRPCRequest& request) {
 #endif
 
 static const CRPCCommand commands[] =
-    {           //  category    name                          actor (function)             argNames
-                //  ----------- ------------------------      -----------------------      ----------
-            { "messages",       "viewallmessages",            &viewallmessages,            {}},
-            { "messages",       "viewallmessagechannels",     &viewallmessagechannels,     {}},
-            { "messages",       "subscribetochannel",         &subscribetochannel,         {"channel_name"}},
-            { "messages",       "unsubscribefromchannel",     &unsubscribefromchannel,     {"channel_name"}},
+    {
+        //  category    name                          actor (function)             argNames
+        //  ----------- ------------------------      -----------------------      ----------
+        {"messages", "viewallmessages", &viewallmessages, {}},
+        {"messages", "viewallmessagechannels", &viewallmessagechannels, {}},
+        {"messages", "subscribetochannel", &subscribetochannel, {"channel_name"}},
+        {"messages", "unsubscribefromchannel", &unsubscribefromchannel, {"channel_name"}},
 #ifdef ENABLE_WALLET
-            { "messages",       "sendmessage",                &sendmessage,                {"channel", "ipfs_hash", "expire_time"}},
-            {"restricted",        "viewmytaggedaddresses",      &viewmytaggedaddresses,       {}},
-            {"restricted",        "viewmyrestrictedaddresses",  &viewmyrestrictedaddresses,   {}},
+        {"messages", "sendmessage", &sendmessage, {"channel", "ipfs_hash", "expire_time"}},
+        {"restricted", "viewmytaggedaddresses", &viewmytaggedaddresses, {}},
+        {"restricted", "viewmyrestrictedaddresses", &viewmyrestrictedaddresses, {}},
 #endif
-            { "messages",       "clearmessages",              &clearmessages,              {}},
-    };
+        {"messages", "clearmessages", &clearmessages, {}},
+};
 
-void RegisterMessageRPCCommands(CRPCTable &t)
+void RegisterMessageRPCCommands(CRPCTable& t)
 {
     for (unsigned int vcidx = 0; vcidx < ARRAYLEN(commands); vcidx++)
         t.appendCommand(commands[vcidx].name, &commands[vcidx]);

@@ -3,35 +3,41 @@
 // Distributed under the MIT software license, see the accompanying
 // file COPYING or http://www.opensource.org/licenses/mit-license.php.
 
-#ifndef RAVEN_TIMESTAMPINDEX_H
-#define RAVEN_TIMESTAMPINDEX_H
+#ifndef MEMEIUM_TIMESTAMPINDEX_H
+#define MEMEIUM_TIMESTAMPINDEX_H
 
 #include "uint256.h"
 
 struct CTimestampIndexIteratorKey {
     unsigned int timestamp;
 
-    size_t GetSerializeSize() const {
+    size_t GetSerializeSize() const
+    {
         return 4;
     }
-    template<typename Stream>
-    void Serialize(Stream& s) const {
+    template <typename Stream>
+    void Serialize(Stream& s) const
+    {
         ser_writedata32be(s, timestamp);
     }
-    template<typename Stream>
-    void Unserialize(Stream& s) {
+    template <typename Stream>
+    void Unserialize(Stream& s)
+    {
         timestamp = ser_readdata32be(s);
     }
 
-    CTimestampIndexIteratorKey(unsigned int time) {
+    CTimestampIndexIteratorKey(unsigned int time)
+    {
         timestamp = time;
     }
 
-    CTimestampIndexIteratorKey() {
+    CTimestampIndexIteratorKey()
+    {
         SetNull();
     }
 
-    void SetNull() {
+    void SetNull()
+    {
         timestamp = 0;
     }
 };
@@ -40,30 +46,36 @@ struct CTimestampIndexKey {
     unsigned int timestamp;
     uint256 blockHash;
 
-    size_t GetSerializeSize() const {
+    size_t GetSerializeSize() const
+    {
         return 36;
     }
-    template<typename Stream>
-    void Serialize(Stream& s) const {
+    template <typename Stream>
+    void Serialize(Stream& s) const
+    {
         ser_writedata32be(s, timestamp);
         blockHash.Serialize(s);
     }
-    template<typename Stream>
-    void Unserialize(Stream& s) {
+    template <typename Stream>
+    void Unserialize(Stream& s)
+    {
         timestamp = ser_readdata32be(s);
         blockHash.Unserialize(s);
     }
 
-    CTimestampIndexKey(unsigned int time, uint256 hash) {
+    CTimestampIndexKey(unsigned int time, uint256 hash)
+    {
         timestamp = time;
         blockHash = hash;
     }
 
-    CTimestampIndexKey() {
+    CTimestampIndexKey()
+    {
         SetNull();
     }
 
-    void SetNull() {
+    void SetNull()
+    {
         timestamp = 0;
         blockHash.SetNull();
     }
@@ -72,60 +84,72 @@ struct CTimestampIndexKey {
 struct CTimestampBlockIndexKey {
     uint256 blockHash;
 
-    size_t GetSerializeSize() const {
+    size_t GetSerializeSize() const
+    {
         return 32;
     }
 
-    template<typename Stream>
-    void Serialize(Stream& s) const {
+    template <typename Stream>
+    void Serialize(Stream& s) const
+    {
         blockHash.Serialize(s);
     }
 
-    template<typename Stream>
-    void Unserialize(Stream& s) {
+    template <typename Stream>
+    void Unserialize(Stream& s)
+    {
         blockHash.Unserialize(s);
     }
 
-    CTimestampBlockIndexKey(uint256 hash) {
+    CTimestampBlockIndexKey(uint256 hash)
+    {
         blockHash = hash;
     }
 
-    CTimestampBlockIndexKey() {
+    CTimestampBlockIndexKey()
+    {
         SetNull();
     }
 
-    void SetNull() {
+    void SetNull()
+    {
         blockHash.SetNull();
     }
 };
 
 struct CTimestampBlockIndexValue {
     unsigned int ltimestamp;
-    size_t GetSerializeSize() const {
+    size_t GetSerializeSize() const
+    {
         return 4;
     }
 
-    template<typename Stream>
-    void Serialize(Stream& s) const {
+    template <typename Stream>
+    void Serialize(Stream& s) const
+    {
         ser_writedata32be(s, ltimestamp);
     }
 
-    template<typename Stream>
-    void Unserialize(Stream& s) {
+    template <typename Stream>
+    void Unserialize(Stream& s)
+    {
         ltimestamp = ser_readdata32be(s);
     }
 
-    CTimestampBlockIndexValue (unsigned int time) {
+    CTimestampBlockIndexValue(unsigned int time)
+    {
         ltimestamp = time;
     }
 
-    CTimestampBlockIndexValue() {
+    CTimestampBlockIndexValue()
+    {
         SetNull();
     }
 
-    void SetNull() {
+    void SetNull()
+    {
         ltimestamp = 0;
     }
 };
 
-#endif // RAVEN_TIMESTAMPINDEX_H
+#endif // MEMEIUM_TIMESTAMPINDEX_H

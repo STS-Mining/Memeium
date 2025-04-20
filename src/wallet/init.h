@@ -1,11 +1,12 @@
 // Copyright (c) 2009-2010 Satoshi Nakamoto
 // Copyright (c) 2009-2017 The Bitcoin Core developers
 // Copyright (c) 2017-2019 The Raven Core developers
+// Copyright (c) 2024-2025 The Memeium Core developers
 // Distributed under the MIT software license, see the accompanying
 // file COPYING or http://www.opensource.org/licenses/mit-license.php.
 
-#ifndef RAVEN_WALLET_INIT_H
-#define RAVEN_WALLET_INIT_H
+#ifndef MEMEIUM_WALLET_INIT_H
+#define MEMEIUM_WALLET_INIT_H
 
 #include <string>
 
@@ -19,7 +20,7 @@ std::string GetWalletHelpString(bool showDebug);
 bool WalletParameterInteraction();
 
 //! Register wallet RPCs.
-void RegisterWalletRPC(CRPCTable &tableRPC);
+void RegisterWalletRPC(CRPCTable& tableRPC);
 
 //! Responsible for reading and validating the -wallet arguments and verifying the wallet database.
 //  This function will perform salvage on the wallet if requested, as long as only one wallet is
@@ -41,4 +42,4 @@ void StopWallets();
 //! Close all wallets.
 void CloseWallets();
 
-#endif // RAVEN_WALLET_INIT_H
+#endif // MEMEIUM_WALLET_INIT_H

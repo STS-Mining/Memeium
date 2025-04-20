@@ -1,0 +1,22 @@
+[Unit]
+Description=Memeium's distributed currency daemon
+After=network.target
+
+[Service]
+User=memeium
+Group=memeium
+
+Type=forking
+PIDFile=/var/lib/memeiumd/memeiumd.pid
+ExecStart=/usr/bin/memeiumd -daemon -pid=/var/lib/memeiumd/memeiumd.pid \
+-conf=/etc/memeium/memeium.conf -datadir=/var/lib/memeiumd -disablewallet
+
+Restart=always
+PrivateTmp=true
+TimeoutStopSec=60s
+TimeoutStartSec=2s
+StartLimitInterval=120s
+StartLimitBurst=5
+
+[Install]
+WantedBy=multi-user.target

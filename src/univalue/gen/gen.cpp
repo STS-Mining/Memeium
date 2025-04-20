@@ -1,5 +1,6 @@
 // Copyright 2014 BitPay Inc.
 // Copyright (c) 2017-2019 The Raven Core developers
+// Copyright (c) 2024-2025 The Memeium Core developers
 // Distributed under the MIT software license, see the accompanying
 // file COPYING or http://www.opensource.org/licenses/mit-license.php.
 
@@ -9,9 +10,9 @@
 // $ ./gen > univalue_escapes.h
 //
 
+#include "univalue.h"
 #include <stdio.h>
 #include <string.h>
-#include "univalue.h"
 
 using namespace std;
 
@@ -21,7 +22,7 @@ static std::string escapes[256];
 static void initJsonEscape()
 {
     // Escape all lower control characters (some get overridden with smaller sequences below)
-    for (int ch=0x00; ch<0x20; ++ch) {
+    for (int ch = 0x00; ch < 0x20; ++ch) {
         char tmpbuf[20];
         snprintf(tmpbuf, sizeof(tmpbuf), "\\u%04x", ch);
         escapes[ch] = std::string(tmpbuf);
@@ -41,44 +42,44 @@ static void initJsonEscape()
 
 static void outputEscape()
 {
-	printf(	"// Automatically generated file. Do not modify.\n"
-		"#ifndef RAVEN_UNIVALUE_UNIVALUE_ESCAPES_H\n"
-		"#define RAVEN_UNIVALUE_UNIVALUE_ESCAPES_H\n"
-		"static const char *escapes[256] = {\n");
+    printf("// Automatically generated file. Do not modify.\n"
+           "#ifndef MEMEIUM_UNIVALUE_UNIVALUE_ESCAPES_H\n"
+           "#define MEMEIUM_UNIVALUE_UNIVALUE_ESCAPES_H\n"
+           "static const char *escapes[256] = {\n");
 
-	for (unsigned int i = 0; i < 256; i++) {
-		if (escapes[i].empty()) {
-			printf("\tNULL,\n");
-		} else {
-			printf("\t\"");
+    for (unsigned int i = 0; i < 256; i++) {
+        if (escapes[i].empty()) {
+            printf("\tNULL,\n");
+        } else {
+            printf("\t\"");
 
-			unsigned int si;
-			for (si = 0; si < escapes[i].size(); si++) {
-				char ch = escapes[i][si];
-				switch (ch) {
-				case '"':
-					printf("\\\"");
-					break;
-				case '\\':
-					printf("\\\\");
-					break;
-				default:
-					printf("%c", escapes[i][si]);
-					break;
-				}
-			}
+            unsigned int si;
+            for (si = 0; si < escapes[i].size(); si++) {
+                char ch = escapes[i][si];
+                switch (ch) {
+                case '"':
+                    printf("\\\"");
+                    break;
+                case '\\':
+                    printf("\\\\");
+                    break;
+                default:
+                    printf("%c", escapes[i][si]);
+                    break;
+                }
+            }
 
-			printf("\",\n");
-		}
-	}
+            printf("\",\n");
+        }
+    }
 
-	printf(	"};\n"
-		"#endif // RAVEN_UNIVALUE_UNIVALUE_ESCAPES_H\n");
+    printf("};\n"
+           "#endif // MEMEIUM_UNIVALUE_UNIVALUE_ESCAPES_H\n");
 }
 
-int main (int argc, char *argv[])
+int main(int argc, char* argv[])
 {
-	initJsonEscape();
-	outputEscape();
-	return 0;
+    initJsonEscape();
+    outputEscape();
+    return 0;
 }

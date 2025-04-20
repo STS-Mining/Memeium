@@ -1,10 +1,11 @@
 // Copyright (c) 2015 The Bitcoin Core developers
 // Copyright (c) 2017-2019 The Raven Core developers
+// Copyright (c) 2024-2025 The Memeium Core developers
 // Distributed under the MIT software license, see the accompanying
 // file COPYING or http://www.opensource.org/licenses/mit-license.php.
 
-#ifndef RAVEN_ZMQ_ZMQABSTRACTNOTIFIER_H
-#define RAVEN_ZMQ_ZMQABSTRACTNOTIFIER_H
+#ifndef MEMEIUM_ZMQ_ZMQABSTRACTNOTIFIER_H
+#define MEMEIUM_ZMQ_ZMQABSTRACTNOTIFIER_H
 
 #include "zmqconfig.h"
 
@@ -17,7 +18,7 @@ typedef CZMQAbstractNotifier* (*CZMQNotifierFactory)();
 class CZMQAbstractNotifier
 {
 public:
-    CZMQAbstractNotifier() : psocket(nullptr) { }
+    CZMQAbstractNotifier() : psocket(nullptr) {}
     virtual ~CZMQAbstractNotifier();
 
     template <typename T>
@@ -27,21 +28,21 @@ public:
     }
 
     std::string GetType() const { return type; }
-    void SetType(const std::string &t) { type = t; }
+    void SetType(const std::string& t) { type = t; }
     std::string GetAddress() const { return address; }
-    void SetAddress(const std::string &a) { address = a; }
+    void SetAddress(const std::string& a) { address = a; }
 
-    virtual bool Initialize(void *pcontext) = 0;
+    virtual bool Initialize(void* pcontext) = 0;
     virtual void Shutdown() = 0;
 
-    virtual bool NotifyBlock(const CBlockIndex *pindex);
-    virtual bool NotifyTransaction(const CTransaction &transaction);
+    virtual bool NotifyBlock(const CBlockIndex* pindex);
+    virtual bool NotifyTransaction(const CTransaction& transaction);
     virtual bool NotifyMessage(const CMessage& message);
 
 protected:
-    void *psocket;
+    void* psocket;
     std::string type;
     std::string address;
 };
 
-#endif // RAVEN_ZMQ_ZMQABSTRACTNOTIFIER_H
+#endif // MEMEIUM_ZMQ_ZMQABSTRACTNOTIFIER_H

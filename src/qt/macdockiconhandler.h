@@ -1,10 +1,11 @@
 // Copyright (c) 2011-2015 The Bitcoin Core developers
 // Copyright (c) 2017-2019 The Raven Core developers
+// Copyright (c) 2024-2025 The Memeium Core developers
 // Distributed under the MIT software license, see the accompanying
 // file COPYING or http://www.opensource.org/licenses/mit-license.php.
 
-#ifndef RAVEN_QT_MACDOCKICONHANDLER_H
-#define RAVEN_QT_MACDOCKICONHANDLER_H
+#ifndef MEMEIUM_QT_MACDOCKICONHANDLER_H
+#define MEMEIUM_QT_MACDOCKICONHANDLER_H
 
 #include <QMainWindow>
 #include <QObject>
@@ -24,10 +25,10 @@ class MacDockIconHandler : public QObject
 public:
     ~MacDockIconHandler();
 
-    QMenu *dockMenu();
-    void setIcon(const QIcon &icon);
-    void setMainWindow(QMainWindow *window);
-    static MacDockIconHandler *instance();
+    QMenu* dockMenu();
+    void setIcon(const QIcon& icon);
+    void setMainWindow(QMainWindow* window);
+    static MacDockIconHandler* instance();
     static void cleanup();
     void handleDockIconClickEvent();
 
@@ -37,9 +38,9 @@ Q_SIGNALS:
 private:
     MacDockIconHandler();
 
-    QWidget *m_dummyWidget;
-    QMenu *m_dockMenu;
-    QMainWindow *mainWindow;
+    QWidget* m_dummyWidget;
+    QMenu* m_dockMenu;
+    QMainWindow* mainWindow;
 };
 
-#endif // RAVEN_QT_MACDOCKICONHANDLER_H
+#endif // MEMEIUM_QT_MACDOCKICONHANDLER_H

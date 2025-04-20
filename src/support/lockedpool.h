@@ -1,16 +1,17 @@
 // Copyright (c) 2016 The Bitcoin Core developers
 // Copyright (c) 2017-2019 The Raven Core developers
+// Copyright (c) 2024-2025 The Memeium Core developers
 // Distributed under the MIT software license, see the accompanying
 // file COPYING or http://www.opensource.org/licenses/mit-license.php.
 
-#ifndef RAVEN_SUPPORT_LOCKEDPOOL_H
-#define RAVEN_SUPPORT_LOCKEDPOOL_H
+#ifndef MEMEIUM_SUPPORT_LOCKEDPOOL_H
+#define MEMEIUM_SUPPORT_LOCKEDPOOL_H
 
-#include <stdint.h>
 #include <list>
 #include <map>
-#include <mutex>
 #include <memory>
+#include <mutex>
+#include <stdint.h>
 
 /**
  * OS-dependent allocation and deallocation of locked/pinned memory pages.
@@ -28,7 +29,7 @@ public:
      * return the memory, however the lockingSuccess flag will be false.
      * lockingSuccess is undefined if the allocation fails.
      */
-    virtual void* AllocateLocked(size_t len, bool *lockingSuccess) = 0;
+    virtual void* AllocateLocked(size_t len, bool* lockingSuccess) = 0;
 
     /** Unlock and free memory pages.
      * Clear the memory before unlocking.
@@ -48,15 +49,14 @@ public:
 class Arena
 {
 public:
-    Arena(void *base, size_t size, size_t alignment);
+    Arena(void* base, size_t size, size_t alignment);
     virtual ~Arena();
 
-    Arena(const Arena& other) = delete; // non construction-copyable
+    Arena(const Arena& other) = delete;      // non construction-copyable
     Arena& operator=(const Arena&) = delete; // non copyable
 
     /** Memory statistics. */
-    struct Stats
-    {
+    struct Stats {
         size_t used;
         size_t free;
         size_t total;
@@ -74,7 +74,7 @@ public:
      * Freeing the zero pointer has no effect.
      * Raises std::runtime_error in case of error.
      */
-    void free(void *ptr);
+    void free(void* ptr);
 
     /** Get arena usage statistics */
     Stats stats() const;
@@ -87,7 +87,8 @@ public:
      * This returns base <= ptr < (base+size) so only use it for (inclusive)
      * chunk starting addresses.
      */
-    bool addressInArena(void *ptr) const { return ptr >= base && ptr < end; }
+    bool addressInArena(void* ptr) const { return ptr >= base && ptr < end; }
+
 private:
     /** Map of chunk address to chunk information. This class makes use of the
      * sorted order to merge previous and next chunks during deallocation.
@@ -123,7 +124,7 @@ public:
      * allocation and deallocation overhead. Setting it too high allocates
      * more locked memory from the OS than strictly necessary.
      */
-    static const size_t ARENA_SIZE = 256*1024;
+    static const size_t ARENA_SIZE = 256 * 1024;
     /** Chunk alignment. Another compromise. Setting this too high will waste
      * memory, setting it too low will facilitate fragmentation.
      */
@@ -134,8 +135,7 @@ public:
     typedef bool (*LockingFailed_Callback)();
 
     /** Memory statistics. */
-    struct Stats
-    {
+    struct Stats {
         size_t used;
         size_t free;
         size_t total;
@@ -154,7 +154,7 @@ public:
     explicit LockedPool(std::unique_ptr<LockedPageAllocator> allocator, LockingFailed_Callback lf_cb_in = nullptr);
     ~LockedPool();
 
-    LockedPool(const LockedPool& other) = delete; // non construction-copyable
+    LockedPool(const LockedPool& other) = delete;      // non construction-copyable
     LockedPool& operator=(const LockedPool&) = delete; // non copyable
 
     /** Allocate size bytes from this arena.
@@ -167,23 +167,25 @@ public:
      * Freeing the zero pointer has no effect.
      * Raises std::runtime_error in case of error.
      */
-    void free(void *ptr);
+    void free(void* ptr);
 
     /** Get pool usage statistics */
     Stats stats() const;
+
 private:
     std::unique_ptr<LockedPageAllocator> allocator;
 
     /** Create an arena from locked pages */
-    class LockedPageArena: public Arena
+    class LockedPageArena : public Arena
     {
     public:
-        LockedPageArena(LockedPageAllocator *alloc_in, void *base_in, size_t size, size_t align);
+        LockedPageArena(LockedPageAllocator* alloc_in, void* base_in, size_t size, size_t align);
         ~LockedPageArena();
+
     private:
-        void *base;
+        void* base;
         size_t size;
-        LockedPageAllocator *allocator;
+        LockedPageAllocator* allocator;
     };
 
     bool new_arena(size_t size, size_t align);
@@ -229,4 +231,4 @@ private:
     static std::once_flag init_flag;
 };
 
-#endif // RAVEN_SUPPORT_LOCKEDPOOL_H
+#endif // MEMEIUM_SUPPORT_LOCKEDPOOL_H

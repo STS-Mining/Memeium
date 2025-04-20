@@ -1,78 +1,76 @@
 // Copyright (c) 2011-2016 The Bitcoin Core developers
 // Copyright (c) 2017-2019 The Raven Core developers
+// Copyright (c) 2024-2025 The Memeium Core developers
 // Distributed under the MIT software license, see the accompanying
 // file COPYING or http://www.opensource.org/licenses/mit-license.php.
 
 #include "restrictedassetsdialog.h"
 #include "ui_restrictedassetsdialog.h"
 
-#include "ravenunits.h"
+#include "assetfilterproxy.h"
+#include "assettablemodel.h"
 #include "clientmodel.h"
 #include "guiutil.h"
+#include "memeiumunits.h"
 #include "optionsmodel.h"
 #include "platformstyle.h"
 #include "walletmodel.h"
-#include "assettablemodel.h"
-#include "assetfilterproxy.h"
 
 #include "base58.h"
 #include "chainparams.h"
-#include "validation.h" // mempool and minRelayTxFee
-#include "ui_interface.h"
-#include "txmempool.h"
-#include "policy/fees.h"
-#include "wallet/fees.h"
 #include "guiconstants.h"
-#include "restrictedassignqualifier.h"
-#include "ui_restrictedassignqualifier.h"
-#include "restrictedfreezeaddress.h"
-#include "ui_restrictedfreezeaddress.h"
-#include "sendcoinsdialog.h"
 #include "myrestrictedassettablemodel.h"
+#include "policy/fees.h"
+#include "restrictedassignqualifier.h"
+#include "restrictedfreezeaddress.h"
+#include "sendcoinsdialog.h"
+#include "txmempool.h"
+#include "ui_interface.h"
+#include "ui_restrictedassignqualifier.h"
+#include "ui_restrictedfreezeaddress.h"
+#include "validation.h" // mempool and minRelayTxFee
+#include "wallet/fees.h"
 
-#include <QGraphicsDropShadowEffect>
+#include <QDebug>
 #include <QFontMetrics>
+#include <QGraphicsDropShadowEffect>
 #include <QMessageBox>
 #include <QScrollBar>
 #include <QSettings>
 #include <QTextDocument>
 #include <QTimer>
-#include <QDebug>
-#include <QMessageBox>
 
-#include <policy/policy.h>
 #include <core_io.h>
+#include <policy/policy.h>
 #include <rpc/mining.h>
-#include <wallet/wallet.h>
 #include <wallet/coincontrol.h>
+#include <wallet/wallet.h>
 
-RestrictedAssetsDialog::RestrictedAssetsDialog(const PlatformStyle *_platformStyle, QWidget *parent) :
-        QDialog(parent),
-        ui(new Ui::RestrictedAssetsDialog),
-        clientModel(0),
-        model(0),
-        platformStyle(_platformStyle)
+RestrictedAssetsDialog::RestrictedAssetsDialog(const PlatformStyle* _platformStyle, QWidget* parent) : QDialog(parent),
+                                                                                                       ui(new Ui::RestrictedAssetsDialog),
+                                                                                                       clientModel(0),
+                                                                                                       model(0),
+                                                                                                       platformStyle(_platformStyle)
 {
-
     ui->setupUi(this);
     setWindowTitle("Manage Restricted Assets");
     setupStyling(_platformStyle);
 }
 
-void RestrictedAssetsDialog::setClientModel(ClientModel *_clientModel)
+void RestrictedAssetsDialog::setClientModel(ClientModel* _clientModel)
 {
     this->clientModel = _clientModel;
 }
 
-void RestrictedAssetsDialog::setModel(WalletModel *_model)
+void RestrictedAssetsDialog::setModel(WalletModel* _model)
 {
     this->model = _model;
 
-    if(_model && _model->getOptionsModel()) {
+    if (_model && _model->getOptionsModel()) {
         setBalance(_model->getBalance(), _model->getUnconfirmedBalance(), _model->getImmatureBalance(),
-                   _model->getWatchBalance(), _model->getWatchUnconfirmedBalance(), _model->getWatchImmatureBalance());
+            _model->getWatchBalance(), _model->getWatchUnconfirmedBalance(), _model->getWatchImmatureBalance());
         connect(_model, SIGNAL(balanceChanged(CAmount, CAmount, CAmount, CAmount, CAmount, CAmount)), this,
-                SLOT(setBalance(CAmount, CAmount, CAmount, CAmount, CAmount, CAmount)));
+            SLOT(setBalance(CAmount, CAmount, CAmount, CAmount, CAmount, CAmount)));
         connect(_model->getOptionsModel(), SIGNAL(displayUnitChanged(int)), this, SLOT(updateDisplayUnit()));
         updateDisplayUnit();
 
@@ -107,13 +105,13 @@ void RestrictedAssetsDialog::setModel(WalletModel *_model)
         ui->listAssets->setAlternatingRowColors(true);
         ui->listAssets->verticalHeader()->hide();
 
-        AssignQualifier *assignQualifier = new AssignQualifier(platformStyle, this);
+        AssignQualifier* assignQualifier = new AssignQualifier(platformStyle, this);
         assignQualifier->setWalletModel(_model);
         assignQualifier->setObjectName("tab_assign_qualifier");
         connect(assignQualifier->getUI()->buttonSubmit, SIGNAL(clicked()), this, SLOT(assignQualifierClicked()));
         ui->tabWidget->addTab(assignQualifier, "Assign/Remove Qualifier");
 
-        FreezeAddress *freezeAddress = new FreezeAddress(platformStyle, this);
+        FreezeAddress* freezeAddress = new FreezeAddress(platformStyle, this);
         freezeAddress->setWalletModel(_model);
         freezeAddress->setObjectName("tab_freeze_address");
         connect(freezeAddress->getUI()->buttonSubmit, SIGNAL(clicked()), this, SLOT(freezeAddressClicked()));
@@ -127,7 +125,7 @@ RestrictedAssetsDialog::~RestrictedAssetsDialog()
     delete ui;
 }
 
-void RestrictedAssetsDialog::setupStyling(const PlatformStyle *platformStyle)
+void RestrictedAssetsDialog::setupStyling(const PlatformStyle* platformStyle)
 {
     /** Update the restrictedassets frame */
     ui->frameAssetBalance->setStyleSheet(QString(".QFrame {background-color: %1; padding-top: 10px; padding-right: 5px; border: none;}").arg(platformStyle->WidgetBackGroundColor().name()));
@@ -149,17 +147,15 @@ void RestrictedAssetsDialog::setupStyling(const PlatformStyle *platformStyle)
 }
 
 
-
-QWidget *RestrictedAssetsDialog::setupTabChain(QWidget *prev)
+QWidget* RestrictedAssetsDialog::setupTabChain(QWidget* prev)
 {
-//    QWidget::setTabOrder(prev, ui->sendButton);
-//    QWidget::setTabOrder(ui->sendButton, ui->clearButton);
-//    QWidget::setTabOrder(ui->clearButton, ui->addButton);
+    //    QWidget::setTabOrder(prev, ui->sendButton);
+    //    QWidget::setTabOrder(ui->sendButton, ui->clearButton);
+    //    QWidget::setTabOrder(ui->clearButton, ui->addButton);
     return prev;
 }
 
-void RestrictedAssetsDialog::setBalance(const CAmount& balance, const CAmount& unconfirmedBalance, const CAmount& immatureBalance,
-                                 const CAmount& watchBalance, const CAmount& watchUnconfirmedBalance, const CAmount& watchImmatureBalance)
+void RestrictedAssetsDialog::setBalance(const CAmount& balance, const CAmount& unconfirmedBalance, const CAmount& immatureBalance, const CAmount& watchBalance, const CAmount& watchUnconfirmedBalance, const CAmount& watchImmatureBalance)
 {
     Q_UNUSED(unconfirmedBalance);
     Q_UNUSED(immatureBalance);
@@ -170,9 +166,8 @@ void RestrictedAssetsDialog::setBalance(const CAmount& balance, const CAmount& u
     ui->labelBalance->setFont(GUIUtil::getSubLabelFont());
     ui->label->setFont(GUIUtil::getSubLabelFont());
 
-    if(model && model->getOptionsModel())
-    {
-        ui->labelBalance->setText(RavenUnits::formatWithUnit(model->getOptionsModel()->getDisplayUnit(), balance));
+    if (model && model->getOptionsModel()) {
+        ui->labelBalance->setText(MemeiumUnits::formatWithUnit(model->getOptionsModel()->getDisplayUnit(), balance));
     }
 }
 
@@ -185,18 +180,17 @@ void RestrictedAssetsDialog::freezeAddressClicked()
 {
     // Check wallet unlock status
     WalletModel::UnlockContext ctx(model->requestUnlock());
-    if(!ctx.isValid())
-    {
+    if (!ctx.isValid()) {
         // Unlock wallet was cancelled
         return;
     }
 
     // Get the widget belonging to the freeze address tab
-    FreezeAddress* widget = ui->tabWidget->findChild<FreezeAddress *>("tab_freeze_address");
+    FreezeAddress* widget = ui->tabWidget->findChild<FreezeAddress*>("tab_freeze_address");
 
     std::string asset_name = widget->getUI()->assetComboBox->currentData(AssetTableModel::RoleIndex::AssetNameRole).toString().toStdString();
     std::string address = widget->getUI()->lineEditAddress->text().toStdString();
-    std::string change_address = widget->getUI()->checkBoxChangeAddress->isChecked() ? widget->getUI()->lineEditChangeAddress->text().toStdString(): "";
+    std::string change_address = widget->getUI()->checkBoxChangeAddress->isChecked() ? widget->getUI()->lineEditChangeAddress->text().toStdString() : "";
     std::string decodedAssetData = DecodeAssetData(widget->getUI()->lineEditAssetData->text().toStdString());
 
     // Get the single address options
@@ -230,10 +224,10 @@ void RestrictedAssetsDialog::freezeAddressClicked()
     ctrl.destChange = DecodeDestination(change_address);
 
     std::pair<int, std::string> error;
-    std::vector< std::pair<CAssetTransfer, std::string> >vTransfers;
+    std::vector<std::pair<CAssetTransfer, std::string>> vTransfers;
 
     // Create the pointers which is passed to the CreateTransferAssetTransaction function
-    std::vector< std::pair<CNullAssetTxData, std::string> > vecFreezeAddressTxData;
+    std::vector<std::pair<CNullAssetTxData, std::string>> vecFreezeAddressTxData;
     std::vector<CNullAssetTxData> vecFreezeGlobalTxData;
 
     // We have to send the owner token for the asset in order to perform a restriction
@@ -286,11 +280,10 @@ void RestrictedAssetsDialog::freezeAddressClicked()
         questionString.append(flag ? freezingGlobal : unfreezingGlobal);
     }
 
-    if(nRequiredFee > 0)
-    {
+    if (nRequiredFee > 0) {
         // append fee string if a fee is required
         questionString.append("<hr /><span style='color:#e82121;'>");
-        questionString.append(RavenUnits::formatHtmlWithUnit(model->getOptionsModel()->getDisplayUnit(), nRequiredFee));
+        questionString.append(MemeiumUnits::formatHtmlWithUnit(model->getOptionsModel()->getDisplayUnit(), nRequiredFee));
         questionString.append("</span> ");
         questionString.append(tr("added as transaction fee"));
 
@@ -300,27 +293,25 @@ void RestrictedAssetsDialog::freezeAddressClicked()
 
     // add total amount in all subdivision units
     questionString.append("<hr />");
-    CAmount totalAmount =  nRequiredFee;
+    CAmount totalAmount = nRequiredFee;
     QStringList alternativeUnits;
-    for (RavenUnits::Unit u : RavenUnits::availableUnits())
-    {
-        if(u != model->getOptionsModel()->getDisplayUnit())
-            alternativeUnits.append(RavenUnits::formatHtmlWithUnit(u, totalAmount));
+    for (MemeiumUnits::Unit u : MemeiumUnits::availableUnits()) {
+        if (u != model->getOptionsModel()->getDisplayUnit())
+            alternativeUnits.append(MemeiumUnits::formatHtmlWithUnit(u, totalAmount));
     }
     questionString.append(tr("Total Amount %1")
-                                  .arg(RavenUnits::formatHtmlWithUnit(model->getOptionsModel()->getDisplayUnit(), totalAmount)));
+            .arg(MemeiumUnits::formatHtmlWithUnit(model->getOptionsModel()->getDisplayUnit(), totalAmount)));
     questionString.append(QString("<span style='font-size:10pt;font-weight:normal;'><br />(=%2)</span>")
-                                  .arg(alternativeUnits.join(" " + tr("or") + "<br />")));
+            .arg(alternativeUnits.join(" " + tr("or") + "<br />")));
 
     QString addString = tr("Confirm adding restriction");
     QString removingString = tr("Confirm removing resetricton");
     SendConfirmationDialog confirmationDialog(flag ? addString : removingString,
-                                              questionString, SEND_CONFIRM_DELAY, this);
+        questionString, SEND_CONFIRM_DELAY, this);
     confirmationDialog.exec();
     QMessageBox::StandardButton retval = (QMessageBox::StandardButton)confirmationDialog.result();
 
-    if(retval != QMessageBox::Yes)
-    {
+    if (retval != QMessageBox::Yes) {
         return;
     }
 
@@ -334,7 +325,7 @@ void RestrictedAssetsDialog::freezeAddressClicked()
 
     QMessageBox txidMsgBox;
     std::string sentMsg = _("Sent new transaction to the network");
-    std::string totalMsg = strprintf("%s: %s",sentMsg, txid);
+    std::string totalMsg = strprintf("%s: %s", sentMsg, txid);
     txidMsgBox.setText(QString::fromStdString(totalMsg));
     txidMsgBox.exec();
 
@@ -344,17 +335,16 @@ void RestrictedAssetsDialog::freezeAddressClicked()
 void RestrictedAssetsDialog::assignQualifierClicked()
 {
     WalletModel::UnlockContext ctx(model->requestUnlock());
-    if(!ctx.isValid())
-    {
+    if (!ctx.isValid()) {
         // Unlock wallet was cancelled
         return;
     }
 
-    AssignQualifier* widget = ui->tabWidget->findChild<AssignQualifier *>("tab_assign_qualifier");
+    AssignQualifier* widget = ui->tabWidget->findChild<AssignQualifier*>("tab_assign_qualifier");
 
     std::string address = widget->getUI()->lineEditAddress->text().toStdString();
     std::string asset_name = widget->getUI()->assetComboBox->currentData(AssetTableModel::RoleIndex::AssetNameRole).toString().toStdString();
-    std::string change_address = widget->getUI()->checkBoxChangeAddress->isChecked() ? widget->getUI()->lineEditChangeAddress->text().toStdString(): "";
+    std::string change_address = widget->getUI()->checkBoxChangeAddress->isChecked() ? widget->getUI()->lineEditChangeAddress->text().toStdString() : "";
     std::string decodedAssetData = DecodeAssetData(widget->getUI()->lineEditAssetData->text().toStdString());
 
     int flag = widget->getUI()->assignTypeComboBox->currentIndex() ? 0 : 1;
@@ -381,13 +371,13 @@ void RestrictedAssetsDialog::assignQualifierClicked()
     ctrl.destChange = DecodeDestination(change_address);
 
     std::pair<int, std::string> error;
-    std::vector< std::pair<CAssetTransfer, std::string> >vTransfers;
+    std::vector<std::pair<CAssetTransfer, std::string>> vTransfers;
 
     // Always transfer 1 of the qualifier tokens to the change address
     vTransfers.emplace_back(std::make_pair(CAssetTransfer(asset_name, 1 * COIN, decodedAssetData), change_address));
 
     // Add the asset data with the flag to remove or add the tag 1 = Add, 0 = Remove
-    std::vector< std::pair<CNullAssetTxData, std::string> > vecAssetData;
+    std::vector<std::pair<CNullAssetTxData, std::string>> vecAssetData;
     vecAssetData.push_back(std::make_pair(CNullAssetTxData(asset_name, flag), address));
 
     // Create the Transaction
@@ -405,11 +395,10 @@ void RestrictedAssetsDialog::assignQualifierClicked()
     // Format confirmation message
 
     questionString.append(flag ? addingQualifier : removingQualifier);
-    if(nRequiredFee > 0)
-    {
+    if (nRequiredFee > 0) {
         // append fee string if a fee is required
         questionString.append("<hr /><span style='color:#e82121;'>");
-        questionString.append(RavenUnits::formatHtmlWithUnit(model->getOptionsModel()->getDisplayUnit(), nRequiredFee));
+        questionString.append(MemeiumUnits::formatHtmlWithUnit(model->getOptionsModel()->getDisplayUnit(), nRequiredFee));
         questionString.append("</span> ");
         questionString.append(tr("added as transaction fee"));
 
@@ -419,27 +408,25 @@ void RestrictedAssetsDialog::assignQualifierClicked()
 
     // add total amount in all subdivision units
     questionString.append("<hr />");
-    CAmount totalAmount =  nRequiredFee;
+    CAmount totalAmount = nRequiredFee;
     QStringList alternativeUnits;
-    for (RavenUnits::Unit u : RavenUnits::availableUnits())
-    {
-        if(u != model->getOptionsModel()->getDisplayUnit())
-            alternativeUnits.append(RavenUnits::formatHtmlWithUnit(u, totalAmount));
+    for (MemeiumUnits::Unit u : MemeiumUnits::availableUnits()) {
+        if (u != model->getOptionsModel()->getDisplayUnit())
+            alternativeUnits.append(MemeiumUnits::formatHtmlWithUnit(u, totalAmount));
     }
     questionString.append(tr("Total Amount %1")
-                                  .arg(RavenUnits::formatHtmlWithUnit(model->getOptionsModel()->getDisplayUnit(), totalAmount)));
+            .arg(MemeiumUnits::formatHtmlWithUnit(model->getOptionsModel()->getDisplayUnit(), totalAmount)));
     questionString.append(QString("<span style='font-size:10pt;font-weight:normal;'><br />(=%2)</span>")
-                                  .arg(alternativeUnits.join(" " + tr("or") + "<br />")));
+            .arg(alternativeUnits.join(" " + tr("or") + "<br />")));
 
     QString addString = tr("Confirm adding qualifier");
     QString removingString = tr("Confirm removing qualifier");
     SendConfirmationDialog confirmationDialog(flag ? addString : removingString,
-                                              questionString, SEND_CONFIRM_DELAY, this);
+        questionString, SEND_CONFIRM_DELAY, this);
     confirmationDialog.exec();
     QMessageBox::StandardButton retval = (QMessageBox::StandardButton)confirmationDialog.result();
 
-    if(retval != QMessageBox::Yes)
-    {
+    if (retval != QMessageBox::Yes) {
         return;
     }
 
@@ -453,15 +440,9 @@ void RestrictedAssetsDialog::assignQualifierClicked()
 
     QMessageBox txidMsgBox;
     std::string sentMsg = _("Sent new transaction to the network");
-    std::string totalMsg = strprintf("%s: %s",sentMsg, txid);
+    std::string totalMsg = strprintf("%s: %s", sentMsg, txid);
     txidMsgBox.setText(QString::fromStdString(totalMsg));
     txidMsgBox.exec();
 
     widget->clear();
 }
-
-
-
-
-
-

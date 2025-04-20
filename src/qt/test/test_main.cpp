@@ -1,17 +1,18 @@
 // Copyright (c) 2009-2016 The Bitcoin Core developers
 // Copyright (c) 2017-2019 The Raven Core developers
+// Copyright (c) 2024-2025 The Memeium Core developers
 // Distributed under the MIT software license, see the accompanying
 // file COPYING or http://www.opensource.org/licenses/mit-license.php.
 
 #if defined(HAVE_CONFIG_H)
-#include "config/raven-config.h"
+#include "config/memeium-config.h"
 #endif
 
 #include "chainparams.h"
-#include "rpcnestedtests.h"
-#include "util.h"
-#include "uritests.h"
 #include "compattests.h"
+#include "rpcnestedtests.h"
+#include "uritests.h"
+#include "util.h"
 
 #ifdef ENABLE_WALLET
 #include "paymentservertests.h"
@@ -48,7 +49,7 @@ Q_IMPORT_PLUGIN(QCocoaIntegrationPlugin);
 extern void noui_connect();
 
 // This is all you need to run all the tests
-int main(int argc, char *argv[])
+int main(int argc, char* argv[])
 {
     return 0; //~~ The QT UI has had major changes made to it.  This test suite needs to be re-written/adapted to the new changes.  Until then, just return true so that make check passes for auto-build-testing.
     SetupEnvironment();
@@ -56,7 +57,7 @@ int main(int argc, char *argv[])
     SelectParams(CBaseChainParams::MAIN);
     noui_connect();
     ClearDatadirCache();
-    fs::path pathTemp = fs::temp_directory_path() / strprintf("test_raven-qt_%lu_%i", (unsigned long) GetTime(), (int) GetRand(100000));
+    fs::path pathTemp = fs::temp_directory_path() / strprintf("test_memeium-qt_%lu_%i", (unsigned long)GetTime(), (int)GetRand(100000));
     fs::create_directories(pathTemp);
     gArgs.ForceSetArg("-datadir", pathTemp.string());
 
@@ -74,16 +75,15 @@ int main(int argc, char *argv[])
     // Don't remove this, it's needed to access
     // QApplication:: and QCoreApplication:: in the tests
     static int qt_argc = 1;
-    static const char* qt_argv = "Raven-Qt-test";
+    static const char* qt_argv = "Memeium-Qt-test";
 
-    QApplication app(qt_argc, const_cast<char **>(&qt_argv));
-    app.setApplicationName("Raven-Qt-test");
+    QApplication app(qt_argc, const_cast<char**>(&qt_argv));
+    app.setApplicationName("Memeium-Qt-test");
 
     SSL_library_init();
 
     URITests test1;
-    if (QTest::qExec(&test1) != 0)
-    {
+    if (QTest::qExec(&test1) != 0) {
         fInvalid = true;
     }
 #ifdef ENABLE_WALLET
@@ -93,13 +93,11 @@ int main(int argc, char *argv[])
     }
 #endif
     RPCNestedTests test3;
-    if (QTest::qExec(&test3) != 0)
-    {
+    if (QTest::qExec(&test3) != 0) {
         fInvalid = true;
     }
     CompatTests test4;
-    if (QTest::qExec(&test4) != 0)
-    {
+    if (QTest::qExec(&test4) != 0) {
         fInvalid = true;
     }
 #ifdef ENABLE_WALLET

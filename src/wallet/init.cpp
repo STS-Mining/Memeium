@@ -1,6 +1,7 @@
 // Copyright (c) 2009-2010 Satoshi Nakamoto
 // Copyright (c) 2009-2017 The Bitcoin Core developers
 // Copyright (c) 2017-2020 The Raven Core developers
+// Copyright (c) 2024-2025 The Memeium Core developers
 // Distributed under the MIT software license, see the accompanying
 // file COPYING or http://www.opensource.org/licenses/mit-license.php.
 
@@ -10,20 +11,20 @@
 #include "util.h"
 #include "utilmoneystr.h"
 #include "validation.h"
-#include "wallet/wallet.h"
 #include "wallet/rpcwallet.h"
+#include "wallet/wallet.h"
 
 std::string GetWalletHelpString(bool showDebug)
 {
     std::string strUsage = HelpMessageGroup(_("Wallet options:"));
     strUsage += HelpMessageOpt("-bip44=<n>", strprintf(_("Sets the wallet to use/not use bip44 12-words, non-bip44=0 or bip44=1 (default: 1). "
-                                                                 "Note: By default 12-words will automatically be generated for you (random word selection). See -mnemonic and -mnemonicpassphrase "
-                                                                 "below to create a wallet using a specific word list (use an existing bip-44 wallet word-list), or use the RPC/CLI getmywords or "
-                                                                 "dumpwallet to retrieve the auto-generated word-list. This flag is ignored if there is already an existing non-bip44 wallet.")));
+                                                         "Note: By default 12-words will automatically be generated for you (random word selection). See -mnemonic and -mnemonicpassphrase "
+                                                         "below to create a wallet using a specific word list (use an existing bip-44 wallet word-list), or use the RPC/CLI getmywords or "
+                                                         "dumpwallet to retrieve the auto-generated word-list. This flag is ignored if there is already an existing non-bip44 wallet.")));
     strUsage += HelpMessageOpt("-discardfee=<amt>", strprintf(_("The fee rate (in %s/kB) that indicates your tolerance for discarding change by adding it to the fee (default: %s). "
-                                                                            "Note: An output is discarded if it is dust at this rate, but we will always discard up to the dust relay fee and a discard "
-                                                                            "fee above that is limited by the fee estimate for the longest target"),
-                                                                            CURRENCY_UNIT, FormatMoney(DEFAULT_DISCARD_FEE)));
+                                                                "Note: An output is discarded if it is dust at this rate, but we will always discard up to the dust relay fee and a discard "
+                                                                "fee above that is limited by the fee estimate for the longest target"),
+                                                        CURRENCY_UNIT, FormatMoney(DEFAULT_DISCARD_FEE)));
     strUsage += HelpMessageOpt("-disablewallet", _("Do not load the wallet and disable wallet RPC calls"));
     strUsage += HelpMessageOpt("-fallbackfee=<amt>", strprintf(_("A fee rate (in %s/kB) that will be used when fee estimation has insufficient data (default: %s)"), CURRENCY_UNIT, FormatMoney(DEFAULT_FALLBACK_FEE)));
     strUsage += HelpMessageOpt("-keypool=<n>", strprintf(_("Set key pool size to <n> (default: %u)"), DEFAULT_KEYPOOL_SIZE));
@@ -41,11 +42,10 @@ std::string GetWalletHelpString(bool showDebug)
     strUsage += HelpMessageOpt("-walletbroadcast", _("Make the wallet broadcast transactions") + " " + strprintf(_("(default: %u)"), DEFAULT_WALLETBROADCAST));
     strUsage += HelpMessageOpt("-walletnotify=<cmd>", _("Execute command when a wallet transaction changes (%s in cmd is replaced by TxID)"));
     strUsage += HelpMessageOpt("-zapwallettxes=<mode>", _("Delete all wallet transactions and only recover those parts of the blockchain through -rescan on startup") +
-                               " " + _("(1 = keep tx meta data e.g. account owner and payment request information, 2 = drop tx meta data)"));
+                                                            " " + _("(1 = keep tx meta data e.g. account owner and payment request information, 2 = drop tx meta data)"));
     strUsage += HelpMessageOpt("-miningaddress=<address>", _("When getblocktemplate is called. It will create the coinbase transaction using this address(default: empty string)"));
 
-    if (showDebug)
-    {
+    if (showDebug) {
         strUsage += HelpMessageGroup(_("Wallet debugging/testing options:"));
 
         strUsage += HelpMessageOpt("-dblogsize=<n>", strprintf("Flush wallet database activity from memory to disk log every <n> megabytes (default: %u)", DEFAULT_WALLET_DBLOGSIZE));
@@ -113,8 +113,7 @@ bool WalletParameterInteraction()
         InitWarning(AmountHighWarn("-minrelaytxfee") + " " +
                     _("The wallet will avoid paying less than the minimum relay fee."));
 
-    if (gArgs.IsArgSet("-mintxfee"))
-    {
+    if (gArgs.IsArgSet("-mintxfee")) {
         CAmount n = 0;
         if (!ParseMoney(gArgs.GetArg("-mintxfee", ""), n) || 0 == n)
             return InitError(AmountErrMsg("mintxfee", gArgs.GetArg("-mintxfee", "")));
@@ -123,8 +122,7 @@ bool WalletParameterInteraction()
                         _("This is the minimum transaction fee you pay on every transaction."));
         CWallet::minTxFee = CFeeRate(n);
     }
-    if (gArgs.IsArgSet("-fallbackfee"))
-    {
+    if (gArgs.IsArgSet("-fallbackfee")) {
         CAmount nFeePerK = 0;
         if (!ParseMoney(gArgs.GetArg("-fallbackfee", ""), nFeePerK))
             return InitError(strprintf(_("Invalid amount for -fallbackfee=<amount>: '%s'"), gArgs.GetArg("-fallbackfee", "")));
@@ -133,8 +131,7 @@ bool WalletParameterInteraction()
                         _("This is the transaction fee you may pay when fee estimates are not available."));
         CWallet::fallbackFee = CFeeRate(nFeePerK);
     }
-    if (gArgs.IsArgSet("-discardfee"))
-    {
+    if (gArgs.IsArgSet("-discardfee")) {
         CAmount nFeePerK = 0;
         if (!ParseMoney(gArgs.GetArg("-discardfee", ""), nFeePerK))
             return InitError(strprintf(_("Invalid amount for -discardfee=<amount>: '%s'"), gArgs.GetArg("-discardfee", "")));
@@ -143,8 +140,7 @@ bool WalletParameterInteraction()
                         _("This is the transaction fee you may discard if change is smaller than dust at this level"));
         CWallet::m_discard_rate = CFeeRate(nFeePerK);
     }
-    if (gArgs.IsArgSet("-paytxfee"))
-    {
+    if (gArgs.IsArgSet("-paytxfee")) {
         CAmount nFeePerK = 0;
         if (!ParseMoney(gArgs.GetArg("-paytxfee", ""), nFeePerK))
             return InitError(AmountErrMsg("paytxfee", gArgs.GetArg("-paytxfee", "")));
@@ -153,24 +149,21 @@ bool WalletParameterInteraction()
                         _("This is the transaction fee you will pay if you send a transaction."));
 
         payTxFee = CFeeRate(nFeePerK, 1000);
-        if (payTxFee < ::minRelayTxFee)
-        {
+        if (payTxFee < ::minRelayTxFee) {
             return InitError(strprintf(_("Invalid amount for -paytxfee=<amount>: '%s' (must be at least %s)"),
-                                       gArgs.GetArg("-paytxfee", ""), ::minRelayTxFee.ToString()));
+                gArgs.GetArg("-paytxfee", ""), ::minRelayTxFee.ToString()));
         }
     }
-    if (gArgs.IsArgSet("-maxtxfee"))
-    {
+    if (gArgs.IsArgSet("-maxtxfee")) {
         CAmount nMaxFee = 0;
         if (!ParseMoney(gArgs.GetArg("-maxtxfee", ""), nMaxFee))
             return InitError(AmountErrMsg("maxtxfee", gArgs.GetArg("-maxtxfee", "")));
         if (nMaxFee > HIGH_MAX_TX_FEE)
             InitWarning(_("-maxtxfee is set very high! Fees this large could be paid on a single transaction."));
         maxTxFee = nMaxFee;
-        if (CFeeRate(maxTxFee, 1000) < ::minRelayTxFee)
-        {
+        if (CFeeRate(maxTxFee, 1000) < ::minRelayTxFee) {
             return InitError(strprintf(_("Invalid amount for -maxtxfee=<amount>: '%s' (must be at least the minrelay fee of %s to prevent stuck transactions)"),
-                                       gArgs.GetArg("-maxtxfee", ""), ::minRelayTxFee.ToString()));
+                gArgs.GetArg("-maxtxfee", ""), ::minRelayTxFee.ToString()));
         }
     }
     nTxConfirmTarget = gArgs.GetArg("-txconfirmtarget", DEFAULT_TX_CONFIRM_TARGET);
@@ -180,7 +173,7 @@ bool WalletParameterInteraction()
     return true;
 }
 
-void RegisterWalletRPC(CRPCTable &t)
+void RegisterWalletRPC(CRPCTable& t)
 {
     if (gArgs.GetBoolArg("-disablewallet", false)) return;
 
@@ -225,7 +218,7 @@ bool VerifyWallets()
             // Recover readable keypairs:
             CWallet dummyWallet;
             std::string backup_filename;
-            if (!CWalletDB::Recover(walletFile, (void *)&dummyWallet, CWalletDB::RecoverKeysOnlyFilter, backup_filename)) {
+            if (!CWalletDB::Recover(walletFile, (void*)&dummyWallet, CWalletDB::RecoverKeysOnlyFilter, backup_filename)) {
                 return false;
             }
         }
@@ -252,7 +245,7 @@ bool OpenWallets()
     }
 
     for (const std::string& walletFile : gArgs.GetArgs("-wallet")) {
-        CWallet * const pwallet = CWallet::CreateWalletFromFile(walletFile);
+        CWallet* const pwallet = CWallet::CreateWalletFromFile(walletFile);
         if (!pwallet) {
             return false;
         }
@@ -262,25 +255,29 @@ bool OpenWallets()
     return true;
 }
 
-void StartWallets(CScheduler& scheduler) {
+void StartWallets(CScheduler& scheduler)
+{
     for (CWalletRef pwallet : vpwallets) {
         pwallet->postInitProcess(scheduler);
     }
 }
 
-void FlushWallets() {
+void FlushWallets()
+{
     for (CWalletRef pwallet : vpwallets) {
         pwallet->Flush(false);
     }
 }
 
-void StopWallets() {
+void StopWallets()
+{
     for (CWalletRef pwallet : vpwallets) {
         pwallet->Flush(true);
     }
 }
 
-void CloseWallets() {
+void CloseWallets()
+{
     for (CWalletRef pwallet : vpwallets) {
         delete pwallet;
     }

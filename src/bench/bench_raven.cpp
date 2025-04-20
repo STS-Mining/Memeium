@@ -1,19 +1,19 @@
 // Copyright (c) 2015-2016 The Bitcoin Core developers
 // Copyright (c) 2017-2019 The Raven Core developers
+// Copyright (c) 2024-2025 The Memeium Core developers
 // Distributed under the MIT software license, see the accompanying
 // file COPYING or http://www.opensource.org/licenses/mit-license.php.
 
-#include <chainparamsbase.h>
-#include <chainparams.h>
 #include "bench.h"
 #include "crypto/sha256.h"
 #include "key.h"
-#include "validation.h"
-#include "util.h"
 #include "random.h"
+#include "util.h"
+#include "validation.h"
+#include <chainparams.h>
+#include <chainparamsbase.h>
 
-int
-main(int argc, char **argv)
+int main(int argc, char** argv)
 {
     SHA256AutoDetect();
     RandomInit();

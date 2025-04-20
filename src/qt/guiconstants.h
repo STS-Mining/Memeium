@@ -1,10 +1,11 @@
 // Copyright (c) 2011-2016 The Bitcoin Core developers
 // Copyright (c) 2017-2021 The Raven Core developers
+// Copyright (c) 2024-2025 The Memeium Core developers
 // Distributed under the MIT software license, see the accompanying
 // file COPYING or http://www.opensource.org/licenses/mit-license.php.
 
-#ifndef RAVEN_QT_GUICONSTANTS_H
-#define RAVEN_QT_GUICONSTANTS_H
+#ifndef MEMEIUM_QT_GUICONSTANTS_H
+#define MEMEIUM_QT_GUICONSTANTS_H
 
 /* Milliseconds between model updates */
 static const int MODEL_UPDATE_DELAY = 250;
@@ -12,7 +13,7 @@ static const int MODEL_UPDATE_DELAY = 250;
 /* AskPassphraseDialog -- Maximum passphrase length */
 static const int MAX_PASSPHRASE_SIZE = 1024;
 
-/* RavenGUI -- Size of icons in status bar */
+/* MemeiumGUI -- Size of icons in status bar */
 static const int STATUSBAR_ICONSIZE = 16;
 
 static const bool DEFAULT_SPLASHSCREEN = true;
@@ -36,7 +37,7 @@ static const bool DEFAULT_SPLASHSCREEN = true;
 /* Widget Background color - default color */
 #define COLOR_WHITE QColor(255, 255, 255)
 
-#define COLOR_WALLETFRAME_SHADOW QColor(0,0,0,71)
+#define COLOR_WALLETFRAME_SHADOW QColor(0, 0, 0, 71)
 
 /* Color of labels */
 #define COLOR_LABELS QColor("#4960ad")
@@ -44,17 +45,17 @@ static const bool DEFAULT_SPLASHSCREEN = true;
 /** LIGHT MODE */
 /* Background color, very light gray */
 #define COLOR_BACKGROUND_LIGHT QColor("#fbfbfe")
-/* Ravencoin dark orange */
+/* Memeium dark orange */
 #define COLOR_DARK_ORANGE QColor("#f05239")
-/* Ravencoin light orange */
+/* Memeium light orange */
 #define COLOR_LIGHT_ORANGE QColor("#f79433")
-/* Ravencoin dark blue */
+/* Memeium dark blue */
 #define COLOR_DARK_BLUE QColor("#384192")
-/* Ravencoin light blue */
+/* Memeium light blue */
 #define COLOR_LIGHT_BLUE QColor("#5874cf")
-/* Ravencoin asset text */
+/* Memeium asset text */
 #define COLOR_ASSET_TEXT QColor(255, 255, 255)
-/* Ravencoin shadow color - light mode */
+/* Memeium shadow color - light mode */
 #define COLOR_SHADOW_LIGHT QColor("#e1e6f3")
 /* Toolbar not selected text color */
 #define COLOR_TOOLBAR_NOT_SELECTED_TEXT QColor("#a5b7f3")
@@ -67,19 +68,19 @@ static const bool DEFAULT_SPLASHSCREEN = true;
 /** DARK MODE */
 /* Widget background color, dark mode */
 #define COLOR_WIDGET_BACKGROUND_DARK QColor("#1c2535")
-/* Ravencoin shadow color - dark mode */
+/* Memeium shadow color - dark mode */
 #define COLOR_SHADOW_DARK QColor("#0c1b3d")
-/* Ravencoin Light blue - dark mode - dark mode */
+/* Memeium Light blue - dark mode - dark mode */
 #define COLOR_LIGHT_BLUE_DARK QColor("#1e2636")
-/* Ravencoin Dark blue - dark mode - dark mode */
+/* Memeium Dark blue - dark mode - dark mode */
 #define COLOR_DARK_BLUE_DARK QColor("#0b1018")
 /* Pricing widget background color */
 #define COLOR_PRICING_WIDGET QColor("#161e2d")
-/* Ravencoin dark mode administrator background color */
+/* Memeium dark mode administrator background color */
 #define COLOR_ADMIN_CARD_DARK COLOR_BLACK
-/* Ravencoin dark mode regular asset background color */
+/* Memeium dark mode regular asset background color */
 #define COLOR_REGULAR_CARD_DARK_BLUE_DARK_MODE QColor("#06132a")
-/* Ravencoin dark mode regular asset background color */
+/* Memeium dark mode regular asset background color */
 #define COLOR_REGULAR_CARD_LIGHT_BLUE_DARK_MODE QColor("#0e1b3b")
 /* Toolbar not selected text color */
 #define COLOR_TOOLBAR_NOT_SELECTED_TEXT_DARK_MODE QColor("#6c80c5")
@@ -89,15 +90,9 @@ static const bool DEFAULT_SPLASHSCREEN = true;
 #define COLOR_SENDENTRIES_BACKGROUND_DARK QColor("#1c2535")
 
 
-/* Ravencoin label color as a string */
+/* Memeium label color as a string */
 #define STRING_LABEL_COLOR "color: #4960ad"
 #define STRING_LABEL_COLOR_WARNING "color: #FF8080"
-
-
-
-
-
-
 
 
 /* Tooltips longer than this (in characters) are converted into rich text,
@@ -114,15 +109,15 @@ static const int MAX_URI_LENGTH = 255;
 /* Number of frames in spinner animation */
 #define SPINNER_FRAMES 36
 
-#define QAPP_ORG_NAME "Raven"
-#define QAPP_ORG_DOMAIN "raven.org"
-#define QAPP_APP_NAME_DEFAULT "Raven-Qt"
-#define QAPP_APP_NAME_TESTNET "Raven-Qt-testnet"
+#define QAPP_ORG_NAME "Memeium"
+#define QAPP_ORG_DOMAIN "memeium.org"
+#define QAPP_APP_NAME_DEFAULT "Memeium-Qt"
+#define QAPP_APP_NAME_TESTNET "Memeium-Qt-testnet"
 
 /* Default third party browser urls */
-#define DEFAULT_THIRD_PARTY_BROWSERS "https://api.ravencoin.org/tx/%s|https://rvn.cryptoscope.io/tx/?txid=%s|https://blockbook.ravencoin.org/tx/%s|https://explorer.mangofarmassets.com/tx/%s|https://www.assetsexplorer.com/tx/%s|https://explorer.ravenland.org/tx/%s"
+#define DEFAULT_THIRD_PARTY_BROWSERS "https://api.memeium.org/tx/%s|https://mmm.cryptoscope.io/tx/?txid=%s|https://blockbook.memeium.org/tx/%s|https://explorer.mangofarmassets.com/tx/%s|https://www.assetsexplorer.com/tx/%s"
 
 /* Default IPFS viewer */
 #define DEFAULT_IPFS_VIEWER "https://ipfs.io/ipfs/%s"
 
-#endif // RAVEN_QT_GUICONSTANTS_H
+#endif // MEMEIUM_QT_GUICONSTANTS_H

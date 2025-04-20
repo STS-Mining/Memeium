@@ -1,18 +1,19 @@
 // Copyright (c) 2014-2015 The Bitcoin Core developers
 // Copyright (c) 2017-2019 The Raven Core developers
+// Copyright (c) 2024-2025 The Memeium Core developers
 // Distributed under the MIT software license, see the accompanying
 // file COPYING or http://www.opensource.org/licenses/mit-license.php.
 
-#ifndef RAVEN_CHAINPARAMSBASE_H
-#define RAVEN_CHAINPARAMSBASE_H
+#ifndef MEMEIUM_CHAINPARAMSBASE_H
+#define MEMEIUM_CHAINPARAMSBASE_H
 
 #include <memory>
 #include <string>
 #include <vector>
 
 /**
- * CBaseChainParams defines the base parameters (shared between raven-cli and ravend)
- * of a given instance of the Raven system.
+ * CBaseChainParams defines the base parameters (shared between memeium-cli and memeiumd)
+ * of a given instance of the Memeium system.
  */
 class CBaseChainParams
 {
@@ -24,7 +25,7 @@ public:
 
     const std::string& DataDir() const { return strDataDir; }
     int RPCPort() const { return nRPCPort; }
- 
+
 
 protected:
     CBaseChainParams() {}
@@ -44,7 +45,7 @@ std::unique_ptr<CBaseChainParams> CreateBaseChainParams(const std::string& chain
  * Append the help messages for the chainparams options to the
  * parameter string.
  */
-void AppendParamsHelpMessages(std::string& strUsage, bool debugHelp=true);
+void AppendParamsHelpMessages(std::string& strUsage, bool debugHelp = true);
 
 /**
  * Return the currently selected parameters. This won't change after app
@@ -61,4 +62,4 @@ void SelectBaseParams(const std::string& chain);
  */
 std::string ChainNameFromCommandLine();
 
-#endif // RAVEN_CHAINPARAMSBASE_H
+#endif // MEMEIUM_CHAINPARAMSBASE_H

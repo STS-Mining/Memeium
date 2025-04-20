@@ -1,11 +1,12 @@
 // Copyright (c) 2009-2010 Satoshi Nakamoto
 // Copyright (c) 2009-2016 The Bitcoin Core developers
 // Copyright (c) 2017-2019 The Raven Core developers
+// Copyright (c) 2024-2025 The Memeium Core developers
 // Distributed under the MIT software license, see the accompanying
 // file COPYING or http://www.opensource.org/licenses/mit-license.php.
 
 #if defined(HAVE_CONFIG_H)
-#include "config/raven-config.h"
+#include "config/memeium-config.h"
 #endif
 
 #include "utiltime.h"
@@ -40,7 +41,8 @@ int64_t GetMockTime()
 int64_t GetTimeMillis()
 {
     int64_t now = (boost::posix_time::microsec_clock::universal_time() -
-                   boost::posix_time::ptime(boost::gregorian::date(1970,1,1))).total_milliseconds();
+                   boost::posix_time::ptime(boost::gregorian::date(1970, 1, 1)))
+                      .total_milliseconds();
     assert(now > 0);
     return now;
 }
@@ -48,19 +50,19 @@ int64_t GetTimeMillis()
 int64_t GetTimeMicros()
 {
     int64_t now = (boost::posix_time::microsec_clock::universal_time() -
-                   boost::posix_time::ptime(boost::gregorian::date(1970,1,1))).total_microseconds();
+                   boost::posix_time::ptime(boost::gregorian::date(1970, 1, 1)))
+                      .total_microseconds();
     assert(now > 0);
     return now;
 }
 
 int64_t GetSystemTimeInSeconds()
 {
-    return GetTimeMicros()/1000000;
+    return GetTimeMicros() / 1000000;
 }
 
 void MilliSleep(int64_t n)
 {
-
 /**
  * Boost's sleep_for was uninterruptible when backed by nanosleep from 1.50
  * until fixed in 1.52. Use the deprecated sleep method for the broken case.
@@ -71,7 +73,7 @@ void MilliSleep(int64_t n)
 #elif defined(HAVE_WORKING_BOOST_SLEEP)
     boost::this_thread::sleep(boost::posix_time::milliseconds(n));
 #else
-//should never get here
+// should never get here
 #error missing boost sleep implementation
 #endif
 }

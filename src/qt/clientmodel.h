@@ -1,13 +1,14 @@
 // Copyright (c) 2011-2016 The Bitcoin Core developers
 // Copyright (c) 2017-2019 The Raven Core developers
+// Copyright (c) 2024-2025 The Memeium Core developers
 // Distributed under the MIT software license, see the accompanying
 // file COPYING or http://www.opensource.org/licenses/mit-license.php.
 
-#ifndef RAVEN_QT_CLIENTMODEL_H
-#define RAVEN_QT_CLIENTMODEL_H
+#ifndef MEMEIUM_QT_CLIENTMODEL_H
+#define MEMEIUM_QT_CLIENTMODEL_H
 
-#include <QObject>
 #include <QDateTime>
+#include <QObject>
 
 #include <atomic>
 
@@ -30,23 +31,23 @@ enum BlockSource {
 
 enum NumConnections {
     CONNECTIONS_NONE = 0,
-    CONNECTIONS_IN   = (1U << 0),
-    CONNECTIONS_OUT  = (1U << 1),
-    CONNECTIONS_ALL  = (CONNECTIONS_IN | CONNECTIONS_OUT),
+    CONNECTIONS_IN = (1U << 0),
+    CONNECTIONS_OUT = (1U << 1),
+    CONNECTIONS_ALL = (CONNECTIONS_IN | CONNECTIONS_OUT),
 };
 
-/** Model for Raven network client. */
+/** Model for memeium network client. */
 class ClientModel : public QObject
 {
     Q_OBJECT
 
 public:
-    explicit ClientModel(OptionsModel *optionsModel, QObject *parent = 0);
+    explicit ClientModel(OptionsModel* optionsModel, QObject* parent = 0);
     ~ClientModel();
 
-    OptionsModel *getOptionsModel();
-    PeerTableModel *getPeerTableModel();
-    BanTableModel *getBanTableModel();
+    OptionsModel* getOptionsModel();
+    PeerTableModel* getPeerTableModel();
+    BanTableModel* getBanTableModel();
 
     //! Return number of connections, default is in- and outbound (total)
     int getNumConnections(unsigned int flags = CONNECTIONS_ALL) const;
@@ -57,11 +58,11 @@ public:
     long getMempoolSize() const;
     //! Return the dynamic memory usage of the mempool
     size_t getMempoolDynamicUsage() const;
-    
+
     quint64 getTotalBytesRecv() const;
     quint64 getTotalBytesSent() const;
 
-    double getVerificationProgress(const CBlockIndex *tip) const;
+    double getVerificationProgress(const CBlockIndex* tip) const;
     QDateTime getLastBlockDate() const;
 
     //! Return true if core is doing initial block download
@@ -86,11 +87,11 @@ public:
     mutable std::atomic<int64_t> cachedBestHeaderTime;
 
 private:
-    OptionsModel *optionsModel;
-    PeerTableModel *peerTableModel;
-    BanTableModel *banTableModel;
+    OptionsModel* optionsModel;
+    PeerTableModel* peerTableModel;
+    BanTableModel* banTableModel;
 
-    QTimer *pollTimer;
+    QTimer* pollTimer;
 
     void subscribeToCoreSignals();
     void unsubscribeFromCoreSignals();
@@ -100,14 +101,14 @@ Q_SIGNALS:
     void numBlocksChanged(int count, const QDateTime& blockDate, double nVerificationProgress, bool header);
     void mempoolSizeChanged(long count, size_t mempoolSizeInBytes);
     void networkActiveChanged(bool networkActive);
-    void alertsChanged(const QString &warnings);
+    void alertsChanged(const QString& warnings);
     void bytesChanged(quint64 totalBytesIn, quint64 totalBytesOut);
 
     //! Fired when a message should be reported to the user
-    void message(const QString &title, const QString &message, unsigned int style);
+    void message(const QString& title, const QString& message, unsigned int style);
 
     // Show progress dialog e.g. for verifychain
-    void showProgress(const QString &title, int nProgress);
+    void showProgress(const QString& title, int nProgress);
 
 public Q_SLOTS:
     void updateTimer();
@@ -117,4 +118,4 @@ public Q_SLOTS:
     void updateBanlist();
 };
 
-#endif // RAVEN_QT_CLIENTMODEL_H
+#endif // MEMEIUM_QT_CLIENTMODEL_H

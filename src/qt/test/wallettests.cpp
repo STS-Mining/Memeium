@@ -1,33 +1,33 @@
 #include "wallettests.h"
 
-#include "qt/ravenamountfield.h"
 #include "qt/callback.h"
+#include "qt/memeiumamountfield.h"
 #include "qt/optionsmodel.h"
+#include "qt/overviewpage.h"
 #include "qt/platformstyle.h"
 #include "qt/qvalidatedlineedit.h"
+#include "qt/receivecoinsdialog.h"
+#include "qt/receiverequestdialog.h"
+#include "qt/recentrequeststablemodel.h"
 #include "qt/sendcoinsdialog.h"
 #include "qt/sendcoinsentry.h"
 #include "qt/transactiontablemodel.h"
 #include "qt/transactionview.h"
 #include "qt/walletmodel.h"
-#include "test/test_raven.h"
+#include "test/test_memeium.h"
 #include "validation.h"
 #include "wallet/wallet.h"
-#include "qt/overviewpage.h"
-#include "qt/receivecoinsdialog.h"
-#include "qt/recentrequeststablemodel.h"
-#include "qt/receiverequestdialog.h"
 
 #include <QAbstractButton>
 #include <QAction>
 #include <QApplication>
 #include <QCheckBox>
+#include <QDialogButtonBox>
+#include <QListView>
 #include <QPushButton>
+#include <QTextEdit>
 #include <QTimer>
 #include <QVBoxLayout>
-#include <QTextEdit>
-#include <QListView>
-#include <QDialogButtonBox>
 
 namespace
 {
@@ -43,7 +43,8 @@ void ConfirmMessage(QString* text = nullptr)
             }
         }
         delete callback;
-    }), SLOT(call()));
+    }),
+        SLOT(call()));
 }
 
 //! Press "Yes" or "Cancel" buttons in modal send confirmation dialog.
@@ -60,7 +61,8 @@ void ConfirmSend(QString* text = nullptr, bool cancel = false)
             }
         }
         delete callback;
-    }), SLOT(call()));
+    }),
+        SLOT(call()));
 }
 
 //! Send coins to address and return txid.
@@ -69,7 +71,7 @@ uint256 SendCoins(CWallet& wallet, SendCoinsDialog& sendCoinsDialog, const CTxDe
     QVBoxLayout* entries = sendCoinsDialog.findChild<QVBoxLayout*>("entries");
     SendCoinsEntry* entry = qobject_cast<SendCoinsEntry*>(entries->itemAt(0)->widget());
     entry->findChild<QValidatedLineEdit*>("payTo")->setText(QString::fromStdString(EncodeDestination(address)));
-    entry->findChild<RavenAmountField*>("payAmount")->setValue(amount);
+    entry->findChild<MemeiumAmountField*>("payAmount")->setValue(amount);
     sendCoinsDialog.findChild<QFrame*>("frameFee")
         ->findChild<QFrame*>("frameFeeSelection")
         ->findChild<QCheckBox*>("optInRBF")
@@ -144,9 +146,9 @@ void BumpFee(TransactionView& view, const uint256& txid, bool expectDisabled, st
 //
 // This also requires overriding the default minimal Qt platform:
 //
-//     src/qt/test/test_raven-qt -platform xcb      # Linux
-//     src/qt/test/test_raven-qt -platform windows  # Windows
-//     src/qt/test/test_raven-qt -platform cocoa    # macOS
+//     src/qt/test/test_memeium-qt -platform xcb      # Linux
+//     src/qt/test/test_memeium-qt -platform windows  # Windows
+//     src/qt/test/test_memeium-qt -platform cocoa    # macOS
 void TestGUI()
 {
     // Set up wallet and chain with 105 blocks (5 mature blocks for spending).
@@ -198,7 +200,7 @@ void TestGUI()
     QString balanceText = balanceLabel->text();
     int unit = walletModel.getOptionsModel()->getDisplayUnit();
     CAmount balance = walletModel.getBalance();
-    QString balanceComparison = RavenUnits::formatWithUnit(unit, balance, false, RavenUnits::separatorAlways);
+    QString balanceComparison = MemeiumUnits::formatWithUnit(unit, balance, false, MemeiumUnits::separatorAlways);
     QCOMPARE(balanceText, balanceComparison);
 
     // Check Request Payment button
@@ -211,7 +213,7 @@ void TestGUI()
     labelInput->setText("TEST_LABEL_1");
 
     // Amount input
-    RavenAmountField* amountInput = receiveCoinsDialog.findChild<RavenAmountField*>("reqAmount");
+    MemeiumAmountField* amountInput = receiveCoinsDialog.findChild<MemeiumAmountField*>("reqAmount");
     amountInput->setValue(1);
 
     // Message input
@@ -227,7 +229,7 @@ void TestGUI()
             QString paymentText = rlist->toPlainText();
             QStringList paymentTextList = paymentText.split('\n');
             QCOMPARE(paymentTextList.at(0), QString("Payment information"));
-            QVERIFY(paymentTextList.at(1).indexOf(QString("URI: raven:")) != -1);
+            QVERIFY(paymentTextList.at(1).indexOf(QString("URI: memeium:")) != -1);
             QVERIFY(paymentTextList.at(2).indexOf(QString("Address:")) != -1);
             QCOMPARE(paymentTextList.at(3), QString("Amount: 0.00000001 ") + QString::fromStdString(CURRENCY_UNIT));
             QCOMPARE(paymentTextList.at(4), QString("Label: TEST_LABEL_1"));
@@ -244,20 +246,20 @@ void TestGUI()
 
     // Check addition to history
     int currentRowCount = requestTableModel->rowCount({});
-    QCOMPARE(currentRowCount, initialRowCount+1);
+    QCOMPARE(currentRowCount, initialRowCount + 1);
 
     // Check Remove button
     QTableView* table = receiveCoinsDialog.findChild<QTableView*>("recentRequestsView");
-    table->selectRow(currentRowCount-1);
+    table->selectRow(currentRowCount - 1);
     QPushButton* removeRequestButton = receiveCoinsDialog.findChild<QPushButton*>("removeRequestButton");
     removeRequestButton->click();
-    QCOMPARE(requestTableModel->rowCount({}), currentRowCount-1);
+    QCOMPARE(requestTableModel->rowCount({}), currentRowCount - 1);
 
     bitdb.Flush(true);
     bitdb.Reset();
 }
 
-}
+} // namespace
 
 void WalletTests::walletTests()
 {

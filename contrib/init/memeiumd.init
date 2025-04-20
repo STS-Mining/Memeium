@@ -1,0 +1,67 @@
+#!/bin/bash
+#
+#  memeiumd The memeium core server.
+#
+#
+# chkconfig: 345 80 20
+# description: memeiumd
+# processname: memeiumd
+#
+
+# Source function library.
+. /etc/init.d/functions
+
+# you can override defaults in /etc/sysconfig/memeiumd, see below
+if [ -f /etc/sysconfig/memeiumd ]; then
+        . /etc/sysconfig/memeiumd
+fi
+
+RETVAL=0
+
+prog=memeiumd
+# you can override the lockfile via MEMEIUMD_LOCKFILE in /etc/sysconfig/memeiumd
+lockfile=${MEMEIUMD_LOCKFILE-/var/lock/subsys/memeiumd}
+
+# memeiumd defaults to /usr/bin/memeiumd, override with MEMEIUMD_BIN
+memeiumd=${MEMEIUMD_BIN-/usr/bin/memeiumd}
+
+# memeiumd opts default to -disablewallet, override with MEMEIUMD_OPTS
+memeiumd_opts=${MEMEIUMD_OPTS--disablewallet}
+
+start() {
+    echo -n $"Starting $prog: "
+    daemon $DAEMONOPTS $memeiumd $memeiumd_opts
+    RETVAL=$?
+    echo
+    [ $RETVAL -eq 0 ] && touch $lockfile
+    return $RETVAL
+}
+
+stop() {
+    echo -n $"Stopping $prog: "
+    killproc $prog
+    RETVAL=$?
+    echo
+    [ $RETVAL -eq 0 ] && rm -f $lockfile
+    return $RETVAL
+}
+
+case "$1" in
+    start)
+        start
+        ;;
+    stop)
+        stop
+        ;;
+    status)
+        status $prog
+        ;;
+    restart)
+        stop
+        start
+        ;;
+    *)
+        echo "Usage: service $prog {start|stop|status|restart}"
+        exit 1
+        ;;
+esac

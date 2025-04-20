@@ -1,25 +1,27 @@
 // Copyright (c) 2015-2016 The Bitcoin Core developers
 // Copyright (c) 2017-2019 The Raven Core developers
+// Copyright (c) 2024-2025 The Memeium Core developers
 // Distributed under the MIT software license, see the accompanying
 // file COPYING or http://www.opensource.org/licenses/mit-license.php.
 
-#ifndef RAVEN_REVERSELOCK_H
-#define RAVEN_REVERSELOCK_H
+#ifndef MEMEIUM_REVERSELOCK_H
+#define MEMEIUM_REVERSELOCK_H
 
 /**
  * An RAII-style reverse lock. Unlocks on construction and locks on destruction.
  */
-template<typename Lock>
+template <typename Lock>
 class reverse_lock
 {
 public:
-
-    explicit reverse_lock(Lock& _lock) : lock(_lock) {
+    explicit reverse_lock(Lock& _lock) : lock(_lock)
+    {
         _lock.unlock();
         _lock.swap(templock);
     }
 
-    ~reverse_lock() {
+    ~reverse_lock()
+    {
         templock.lock();
         templock.swap(lock);
     }
@@ -32,4 +34,4 @@ private:
     Lock templock;
 };
 
-#endif // RAVEN_REVERSELOCK_H
+#endif // MEMEIUM_REVERSELOCK_H

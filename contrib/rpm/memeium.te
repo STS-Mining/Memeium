@@ -1,0 +1,81 @@
+policy_module(memeium, 1.100.1)
+
+########################################
+#
+# Declarations
+#
+
+type memeium_t;
+type memeium_exec_t;
+init_daemon_domain(memeium_t, memeium_exec_t)
+
+permissive memeium_t;
+
+type memeium_initrc_exec_t;
+init_script_file(memeium_initrc_exec_t)
+
+type memeium_conf_t;
+files_type(memeium_conf_t)
+
+type memeium_var_lib_t;
+files_type(memeium_var_lib_t)
+
+type memeium_var_run_t;
+files_type(memeium_var_run_t)
+
+type memeium_port_t;
+corenet_port(memeium_port_t)
+
+########################################
+#
+# memeium local policy
+#
+allow memeium_t self:process { fork };
+
+allow memeium_t self:fifo_file rw_fifo_file_perms;
+allow memeium_t self:unix_stream_socket create_stream_socket_perms;
+
+manage_dirs_pattern(memeium_t, memeium_conf_t, memeium_conf_t)
+manage_files_pattern(memeium_t, memeium_conf_t, memeium_conf_t)
+
+manage_dirs_pattern(memeium_t, memeium_var_lib_t, memeium_var_lib_t)
+manage_files_pattern(memeium_t, memeium_var_lib_t, memeium_var_lib_t)
+files_var_lib_filetrans(memeium_t, memeium_var_lib_t, { dir file })
+
+manage_dirs_pattern(memeium_t, memeium_var_run_t, memeium_var_run_t)
+manage_files_pattern(memeium_t, memeium_var_run_t, memeium_var_run_t)
+
+sysnet_dns_name_resolve(memeium_t)
+corenet_all_recvfrom_unlabeled(memeium_t)
+
+allow memeium_t self:tcp_socket create_stream_socket_perms;
+corenet_tcp_sendrecv_generic_if(memeium_t)
+corenet_tcp_sendrecv_generic_node(memeium_t)
+corenet_tcp_sendrecv_all_ports(memeium_t)
+corenet_tcp_bind_generic_node(memeium_t)
+
+gen_require(`
+    type memeium_port_t;
+')
+allow memeium_t memeium_port_t:tcp_socket name_bind;
+
+gen_require(`
+    type memeium_port_t;
+')
+allow memeium_t memeium_port_t:tcp_socket name_connect;
+
+domain_use_interactive_fds(memeium_t)
+
+files_read_etc_files(memeium_t)
+
+miscfiles_read_localization(memeium_t)
+
+sysnet_dns_name_resolve(memeium_t)
+
+allow memeium_t memeium_exec_t:file execute_no_trans;
+allow memeium_t self:process setsched;
+corecmd_exec_ls(memeium_t)
+corenet_tcp_connect_http_port(memeium_t)
+dev_read_urand(memeium_t)
+fs_getattr_xattr_fs(memeium_t)
+kernel_read_system_state(memeium_t)

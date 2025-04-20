@@ -1,80 +1,82 @@
 // Copyright (c) 2012-2016 The Bitcoin Core developers
 // Copyright (c) 2017-2019 The Raven Core developers
+// Copyright (c) 2024-2025 The Memeium Core developers
 // Distributed under the MIT software license, see the accompanying
 // file COPYING or http://www.opensource.org/licenses/mit-license.php.
 
 #include "dbwrapper.h"
 
 #include "fs.h"
-#include "util.h"
 #include "random.h"
+#include "util.h"
 
+#include <algorithm>
 #include <leveldb/cache.h>
 #include <leveldb/env.h>
 #include <leveldb/filter_policy.h>
 #include <memenv.h>
 #include <stdint.h>
-#include <algorithm>
 
-class CRavenLevelDBLogger : public leveldb::Logger {
+class CMemeiumLevelDBLogger : public leveldb::Logger
+{
 public:
     // This code is adapted from posix_logger.h, which is why it is using vsprintf.
     // Please do not do this in normal code
-    void Logv(const char * format, va_list ap) override {
-            if (!LogAcceptCategory(BCLog::LEVELDB)) {
-                return;
+    void Logv(const char* format, va_list ap) override
+    {
+        if (!LogAcceptCategory(BCLog::LEVELDB)) {
+            return;
+        }
+        char buffer[500];
+        for (int iter = 0; iter < 2; iter++) {
+            char* base;
+            int bufsize;
+            if (iter == 0) {
+                bufsize = sizeof(buffer);
+                base = buffer;
+            } else {
+                bufsize = 30000;
+                base = new char[bufsize];
             }
-            char buffer[500];
-            for (int iter = 0; iter < 2; iter++) {
-                char* base;
-                int bufsize;
+            char* p = base;
+            char* limit = base + bufsize;
+
+            // Print the message
+            if (p < limit) {
+                va_list backup_ap;
+                va_copy(backup_ap, ap);
+                // Do not use vsnprintf elsewhere in memeium source code, see above.
+                p += vsnprintf(p, limit - p, format, backup_ap);
+                va_end(backup_ap);
+            }
+
+            // Truncate to available space if necessary
+            if (p >= limit) {
                 if (iter == 0) {
-                    bufsize = sizeof(buffer);
-                    base = buffer;
+                    continue; // Try again with larger buffer
+                } else {
+                    p = limit - 1;
                 }
-                else {
-                    bufsize = 30000;
-                    base = new char[bufsize];
-                }
-                char* p = base;
-                char* limit = base + bufsize;
-
-                // Print the message
-                if (p < limit) {
-                    va_list backup_ap;
-                    va_copy(backup_ap, ap);
-                    // Do not use vsnprintf elsewhere in raven source code, see above.
-                    p += vsnprintf(p, limit - p, format, backup_ap);
-                    va_end(backup_ap);
-                }
-
-                // Truncate to available space if necessary
-                if (p >= limit) {
-                    if (iter == 0) {
-                        continue;       // Try again with larger buffer
-                    }
-                    else {
-                        p = limit - 1;
-                    }
-                }
-
-                // Add newline if necessary
-                if (p == base || p[-1] != '\n') {
-                    *p++ = '\n';
-                }
-
-                assert(p <= limit);
-                base[std::min(bufsize - 1, (int)(p - base))] = '\0';
-                LogPrintStr(base);
-                if (base != buffer) {
-                    delete[] base;
-                }
-                break;
             }
+
+            // Add newline if necessary
+            if (p == base || p[-1] != '\n') {
+                *p++ = '\n';
+            }
+
+            assert(p <= limit);
+            base[std::min(bufsize - 1, (int)(p - base))] = '\0';
+            LogPrintStr(base);
+            if (base != buffer) {
+                delete[] base;
+            }
+            break;
+        }
     }
 };
 
-static void SetMaxOpenFiles(leveldb::Options *options) {
+static void SetMaxOpenFiles(leveldb::Options* options)
+{
     // On most platforms the default setting of max_open_files (which is 1000)
     // is optimal. On Windows using a large file count is OK because the handles
     // do not interfere with select() loops. On 64-bit Unix hosts this value is
@@ -96,7 +98,7 @@ static void SetMaxOpenFiles(leveldb::Options *options) {
     }
 #endif
     LogPrint(BCLog::LEVELDB, "LevelDB using max_open_files=%d (default=%d)\n",
-             options->max_open_files, default_open_files);
+        options->max_open_files, default_open_files);
 }
 
 static leveldb::Options GetOptions(size_t nCacheSize, size_t maxFileSize)
@@ -106,7 +108,7 @@ static leveldb::Options GetOptions(size_t nCacheSize, size_t maxFileSize)
     options.write_buffer_size = nCacheSize / 4; // up to two write buffers may be held in memory simultaneously
     options.filter_policy = leveldb::NewBloomFilterPolicy(10);
     options.compression = leveldb::kNoCompression;
-    options.info_log = new CRavenLevelDBLogger();
+    options.info_log = new CMemeiumLevelDBLogger();
     options.max_file_size = maxFileSize;
     if (leveldb::kMajorVersion > 1 || (leveldb::kMajorVersion == 1 && leveldb::kMinorVersion >= 16)) {
         // LevelDB versions before 1.16 consider short writes to be corruption. Only trigger error
@@ -206,7 +208,6 @@ std::vector<unsigned char> CDBWrapper::CreateObfuscateKey() const
     unsigned char buff[OBFUSCATE_KEY_NUM_BYTES];
     GetRandBytes(buff, OBFUSCATE_KEY_NUM_BYTES);
     return std::vector<unsigned char>(&buff[0], &buff[OBFUSCATE_KEY_NUM_BYTES]);
-
 }
 
 bool CDBWrapper::IsEmpty()
@@ -221,7 +222,8 @@ bool CDBIterator::Valid() const { return piter->Valid(); }
 void CDBIterator::SeekToFirst() { piter->SeekToFirst(); }
 void CDBIterator::Next() { piter->Next(); }
 
-namespace dbwrapper_private {
+namespace dbwrapper_private
+{
 
 void HandleError(const leveldb::Status& status)
 {
@@ -237,7 +239,7 @@ void HandleError(const leveldb::Status& status)
     throw dbwrapper_error("Unknown database error");
 }
 
-const std::vector<unsigned char>& GetObfuscateKey(const CDBWrapper &w)
+const std::vector<unsigned char>& GetObfuscateKey(const CDBWrapper& w)
 {
     return w.obfuscate_key;
 }

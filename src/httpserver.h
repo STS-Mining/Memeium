@@ -1,18 +1,19 @@
 // Copyright (c) 2015-2016 The Bitcoin Core developers
 // Copyright (c) 2017-2019 The Raven Core developers
+// Copyright (c) 2024-2025 The Memeium Core developers
 // Distributed under the MIT software license, see the accompanying
 // file COPYING or http://www.opensource.org/licenses/mit-license.php.
 
-#ifndef RAVEN_HTTPSERVER_H
-#define RAVEN_HTTPSERVER_H
+#ifndef MEMEIUM_HTTPSERVER_H
+#define MEMEIUM_HTTPSERVER_H
 
-#include <string>
-#include <stdint.h>
 #include <functional>
+#include <stdint.h>
+#include <string>
 
-static const int DEFAULT_HTTP_THREADS=4;
-static const int DEFAULT_HTTP_WORKQUEUE=16;
-static const int DEFAULT_HTTP_SERVER_TIMEOUT=30;
+static const int DEFAULT_HTTP_THREADS = 4;
+static const int DEFAULT_HTTP_WORKQUEUE = 16;
+static const int DEFAULT_HTTP_SERVER_TIMEOUT = 30;
 
 struct evhttp_request;
 struct event_base;
@@ -38,14 +39,14 @@ void StopHTTPServer();
 bool UpdateHTTPServerLogging(bool enable);
 
 /** Handler for requests to a certain HTTP path */
-typedef std::function<bool(HTTPRequest* req, const std::string &)> HTTPRequestHandler;
+typedef std::function<bool(HTTPRequest* req, const std::string&)> HTTPRequestHandler;
 /** Register handler for prefix.
  * If multiple handlers match a prefix, the first-registered one will
  * be invoked.
  */
-void RegisterHTTPHandler(const std::string &prefix, bool exactMatch, const HTTPRequestHandler &handler);
+void RegisterHTTPHandler(const std::string& prefix, bool exactMatch, const HTTPRequestHandler& handler);
 /** Unregister handler for prefix */
-void UnregisterHTTPHandler(const std::string &prefix, bool exactMatch);
+void UnregisterHTTPHandler(const std::string& prefix, bool exactMatch);
 
 /** Return evhttp event base. This can be used by submodules to
  * queue timers or custom events.
@@ -145,10 +146,11 @@ public:
 
     bool deleteWhenTriggered;
     std::function<void(void)> handler;
+
 private:
     struct event* ev;
 };
 
-std::string urlDecode(const std::string &urlEncoded);
+std::string urlDecode(const std::string& urlEncoded);
 
-#endif // RAVEN_HTTPSERVER_H
+#endif // MEMEIUM_HTTPSERVER_H

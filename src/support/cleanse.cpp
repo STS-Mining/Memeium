@@ -1,6 +1,7 @@
 // Copyright (c) 2009-2010 Satoshi Nakamoto
 // Copyright (c) 2009-2015 The Bitcoin Core developers
 // Copyright (c) 2017-2019 The Raven Core developers
+// Copyright (c) 2024-2025 The Memeium Core developers
 // Distributed under the MIT software license, see the accompanying
 // file COPYING or http://www.opensource.org/licenses/mit-license.php.
 
@@ -25,7 +26,7 @@
  * Commit: ad1907fe73334d6c696c8539646c21b11178f20f
  * BoringSSL (LICENSE: ISC)
  */
-void memory_cleanse(void *ptr, size_t len)
+void memory_cleanse(void* ptr, size_t len)
 {
     std::memset(ptr, 0, len);
 

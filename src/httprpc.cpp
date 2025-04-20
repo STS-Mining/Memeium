@@ -1,5 +1,6 @@
 // Copyright (c) 2015-2016 The Bitcoin Core developers
 // Copyright (c) 2017-2019 The Raven Core developers
+// Copyright (c) 2024-2025 The Memeium Core developers
 // Distributed under the MIT software license, see the accompanying
 // file COPYING or http://www.opensource.org/licenses/mit-license.php.
 
@@ -7,15 +8,15 @@
 
 #include "base58.h"
 #include "chainparams.h"
+#include "crypto/hmac_sha256.h"
 #include "httpserver.h"
+#include "random.h"
 #include "rpc/protocol.h"
 #include "rpc/server.h"
-#include "random.h"
 #include "sync.h"
+#include "ui_interface.h"
 #include "util.h"
 #include "utilstrencodings.h"
-#include "ui_interface.h"
-#include "crypto/hmac_sha256.h"
 #include <stdio.h>
 
 #include <boost/algorithm/string.hpp> // boost::trim
@@ -29,14 +30,14 @@ static const char* WWW_AUTH_HEADER_DATA = "Basic realm=\"jsonrpc\"";
 class HTTPRPCTimer : public RPCTimerBase
 {
 public:
-    HTTPRPCTimer(struct event_base* eventBase, std::function<void(void)>& func, int64_t millis) :
-        ev(eventBase, false, func)
+    HTTPRPCTimer(struct event_base* eventBase, std::function<void(void)>& func, int64_t millis) : ev(eventBase, false, func)
     {
         struct timeval tv;
-        tv.tv_sec = millis/1000;
-        tv.tv_usec = (millis%1000)*1000;
+        tv.tv_sec = millis / 1000;
+        tv.tv_usec = (millis % 1000) * 1000;
         ev.trigger(&tv);
     }
+
 private:
     HTTPEvent ev;
 };
@@ -55,6 +56,7 @@ public:
     {
         return new HTTPRPCTimer(base, func, millis);
     }
+
 private:
     struct event_base* base;
 };
@@ -82,10 +84,10 @@ static void JSONErrorReply(HTTPRequest* req, const UniValue& objError, const Uni
     req->WriteReply(nStatus, strReply);
 }
 
-//This function checks username and password against -rpcauth
-//entries from config file.
+// This function checks username and password against -rpcauth
+// entries from config file.
 static bool multiUserAuthorized(std::string strUserPass)
-{    
+{
     if (strUserPass.find(":") == std::string::npos) {
         return false;
     }
@@ -93,11 +95,11 @@ static bool multiUserAuthorized(std::string strUserPass)
     std::string strPass = strUserPass.substr(strUserPass.find(":") + 1);
 
     for (const std::string& strRPCAuth : gArgs.GetArgs("-rpcauth")) {
-        //Search for multi-user login/pass "rpcauth" from config
+        // Search for multi-user login/pass "rpcauth" from config
         std::vector<std::string> vFields;
         boost::split(vFields, strRPCAuth, boost::is_any_of(":$"));
         if (vFields.size() != 3) {
-            //Incorrect formatting in config file
+            // Incorrect formatting in config file
             continue;
         }
 
@@ -113,7 +115,7 @@ static bool multiUserAuthorized(std::string strUserPass)
         unsigned char out[KEY_SIZE];
 
         CHMAC_SHA256(reinterpret_cast<const unsigned char*>(strSalt.c_str()), strSalt.size()).Write(reinterpret_cast<const unsigned char*>(strPass.c_str()), strPass.size()).Finalize(out);
-        std::vector<unsigned char> hexvec(out, out+KEY_SIZE);
+        std::vector<unsigned char> hexvec(out, out + KEY_SIZE);
         std::string strHashFromPass = HexStr(hexvec);
 
         if (TimingResistantEqual(strHashFromPass, strHash)) {
@@ -136,14 +138,14 @@ static bool RPCAuthorized(const std::string& strAuth, std::string& strAuthUserna
     if (strUserPass.find(":") != std::string::npos)
         strAuthUsernameOut = strUserPass.substr(0, strUserPass.find(":"));
 
-    //Check if authorized under single-user field
+    // Check if authorized under single-user field
     if (TimingResistantEqual(strUserPass, strRPCUserColonPass)) {
         return true;
     }
     return multiUserAuthorized(strUserPass);
 }
 
-static bool HTTPReq_JSONRPC(HTTPRequest* req, const std::string &)
+static bool HTTPReq_JSONRPC(HTTPRequest* req, const std::string&)
 {
     // JSONRPC handles only POST
     if (req->GetRequestMethod() != HTTPRequest::POST) {
@@ -191,7 +193,7 @@ static bool HTTPReq_JSONRPC(HTTPRequest* req, const std::string &)
             // Send reply
             strReply = JSONRPCReply(result, NullUniValue, jreq.id);
 
-        // array of requests
+            // array of requests
         } else if (valRequest.isArray())
             strReply = JSONRPCExecBatch(jreq, valRequest.get_array());
         else
@@ -211,8 +213,7 @@ static bool HTTPReq_JSONRPC(HTTPRequest* req, const std::string &)
 
 static bool InitRPCAuthentication()
 {
-    if (gArgs.GetArg("-rpcpassword", "") == "")
-    {
+    if (gArgs.GetArg("-rpcpassword", "") == "") {
         LogPrintf("No rpcpassword set - using random cookie authentication\n");
         if (!GenerateAuthCookie(&strRPCUserColonPass)) {
             uiInterface.ThreadSafeMessageBox(

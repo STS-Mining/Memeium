@@ -1,10 +1,11 @@
 // Copyright (c) 2014-2016 The Bitcoin Core developers
 // Copyright (c) 2017-2019 The Raven Core developers
+// Copyright (c) 2024-2025 The Memeium Core developers
 // Distributed under the MIT software license, see the accompanying
 // file COPYING or http://www.opensource.org/licenses/mit-license.php.
 
-#ifndef RAVEN_TIMEDATA_H
-#define RAVEN_TIMEDATA_H
+#ifndef MEMEIUM_TIMEDATA_H
+#define MEMEIUM_TIMEDATA_H
 
 #include <algorithm>
 #include <assert.h>
@@ -15,7 +16,7 @@ static const int64_t DEFAULT_MAX_TIME_ADJUSTMENT = 70 * 60;
 
 class CNetAddr;
 
-/** 
+/**
  * Median filter over a stream of values.
  * Returns the median of the last N numbers
  */
@@ -76,4 +77,4 @@ int64_t GetTimeOffset();
 int64_t GetAdjustedTime();
 void AddTimeData(const CNetAddr& ip, int64_t nTime);
 
-#endif // RAVEN_TIMEDATA_H
+#endif // MEMEIUM_TIMEDATA_H

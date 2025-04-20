@@ -1,11 +1,12 @@
 // Copyright (c) 2009-2010 Satoshi Nakamoto
 // Copyright (c) 2009-2016 The Bitcoin Core developers
 // Copyright (c) 2017-2019 The Raven Core developers
+// Copyright (c) 2024-2025 The Memeium Core developers
 // Distributed under the MIT software license, see the accompanying
 // file COPYING or http://www.opensource.org/licenses/mit-license.php.
 
-#ifndef RAVEN_SCRIPT_SIGCACHE_H
-#define RAVEN_SCRIPT_SIGCACHE_H
+#ifndef MEMEIUM_SCRIPT_SIGCACHE_H
+#define MEMEIUM_SCRIPT_SIGCACHE_H
 
 #include "script/interpreter.h"
 
@@ -34,9 +35,9 @@ public:
     template <uint8_t hash_select>
     uint32_t operator()(const uint256& key) const
     {
-        static_assert(hash_select <8, "SignatureCacheHasher only has 8 hashes available.");
+        static_assert(hash_select < 8, "SignatureCacheHasher only has 8 hashes available.");
         uint32_t u;
-        std::memcpy(&u, key.begin()+4*hash_select, 4);
+        std::memcpy(&u, key.begin() + 4 * hash_select, 4);
         return u;
     }
 };
@@ -54,4 +55,4 @@ public:
 
 void InitSignatureCache();
 
-#endif // RAVEN_SCRIPT_SIGCACHE_H
+#endif // MEMEIUM_SCRIPT_SIGCACHE_H

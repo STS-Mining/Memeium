@@ -1,15 +1,16 @@
 // Copyright (c) 2009-2010 Satoshi Nakamoto
 // Copyright (c) 2009-2016 The Bitcoin Core developers
 // Copyright (c) 2017-2020 The Raven Core developers
+// Copyright (c) 2024-2025 The Memeium Core developers
 // Distributed under the MIT software license, see the accompanying
 // file COPYING or http://www.opensource.org/licenses/mit-license.php.
 
 #include "primitives/block.h"
 
-#include <hash.h>
+#include "crypto/common.h"
 #include "tinyformat.h"
 #include "utilstrencodings.h"
-#include "crypto/common.h"
+#include <hash.h>
 
 
 static const uint32_t MAINNET_X16RV2ACTIVATIONTIME = 1569945600;
@@ -74,8 +75,6 @@ uint256 CBlockHeader::GetHashFull(uint256& mix_hash) const
 }
 
 
-
-
 uint256 CBlockHeader::GetX16RHash() const
 {
     return HashX16R(BEGIN(nVersion), END(nNonce), hashPrevBlock);
@@ -102,13 +101,12 @@ std::string CBlockHeader::ToString() const
 {
     std::stringstream s;
     s << strprintf("CBlock(ver=0x%08x, hashPrevBlock=%s, hashMerkleRoot=%s, nTime=%u, nBits=%08x, nNonce=%u, nNonce64=%u, nHeight=%u)\n",
-                   nVersion,
-                   hashPrevBlock.ToString(),
-                   hashMerkleRoot.ToString(),
-                   nTime, nBits, nNonce, nNonce64, nHeight);
+        nVersion,
+        hashPrevBlock.ToString(),
+        hashMerkleRoot.ToString(),
+        nTime, nBits, nNonce, nNonce64, nHeight);
     return s.str();
 }
-
 
 
 std::string CBlock::ToString() const
@@ -129,33 +127,33 @@ std::string CBlock::ToString() const
 
 /// Used to test algo switching between X16R and X16RV2
 
-//uint256 CBlockHeader::TestTiger() const
+// uint256 CBlockHeader::TestTiger() const
 //{
-//    return HashTestTiger(BEGIN(nVersion), END(nNonce), hashPrevBlock);
-//}
+//     return HashTestTiger(BEGIN(nVersion), END(nNonce), hashPrevBlock);
+// }
 //
-//uint256 CBlockHeader::TestSha512() const
+// uint256 CBlockHeader::TestSha512() const
 //{
-//    return HashTestSha512(BEGIN(nVersion), END(nNonce), hashPrevBlock);
-//}
+//     return HashTestSha512(BEGIN(nVersion), END(nNonce), hashPrevBlock);
+// }
 //
-//uint256 CBlockHeader::TestGost512() const
+// uint256 CBlockHeader::TestGost512() const
 //{
-//    return HashTestGost512(BEGIN(nVersion), END(nNonce), hashPrevBlock);
-//}
+//     return HashTestGost512(BEGIN(nVersion), END(nNonce), hashPrevBlock);
+// }
 
-//CBlock block = GetParams().GenesisBlock();
-//int64_t nStart = GetTimeMillis();
-//LogPrintf("Starting Tiger %dms\n", nStart);
-//block.TestTiger();
-//LogPrintf("Tiger Finished %dms\n", GetTimeMillis() - nStart);
+// CBlock block = GetParams().GenesisBlock();
+// int64_t nStart = GetTimeMillis();
+// LogPrintf("Starting Tiger %dms\n", nStart);
+// block.TestTiger();
+// LogPrintf("Tiger Finished %dms\n", GetTimeMillis() - nStart);
 //
-//nStart = GetTimeMillis();
-//LogPrintf("Starting Sha512 %dms\n", nStart);
-//block.TestSha512();
-//LogPrintf("Sha512 Finished %dms\n", GetTimeMillis() - nStart);
+// nStart = GetTimeMillis();
+// LogPrintf("Starting Sha512 %dms\n", nStart);
+// block.TestSha512();
+// LogPrintf("Sha512 Finished %dms\n", GetTimeMillis() - nStart);
 //
-//nStart = GetTimeMillis();
-//LogPrintf("Starting Gost512 %dms\n", nStart);
-//block.TestGost512();
-//LogPrintf("Gost512 Finished %dms\n", GetTimeMillis() - nStart);
+// nStart = GetTimeMillis();
+// LogPrintf("Starting Gost512 %dms\n", nStart);
+// block.TestGost512();
+// LogPrintf("Gost512 Finished %dms\n", GetTimeMillis() - nStart);

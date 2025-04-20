@@ -1,10 +1,11 @@
 // Copyright (c) 2011-2016 The Bitcoin Core developers
 // Copyright (c) 2017-2021 The Raven Core developers
+// Copyright (c) 2024-2025 The Memeium Core developers
 // Distributed under the MIT software license, see the accompanying
 // file COPYING or http://www.opensource.org/licenses/mit-license.php.
 
-#ifndef RAVEN_QT_RECEIVECOINSDIALOG_H
-#define RAVEN_QT_RECEIVECOINSDIALOG_H
+#ifndef MEMEIUM_QT_RECEIVECOINSDIALOG_H
+#define MEMEIUM_QT_RECEIVECOINSDIALOG_H
 
 #include "guiutil.h"
 
@@ -19,15 +20,16 @@
 class PlatformStyle;
 class WalletModel;
 
-namespace Ui {
-    class ReceiveCoinsDialog;
+namespace Ui
+{
+class ReceiveCoinsDialog;
 }
 
 QT_BEGIN_NAMESPACE
 class QModelIndex;
 QT_END_NAMESPACE
 
-/** Dialog for requesting payment of ravens */
+/** Dialog for requesting payment of memeiums */
 class ReceiveCoinsDialog : public QDialog
 {
     Q_OBJECT
@@ -40,12 +42,12 @@ public:
         MINIMUM_COLUMN_WIDTH = 130
     };
 
-    explicit ReceiveCoinsDialog(const PlatformStyle *platformStyle, QWidget *parent = 0);
+    explicit ReceiveCoinsDialog(const PlatformStyle* platformStyle, QWidget* parent = 0);
     ~ReceiveCoinsDialog();
 
-    void setModel(WalletModel *model);
-    void setupRequestFrame(const PlatformStyle *platformStyle);
-    void setupHistoryFrame(const PlatformStyle *platformStyle);
+    void setModel(WalletModel* model);
+    void setupRequestFrame(const PlatformStyle* platformStyle);
+    void setupHistoryFrame(const PlatformStyle* platformStyle);
 
 public Q_SLOTS:
     void clear();
@@ -53,13 +55,13 @@ public Q_SLOTS:
     void accept();
 
 protected:
-    virtual void keyPressEvent(QKeyEvent *event);
+    virtual void keyPressEvent(QKeyEvent* event);
 
 private:
-    Ui::ReceiveCoinsDialog *ui;
-    WalletModel *model;
-    QMenu *contextMenu;
-    const PlatformStyle *platformStyle;
+    Ui::ReceiveCoinsDialog* ui;
+    WalletModel* model;
+    QMenu* contextMenu;
+    const PlatformStyle* platformStyle;
 
     QModelIndex selectedRow();
     void copyColumnToClipboard(int column);
@@ -68,14 +70,14 @@ private Q_SLOTS:
     void on_receiveButton_clicked();
     void on_showRequestButton_clicked();
     void on_removeRequestButton_clicked();
-    void on_recentRequestsView_doubleClicked(const QModelIndex &index);
-    void recentRequestsView_selectionChanged(const QItemSelection &selected, const QItemSelection &deselected);
+    void on_recentRequestsView_doubleClicked(const QModelIndex& index);
+    void recentRequestsView_selectionChanged(const QItemSelection& selected, const QItemSelection& deselected);
     void updateDisplayUnit();
-    void showMenu(const QPoint &point);
+    void showMenu(const QPoint& point);
     void copyURI();
     void copyLabel();
     void copyMessage();
     void copyAmount();
 };
 
-#endif // RAVEN_QT_RECEIVECOINSDIALOG_H
+#endif // MEMEIUM_QT_RECEIVECOINSDIALOG_H

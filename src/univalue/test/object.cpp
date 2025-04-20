@@ -1,36 +1,39 @@
 // Copyright (c) 2014 BitPay Inc.
 // Copyright (c) 2014-2016 The Bitcoin Core developers
 // Copyright (c) 2017-2019 The Raven Core developers
+// Copyright (c) 2024-2025 The Memeium Core developers
 // Distributed under the MIT software license, see the accompanying
 // file COPYING or http://www.opensource.org/licenses/mit-license.php.
 
-#include <stdint.h>
-#include <vector>
-#include <string>
-#include <map>
 #include <cassert>
+#include <map>
 #include <stdexcept>
+#include <stdint.h>
+#include <string>
 #include <univalue.h>
+#include <vector>
 
 #define BOOST_FIXTURE_TEST_SUITE(a, b)
 #define BOOST_AUTO_TEST_CASE(funcName) void funcName()
 #define BOOST_AUTO_TEST_SUITE_END()
 #define BOOST_CHECK(expr) assert(expr)
 #define BOOST_CHECK_EQUAL(v1, v2) assert((v1) == (v2))
-#define BOOST_CHECK_THROW(stmt, excMatch) { \
-        try { \
-            (stmt); \
-        } catch (excMatch & e) { \
-	} catch (...) { \
-	    assert(0); \
-	} \
+#define BOOST_CHECK_THROW(stmt, excMatch) \
+    {                                     \
+        try {                             \
+            (stmt);                       \
+        } catch (excMatch & e) {          \
+        } catch (...) {                   \
+            assert(0);                    \
+        }                                 \
     }
-#define BOOST_CHECK_NO_THROW(stmt) { \
-        try { \
-            (stmt); \
-	} catch (...) { \
-	    assert(0); \
-	} \
+#define BOOST_CHECK_NO_THROW(stmt) \
+    {                              \
+        try {                      \
+            (stmt);                \
+        } catch (...) {            \
+            assert(0);             \
+        }                          \
     }
 
 BOOST_FIXTURE_TEST_SUITE(univalue_tests, BasicTestingSetup)
@@ -77,7 +80,7 @@ BOOST_AUTO_TEST_CASE(univalue_constructor)
     BOOST_CHECK(v8.isStr());
     BOOST_CHECK_EQUAL(v8.getValStr(), "yawn");
 
-    const char *vcs = "zappa";
+    const char* vcs = "zappa";
     UniValue v9(vcs);
     BOOST_CHECK(v9.isStr());
     BOOST_CHECK_EQUAL(v9.getValStr(), "zappa");
@@ -194,7 +197,7 @@ BOOST_AUTO_TEST_CASE(univalue_array)
     std::string vStr("zippy");
     BOOST_CHECK(arr.push_back(vStr));
 
-    const char *s = "pippy";
+    const char* s = "pippy";
     BOOST_CHECK(arr.push_back(s));
 
     std::vector<UniValue> vec;
@@ -206,9 +209,9 @@ BOOST_AUTO_TEST_CASE(univalue_array)
 
     BOOST_CHECK(arr.push_backV(vec));
 
-    BOOST_CHECK(arr.push_back((uint64_t) 400ULL));
-    BOOST_CHECK(arr.push_back((int64_t) -400LL));
-    BOOST_CHECK(arr.push_back((int) -401));
+    BOOST_CHECK(arr.push_back((uint64_t)400ULL));
+    BOOST_CHECK(arr.push_back((int64_t)-400LL));
+    BOOST_CHECK(arr.push_back((int)-401));
     BOOST_CHECK(arr.push_back(-40.1));
 
     BOOST_CHECK_EQUAL(arr.empty(), false);
@@ -246,20 +249,20 @@ BOOST_AUTO_TEST_CASE(univalue_object)
     BOOST_CHECK(obj.pushKV(strKey, strVal));
 
     strKey = "last";
-    const char *cVal = "Smith";
+    const char* cVal = "Smith";
     BOOST_CHECK(obj.pushKV(strKey, cVal));
 
     strKey = "distance";
-    BOOST_CHECK(obj.pushKV(strKey, (int64_t) 25));
+    BOOST_CHECK(obj.pushKV(strKey, (int64_t)25));
 
     strKey = "time";
-    BOOST_CHECK(obj.pushKV(strKey, (uint64_t) 3600));
+    BOOST_CHECK(obj.pushKV(strKey, (uint64_t)3600));
 
     strKey = "calories";
-    BOOST_CHECK(obj.pushKV(strKey, (int) 12));
+    BOOST_CHECK(obj.pushKV(strKey, (int)12));
 
     strKey = "temperature";
-    BOOST_CHECK(obj.pushKV(strKey, (double) 90.012));
+    BOOST_CHECK(obj.pushKV(strKey, (double)90.012));
 
     UniValue obj2(UniValue::VOBJ);
     BOOST_CHECK(obj2.pushKV("cat1", 9000));
@@ -328,15 +331,14 @@ BOOST_AUTO_TEST_CASE(univalue_object)
 
     obj.pushKV("name", "foo bar");
 
-    std::map<std::string,UniValue> kv;
+    std::map<std::string, UniValue> kv;
     obj.getObjMap(kv);
     BOOST_CHECK_EQUAL(kv["age"].getValStr(), "43");
     BOOST_CHECK_EQUAL(kv["name"].getValStr(), "foo bar");
-
 }
 
-static const char *json1 =
-"[1.10000000,{\"key1\":\"str\\u0000\",\"key2\":800,\"key3\":{\"name\":\"martian http://test.com\"}}]";
+static const char* json1 =
+    "[1.10000000,{\"key1\":\"str\\u0000\",\"key2\":800,\"key3\":{\"name\":\"martian http://test.com\"}}]";
 
 BOOST_AUTO_TEST_CASE(univalue_readwrite)
 {
@@ -383,7 +385,7 @@ BOOST_AUTO_TEST_CASE(univalue_readwrite)
 
 BOOST_AUTO_TEST_SUITE_END()
 
-int main (int argc, char *argv[])
+int main(int argc, char* argv[])
 {
     univalue_constructor();
     univalue_typecheck();
@@ -393,4 +395,3 @@ int main (int argc, char *argv[])
     univalue_readwrite();
     return 0;
 }
-

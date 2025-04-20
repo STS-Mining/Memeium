@@ -1,4 +1,5 @@
 // Copyright (c) 2017-2019 The Raven Core developers
+// Copyright (c) 2024-2025 The Memeium Core developers
 // Distributed under the MIT software license, see the accompanying
 // file COPYING or http://www.opensource.org/licenses/mit-license.php.
 
@@ -13,7 +14,7 @@ unsigned int GetMaxBlockWeight()
     return MAX_BLOCK_WEIGHT_RIP2;
 
     // Old block weight for when assets weren't activated
-//    return MAX_BLOCK_WEIGHT;
+    //    return MAX_BLOCK_WEIGHT;
 }
 
 unsigned int GetMaxBlockSerializedSize()
@@ -24,5 +25,5 @@ unsigned int GetMaxBlockSerializedSize()
     return MAX_BLOCK_SERIALIZED_SIZE_RIP2;
 
     // Old block serialized size for when assets weren't activated
-//    return MAX_BLOCK_SERIALIZED_SIZE;
+    //    return MAX_BLOCK_SERIALIZED_SIZE;
 }

@@ -1,10 +1,11 @@
 // Copyright (c) 2012-2016 The Bitcoin Core developers
 // Copyright (c) 2017-2019 The Raven Core developers
+// Copyright (c) 2024-2025 The Memeium Core developers
 // Distributed under the MIT software license, see the accompanying
 // file COPYING or http://www.opensource.org/licenses/mit-license.php.
 
-#ifndef RAVEN_LIMITEDMAP_H
-#define RAVEN_LIMITEDMAP_H
+#ifndef MEMEIUM_LIMITEDMAP_H
+#define MEMEIUM_LIMITEDMAP_H
 
 #include <assert.h>
 #include <map>
@@ -71,7 +72,7 @@ public:
         // since it is a constant time operation in C++11. For more details, see
         // https://stackoverflow.com/questions/765148/how-to-remove-constness-of-const-iterator
         iterator itTarget = map.erase(itIn, itIn);
-        
+
         if (itTarget == map.end())
             return;
         std::pair<rmap_iterator, rmap_iterator> itPair = rmap.equal_range(itTarget->second);
@@ -98,4 +99,4 @@ public:
     }
 };
 
-#endif // RAVEN_LIMITEDMAP_H
+#endif // MEMEIUM_LIMITEDMAP_H

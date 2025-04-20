@@ -1,0 +1,8 @@
+/usr/bin/memeium-cli		--	gen_context(system_u:object_r:memeium_exec_t,s0)
+/usr/sbin/memeiumd		--	gen_context(system_u:object_r:memeium_exec_t,s0)
+/usr/lib(64)?/memeium/memeiumd		--	gen_context(system_u:object_r:memeium_exec_t,s0)
+
+/etc/memeium(/.*)?		gen_context(system_u:object_r:memeium_conf_t,s0)
+/var/lib/memeium(/.*)?		gen_context(system_u:object_r:memeium_var_lib_t,s0)
+
+(/var)?/run/memeiumd(/.*)?   gen_context(system_u:object_r:memeium_var_run_t,s0)

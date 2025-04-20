@@ -1,0 +1,33 @@
+# /etc/conf.d/memeiumd: config file for /etc/init.d/memeiumd
+
+# Config file location
+#MEMEIUMD_CONFIGFILE="/etc/memeium/memeium.conf"
+
+# What directory to write pidfile to?  (created and owned by $MEMEIUMD_USER)
+#MEMEIUMD_PIDDIR="/var/run/memeiumd"
+
+# What filename to give the pidfile
+#MEMEIUMD_PIDFILE="${MEMEIUMD_PIDDIR}/memeiumd.pid"
+
+# Where to write memeiumd data (be mindful that the blockchain is large)
+#MEMEIUMD_DATADIR="/var/lib/memeiumd"
+
+# User and group to own memeiumd process
+#MEMEIUMD_USER="memeium"
+#MEMEIUMD_GROUP="memeium"
+
+# Path to memeiumd executable
+#MEMEIUMD_BIN="/usr/bin/memeiumd"
+
+# Nice value to run memeiumd under
+#MEMEIUMD_NICE=0
+
+# Additional options (avoid -conf and -datadir, use flags above)
+#MEMEIUMD_OPTS=""
+
+# The timeout in seconds OpenRC will wait for memeiumd to terminate
+# after a SIGTERM has been raised.
+# Note that this will be mapped as argument to start-stop-daemon's
+# '--retry' option, which means you can specify a retry schedule
+# here. For more information see man 8 start-stop-daemon.
+MEMEIUMD_SIGTERM_TIMEOUT=60

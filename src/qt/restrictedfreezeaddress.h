@@ -1,14 +1,15 @@
 // Copyright (c) 2019 The Raven Core developers
+// Copyright (c) 2024-2025 The Memeium Core developers
 // Distributed under the MIT software license, see the accompanying
 // file COPYING or http://www.opensource.org/licenses/mit-license.php.
 
-#ifndef RAVEN_QT_FREEZEADDRESS_H
-#define RAVEN_QT_FREEZEADDRESS_H
+#ifndef MEMEIUM_QT_FREEZEADDRESS_H
+#define MEMEIUM_QT_FREEZEADDRESS_H
 
 #include "amount.h"
 
-#include <QWidget>
 #include <QMenu>
+#include <QWidget>
 #include <memory>
 
 class ClientModel;
@@ -20,8 +21,9 @@ class QCompleter;
 class AssetFilterProxy;
 
 
-namespace Ui {
-    class FreezeAddress;
+namespace Ui
+{
+class FreezeAddress;
 }
 
 QT_BEGIN_NAMESPACE
@@ -34,11 +36,11 @@ class FreezeAddress : public QWidget
     Q_OBJECT
 
 public:
-    explicit FreezeAddress(const PlatformStyle *_platformStyle, QWidget *parent = 0);
+    explicit FreezeAddress(const PlatformStyle* _platformStyle, QWidget* parent = 0);
     ~FreezeAddress();
 
-    void setClientModel(ClientModel *clientModel);
-    void setWalletModel(WalletModel *walletModel);
+    void setClientModel(ClientModel* clientModel);
+    void setWalletModel(WalletModel* walletModel);
     void showOutOfSyncWarning(bool fShow);
     Ui::FreezeAddress* getUI();
     bool eventFilter(QObject* object, QEvent* event);
@@ -47,16 +49,16 @@ public:
     void showWarning(QString string, bool failure = true);
     void hideWarning();
 
-    AssetFilterProxy *assetFilterProxy;
+    AssetFilterProxy* assetFilterProxy;
     QCompleter* completer;
 
     void clear();
 
 private:
-    Ui::FreezeAddress *ui;
-    ClientModel *clientModel;
-    WalletModel *walletModel;
-    const PlatformStyle *platformStyle;
+    Ui::FreezeAddress* ui;
+    ClientModel* clientModel;
+    WalletModel* walletModel;
+    const PlatformStyle* platformStyle;
 
 private Q_SLOTS:
     void check();
@@ -65,4 +67,4 @@ private Q_SLOTS:
     void changeAddressChanged(int);
 };
 
-#endif // RAVEN_QT_FREEZEADDRESS_H
+#endif // MEMEIUM_QT_FREEZEADDRESS_H

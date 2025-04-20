@@ -1,6 +1,7 @@
 // Copyright (c) 2009-2010 Satoshi Nakamoto
 // Copyright (c) 2009-2016 The Bitcoin Core developers
 // Copyright (c) 2017-2019 The Raven Core developers
+// Copyright (c) 2024-2025 The Memeium Core developers
 // Distributed under the MIT software license, see the accompanying
 // file COPYING or http://www.opensource.org/licenses/mit-license.php.
 
@@ -16,7 +17,8 @@
 #include "tinyformat.h"
 #include "util.h"
 
-namespace {
+namespace
+{
 
 template <typename Stream, typename Data>
 bool SerializeDB(Stream& stream, const Data& data)
@@ -44,7 +46,7 @@ bool SerializeFileDB(const std::string& prefix, const fs::path& path, const Data
 
     // open temp output file, and associate with CAutoFile
     fs::path pathTmp = GetDataDir() / tmpfn;
-    FILE *file = fsbridge::fopen(pathTmp, "wb");
+    FILE* file = fsbridge::fopen(pathTmp, "wb");
     CAutoFile fileout(file, SER_DISK, CLIENT_VERSION);
     if (fileout.IsNull())
         return error("%s: Failed to open file %s", __func__, pathTmp.string());
@@ -84,8 +86,7 @@ bool DeserializeDB(Stream& stream, Data& data, bool fCheckSum = true)
                 return error("%s: Checksum mismatch, data corrupted", __func__);
             }
         }
-    }
-    catch (const std::exception& e) {
+    } catch (const std::exception& e) {
         return error("%s: Deserialize or I/O error - %s", __func__, e.what());
     }
 
@@ -96,7 +97,7 @@ template <typename Data>
 bool DeserializeFileDB(const fs::path& path, Data& data)
 {
     // open input file, and associate with CAutoFile
-    FILE *file = fsbridge::fopen(path, "rb");
+    FILE* file = fsbridge::fopen(path, "rb");
     CAutoFile filein(file, SER_DISK, CLIENT_VERSION);
     if (filein.IsNull())
         return error("%s: Failed to open file %s", __func__, path.string());
@@ -104,7 +105,7 @@ bool DeserializeFileDB(const fs::path& path, Data& data)
     return DeserializeDB(filein, data);
 }
 
-}
+} // namespace
 
 CBanDB::CBanDB()
 {

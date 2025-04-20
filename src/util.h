@@ -1,6 +1,7 @@
 // Copyright (c) 2009-2010 Satoshi Nakamoto
 // Copyright (c) 2009-2016 The Bitcoin Core developers
 // Copyright (c) 2017-2019 The Raven Core developers
+// Copyright (c) 2024-2025 The Memeium Core developers
 // Distributed under the MIT software license, see the accompanying
 // file COPYING or http://www.opensource.org/licenses/mit-license.php.
 
@@ -8,11 +9,11 @@
  * Server/client environment: argument handling, config file parsing,
  * logging, thread wrappers, startup time
  */
-#ifndef RAVEN_UTIL_H
-#define RAVEN_UTIL_H
+#ifndef MEMEIUM_UTIL_H
+#define MEMEIUM_UTIL_H
 
 #if defined(HAVE_CONFIG_H)
-#include "config/raven-config.h"
+#include "config/memeium-config.h"
 #endif
 
 #include "compat.h"
@@ -34,7 +35,7 @@
 int64_t GetStartupTime();
 
 static const bool DEFAULT_LOGTIMEMICROS = false;
-static const bool DEFAULT_LOGIPS        = false;
+static const bool DEFAULT_LOGIPS = false;
 static const bool DEFAULT_LOGTIMESTAMPS = true;
 
 /** Signals for translation. */
@@ -42,7 +43,7 @@ class CTranslationInterface
 {
 public:
     /** Translate a message to the native language of the user. */
-    boost::signals2::signal<std::string(const char *psz)> Translate;
+    boost::signals2::signal<std::string(const char* psz)> Translate;
 };
 
 extern bool fPrintToConsole;
@@ -54,8 +55,8 @@ extern bool fLogIPs;
 extern std::atomic<bool> fReopenDebugLog;
 extern CTranslationInterface translationInterface;
 
-extern const char *const RAVEN_CONF_FILENAME;
-extern const char *const RAVEN_PID_FILENAME;
+extern const char* const MEMEIUM_CONF_FILENAME;
+extern const char* const MEMEIUM_PID_FILENAME;
 
 extern std::atomic<uint32_t> logCategories;
 
@@ -63,7 +64,7 @@ extern std::atomic<uint32_t> logCategories;
  * Translation function: Call Translate signal on UI interface, which returns a boost::optional result.
  * If no translation slot is registered, nothing is returned, and simply return the input.
  */
-inline std::string _(const char *psz)
+inline std::string _(const char* psz)
 {
     boost::optional<std::string> rv = translationInterface.Translate(psz);
     return rv ? (*rv) : psz;
@@ -73,41 +74,39 @@ void SetupEnvironment();
 
 bool SetupNetworking();
 
-struct CLogCategoryActive
-{
+struct CLogCategoryActive {
     std::string category;
     bool active;
 };
 
 namespace BCLog
 {
-    enum LogFlags : uint32_t
-    {
-        NONE = 0,
-        NET = (1 << 0),
-        TOR = (1 << 1),
-        MEMPOOL = (1 << 2),
-        HTTP = (1 << 3),
-        BENCH = (1 << 4),
-        ZMQ = (1 << 5),
-        DB = (1 << 6),
-        RPC = (1 << 7),
-        ESTIMATEFEE = (1 << 8),
-        ADDRMAN = (1 << 9),
-        SELECTCOINS = (1 << 10),
-        REINDEX = (1 << 11),
-        CMPCTBLOCK = (1 << 12),
-        RAND = (1 << 13),
-        PRUNE = (1 << 14),
-        PROXY = (1 << 15),
-        MEMPOOLREJ = (1 << 16),
-        LIBEVENT = (1 << 17),
-        COINDB = (1 << 18),
-        QT = (1 << 19),
-        LEVELDB = (1 << 20),
-        REWARDS = (1 << 21),
-        ALL = ~(uint32_t) 0,
-    };
+enum LogFlags : uint32_t {
+    NONE = 0,
+    NET = (1 << 0),
+    TOR = (1 << 1),
+    MEMPOOL = (1 << 2),
+    HTTP = (1 << 3),
+    BENCH = (1 << 4),
+    ZMQ = (1 << 5),
+    DB = (1 << 6),
+    RPC = (1 << 7),
+    ESTIMATEFEE = (1 << 8),
+    ADDRMAN = (1 << 9),
+    SELECTCOINS = (1 << 10),
+    REINDEX = (1 << 11),
+    CMPCTBLOCK = (1 << 12),
+    RAND = (1 << 13),
+    PRUNE = (1 << 14),
+    PROXY = (1 << 15),
+    MEMPOOLREJ = (1 << 16),
+    LIBEVENT = (1 << 17),
+    COINDB = (1 << 18),
+    QT = (1 << 19),
+    LEVELDB = (1 << 20),
+    REWARDS = (1 << 21),
+    ALL = ~(uint32_t)0,
+};
 }
 
 /** Return true if log accepts specified category */
@@ -123,82 +122,93 @@ std::string ListLogCategories();
 std::vector<CLogCategoryActive> ListActiveLogCategories();
 
 /** Return true if str parses as a log category and set the flags in f */
-bool GetLogCategory(uint32_t *f, const std::string *str);
+bool GetLogCategory(uint32_t* f, const std::string* str);
 
 /** Send a string to the log output */
-int LogPrintStr(const std::string &str);
+int LogPrintStr(const std::string& str);
 
 /** Get format string from VA_ARGS for error reporting */
-template<typename... Args>
-std::string FormatStringFromLogArgs(const char *fmt, const Args &... args)
-{ return fmt; }
+template <typename... Args>
+std::string FormatStringFromLogArgs(const char* fmt, const Args&... args)
+{
+    return fmt;
+}
 
 static inline void MarkUsed()
-{}
-
-template<typename T, typename... Args>
-static inline void MarkUsed(const T &t, const Args &... args)
 {
-    (void) t;
+}
+
+template <typename T, typename... Args>
+static inline void MarkUsed(const T& t, const Args&... args)
+{
+    (void)t;
     MarkUsed(args...);
 }
 
 #ifdef USE_COVERAGE
-#define LogPrintf(...) do { MarkUsed(__VA_ARGS__); } while(0)
-#define LogPrint(category, ...) do { MarkUsed(__VA_ARGS__); } while(0)
+#define LogPrintf(...)         \
+    do {                       \
+        MarkUsed(__VA_ARGS__); \
+    } while (0)
+#define LogPrint(category, ...) \
+    do {                        \
+        MarkUsed(__VA_ARGS__);  \
+    } while (0)
 #else
-#define LogPrintf(...) do { \
-    std::string _log_msg_; /* Unlikely name to avoid shadowing variables */ \
-    try { \
-        _log_msg_ = tfm::format(__VA_ARGS__); \
-    } catch (tinyformat::format_error &fmterr) { \
-        /* Original format string will have newline so don't add one here */ \
-        _log_msg_ = "Error \"" + std::string(fmterr.what()) + "\" while formatting log message: " + FormatStringFromLogArgs(__VA_ARGS__); \
-    } \
-    LogPrintStr(_log_msg_); \
-} while(0)
+#define LogPrintf(...)                                                                                                                        \
+    do {                                                                                                                                      \
+        std::string _log_msg_; /* Unlikely name to avoid shadowing variables */                                                               \
+        try {                                                                                                                                 \
+            _log_msg_ = tfm::format(__VA_ARGS__);                                                                                             \
+        } catch (tinyformat::format_error & fmterr) {                                                                                         \
+            /* Original format string will have newline so don't add one here */                                                              \
+            _log_msg_ = "Error \"" + std::string(fmterr.what()) + "\" while formatting log message: " + FormatStringFromLogArgs(__VA_ARGS__); \
+        }                                                                                                                                     \
+        LogPrintStr(_log_msg_);                                                                                                               \
+    } while (0)
 
-#define LogPrint(category, ...) do { \
-    if (LogAcceptCategory((category))) { \
-        LogPrintf(__VA_ARGS__); \
-    } \
-} while(0)
+#define LogPrint(category, ...)              \
+    do {                                     \
+        if (LogAcceptCategory((category))) { \
+            LogPrintf(__VA_ARGS__);          \
+        }                                    \
+    } while (0)
 #endif
 
-template<typename... Args>
-bool error(const char *fmt, const Args &... args)
+template <typename... Args>
+bool error(const char* fmt, const Args&... args)
 {
     LogPrintStr("ERROR: " + tfm::format(fmt, args...) + "\n");
     return false;
 }
 
-void PrintExceptionContinue(const std::exception *pex, const char *pszThread);
+void PrintExceptionContinue(const std::exception* pex, const char* pszThread);
 
-void FileCommit(FILE *file);
+void FileCommit(FILE* file);
 
-bool TruncateFile(FILE *file, unsigned int length);
+bool TruncateFile(FILE* file, unsigned int length);
 
 int RaiseFileDescriptorLimit(int nMinFD);
 
-void AllocateFileRange(FILE *file, unsigned int offset, unsigned int length);
+void AllocateFileRange(FILE* file, unsigned int offset, unsigned int length);
 
 bool RenameOver(fs::path src, fs::path dest);
 
-bool TryCreateDirectories(const fs::path &p);
+bool TryCreateDirectories(const fs::path& p);
 
 fs::path GetDefaultDataDir();
 
-const fs::path &GetDataDir(bool fNetSpecific = true);
+const fs::path& GetDataDir(bool fNetSpecific = true);
 
 void ClearDatadirCache();
 
-fs::path GetConfigFile(const std::string &confPath);
+fs::path GetConfigFile(const std::string& confPath);
 
 #ifndef WIN32
 
 fs::path GetPidFile();
 
-void CreatePidFile(const fs::path &path, pid_t pid);
+void CreatePidFile(const fs::path& path, pid_t pid);
 
 #endif
 #ifdef WIN32
@@ -209,7 +219,7 @@ void OpenDebugLog();
 
 void ShrinkDebugFile();
 
-void runCommand(const std::string &strCommand);
+void runCommand(const std::string& strCommand);
 
 inline bool IsSwitchChar(char c)
 {
@@ -226,10 +236,11 @@ protected:
     mutable CCriticalSection cs_args;
     std::map<std::string, std::string> mapArgs;
     std::map<std::string, std::vector<std::string>> mapMultiArgs;
-public:
-    void ParseParameters(int argc, const char *const argv[]);
 
-    void ReadConfigFile(const std::string &confPath);
+public:
+    void ParseParameters(int argc, const char* const argv[]);
+
+    void ReadConfigFile(const std::string& confPath);
 
     /**
      * Return a vector of strings of the given argument
@@ -237,7 +248,7 @@ public:
      * @param strArg Argument to get (e.g. "-foo")
      * @return command-line arguments
      */
-    std::vector<std::string> GetArgs(const std::string &strArg) const;
+    std::vector<std::string> GetArgs(const std::string& strArg) const;
 
     /**
      * Return true if the given argument has been manually set
@@ -245,7 +256,7 @@ public:
      * @param strArg Argument to get (e.g. "-foo")
      * @return true if the argument has been set
      */
-    bool IsArgSet(const std::string &strArg) const;
+    bool IsArgSet(const std::string& strArg) const;
 
     /**
      * Return string argument or default value
@@ -254,7 +265,7 @@ public:
      * @param strDefault (e.g. "1")
      * @return command-line argument or default value
      */
-    std::string GetArg(const std::string &strArg, const std::string &strDefault) const;
+    std::string GetArg(const std::string& strArg, const std::string& strDefault) const;
 
     /**
      * Return integer argument or default value
@@ -263,7 +274,7 @@ public:
      * @param nDefault (e.g. 1)
      * @return command-line argument (0 if invalid number) or default value
      */
-    int64_t GetArg(const std::string &strArg, int64_t nDefault) const;
+    int64_t GetArg(const std::string& strArg, int64_t nDefault) const;
 
     /**
      * Return boolean argument or default value
@@ -272,7 +283,7 @@ public:
      * @param fDefault (true or false)
      * @return command-line argument or default value
      */
-    bool GetBoolArg(const std::string &strArg, bool fDefault) const;
+    bool GetBoolArg(const std::string& strArg, bool fDefault) const;
 
     /**
      * Set an argument if it doesn't already have a value
@@ -281,7 +292,7 @@ public:
      * @param strValue Value (e.g. "1")
      * @return true if argument gets set, false if it already had a value
      */
-    bool SoftSetArg(const std::string &strArg, const std::string &strValue);
+    bool SoftSetArg(const std::string& strArg, const std::string& strValue);
 
     /**
      * Set a boolean argument if it doesn't already have a value
@@ -290,13 +301,13 @@ public:
      * @param fValue Value (e.g. false)
      * @return true if argument gets set, false if it already had a value
      */
-    bool SoftSetBoolArg(const std::string &strArg, bool fValue);
+    bool SoftSetBoolArg(const std::string& strArg, bool fValue);
 
     // Forces an arg setting. Called by SoftSetArg() if the arg hasn't already
     // been set. Also called directly in testing.
-    void ForceSetArg(const std::string &strArg, const std::string &strValue);
+    void ForceSetArg(const std::string& strArg, const std::string& strValue);
 
-    void ForceSetArg(const std::string &strArg, const int64_t &nValue);
+    void ForceSetArg(const std::string& strArg, const int64_t& nValue);
 };
 
 extern ArgsManager gArgs;
@@ -307,7 +318,7 @@ extern ArgsManager gArgs;
  * @param message Group name (e.g. "RPC server options:")
  * @return the formatted string
  */
-std::string HelpMessageGroup(const std::string &message);
+std::string HelpMessageGroup(const std::string& message);
 
 /**
  * Format a string to be used as option description in help messages
@@ -316,7 +327,7 @@ std::string HelpMessageGroup(const std::string &message);
  * @param message Option description (e.g. "Username for JSON-RPC connections")
  * @return the formatted string
  */
-std::string HelpMessageOpt(const std::string &option, const std::string &message);
+std::string HelpMessageOpt(const std::string& option, const std::string& message);
 
 /**
  * Return the number of physical cores available on the current system.
@@ -325,41 +336,34 @@ std::string HelpMessageOpt(const std::string &option, const std::string &message
  */
 int GetNumCores();
 
-void RenameThread(const char *name);
+void RenameThread(const char* name);
 
 /**
  * .. and a wrapper that just calls func once
  */
-template<typename Callable>
-void TraceThread(const char *name, Callable func)
+template <typename Callable>
+void TraceThread(const char* name, Callable func)
 {
-    std::string s = strprintf("raven-%s", name);
+    std::string s = strprintf("memeium-%s", name);
     RenameThread(s.c_str());
-    try
-    {
+    try {
         LogPrintf("%s thread start\n", name);
         func();
         LogPrintf("%s thread exit\n", name);
-    }
-    catch (const boost::thread_interrupted &)
-    {
+    } catch (const boost::thread_interrupted&) {
         LogPrintf("%s thread interrupt\n", name);
         throw;
-    }
-    catch (const std::exception &e)
-    {
+    } catch (const std::exception& e) {
         PrintExceptionContinue(&e, name);
         throw;
-    }
-    catch (...)
-    {
+    } catch (...) {
         PrintExceptionContinue(nullptr, name);
         throw;
     }
 }
 
-std::string CopyrightHolders(const std::string &strPrefix);
+std::string CopyrightHolders(const std::string& strPrefix);
 
 void SetThreadPriority(int nPriority);
 
-#endif // RAVEN_UTIL_H
+#endif // MEMEIUM_UTIL_H

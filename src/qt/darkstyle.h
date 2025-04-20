@@ -11,30 +11,30 @@
 ###############################################################################
 */
 
-#ifndef RAVENCOIN_DARKSTYLE_H
-#define RAVENCOIN_DARKSTYLE_H
+#ifndef MEMEIUM_DARKSTYLE_H
+#define MEMEIUM_DARKSTYLE_H
 
 #include <QApplication>
+#include <QFile>
+#include <QFont>
 #include <QProxyStyle>
 #include <QStyleFactory>
-#include <QFont>
-#include <QFile>
 
 class DarkStyle : public QProxyStyle
 {
-Q_OBJECT
+    Q_OBJECT
 
 public:
     DarkStyle();
-    explicit DarkStyle(QStyle *style);
+    explicit DarkStyle(QStyle* style);
 
-    QStyle *baseStyle() const;
+    QStyle* baseStyle() const;
 
-    void polish(QPalette &palette) override;
-    void polish(QApplication *app) override;
+    void polish(QPalette& palette) override;
+    void polish(QApplication* app) override;
 
 private:
-    QStyle *styleBase(QStyle *style = Q_NULLPTR) const;
+    QStyle* styleBase(QStyle* style = Q_NULLPTR) const;
 };
 
-#endif //RAVENCOIN_DARKSTYLE_H
+#endif // MEMEIUM_DARKSTYLE_H

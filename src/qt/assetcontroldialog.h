@@ -1,10 +1,11 @@
 // Copyright (c) 2011-2016 The Bitcoin Core developers
 // Copyright (c) 2017-2019 The Raven Core developers
+// Copyright (c) 2024-2025 The Memeium Core developers
 // Distributed under the MIT software license, see the accompanying
 // file COPYING or http://www.opensource.org/licenses/mit-license.php.
 
-#ifndef RAVEN_QT_ASSETCONTROLDIALOG_H
-#define RAVEN_QT_ASSETCONTROLDIALOG_H
+#ifndef MEMEIUM_QT_ASSETCONTROLDIALOG_H
+#define MEMEIUM_QT_ASSETCONTROLDIALOG_H
 
 #include "amount.h"
 
@@ -27,8 +28,9 @@ class QStringListModel;
 class QSortFilterProxyModel;
 class QCompleter;
 
-namespace Ui {
-    class AssetControlDialog;
+namespace Ui
+{
+class AssetControlDialog;
 }
 
 #define ASYMP_UTF8 "\xE2\x89\x88"
@@ -36,11 +38,11 @@ namespace Ui {
 class CAssetControlWidgetItem : public QTreeWidgetItem
 {
 public:
-    explicit CAssetControlWidgetItem(QTreeWidget *parent, int type = Type) : QTreeWidgetItem(parent, type) {}
+    explicit CAssetControlWidgetItem(QTreeWidget* parent, int type = Type) : QTreeWidgetItem(parent, type) {}
     explicit CAssetControlWidgetItem(int type = Type) : QTreeWidgetItem(type) {}
-    explicit CAssetControlWidgetItem(QTreeWidgetItem *parent, int type = Type) : QTreeWidgetItem(parent, type) {}
+    explicit CAssetControlWidgetItem(QTreeWidgetItem* parent, int type = Type) : QTreeWidgetItem(parent, type) {}
 
-    bool operator<(const QTreeWidgetItem &other) const;
+    bool operator<(const QTreeWidgetItem& other) const;
 };
 
 class AssetControlDialog : public QDialog
@@ -48,19 +50,19 @@ class AssetControlDialog : public QDialog
     Q_OBJECT
 
 public:
-    explicit AssetControlDialog(const PlatformStyle *platformStyle, QWidget *parent = 0);
+    explicit AssetControlDialog(const PlatformStyle* platformStyle, QWidget* parent = 0);
     ~AssetControlDialog();
 
-    void setModel(WalletModel *model);
+    void setModel(WalletModel* model);
 
     // static because also called from sendcoinsdialog
     static void updateLabels(WalletModel*, QDialog*);
 
-    //update the list of assets
+    // update the list of assets
     void updateAssetList(bool fSetOnStart = false);
 
     static QList<CAmount> payAmounts;
-    static CCoinControl *assetControl;
+    static CCoinControl* assetControl;
     static bool fSubtractFeeFromAmount;
     bool fOnStartUp;
 
@@ -69,24 +71,23 @@ public:
     QCompleter* completer;
 
 private:
-    Ui::AssetControlDialog *ui;
-    WalletModel *model;
+    Ui::AssetControlDialog* ui;
+    WalletModel* model;
     int sortColumn;
     Qt::SortOrder sortOrder;
 
-    QMenu *contextMenu;
-    QTreeWidgetItem *contextMenuItem;
-    QAction *copyTransactionHashAction;
-    QAction *lockAction;
-    QAction *unlockAction;
+    QMenu* contextMenu;
+    QTreeWidgetItem* contextMenuItem;
+    QAction* copyTransactionHashAction;
+    QAction* lockAction;
+    QAction* unlockAction;
 
-    const PlatformStyle *platformStyle;
+    const PlatformStyle* platformStyle;
 
     void sortView(int, Qt::SortOrder);
     void updateView();
 
-    enum
-    {
+    enum {
         COLUMN_CHECKBOX = 0,
         COLUMN_ASSET_NAME,
         COLUMN_AMOUNT,
@@ -100,7 +101,7 @@ private:
     friend class CAssetControlWidgetItem;
 
 private Q_SLOTS:
-    void showMenu(const QPoint &);
+    void showMenu(const QPoint&);
     void copyAmount();
     void copyLabel();
     void copyAddress();
@@ -125,4 +126,4 @@ private Q_SLOTS:
     void onAssetSelected(QString name);
 };
 
-#endif // RAVEN_QT_ASSETCONTROLDIALOG_H
+#endif // MEMEIUM_QT_ASSETCONTROLDIALOG_H

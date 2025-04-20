@@ -1,6 +1,7 @@
 // Copyright (c) 2009-2010 Satoshi Nakamoto
 // Copyright (c) 2009-2015 The Bitcoin Core developers
 // Copyright (c) 2017-2019 The Raven Core developers
+// Copyright (c) 2024-2025 The Memeium Core developers
 // Distributed under the MIT software license, see the accompanying
 // file COPYING or http://www.opensource.org/licenses/mit-license.php.
 
@@ -12,8 +13,8 @@
  * - E-mail usually won't line-break if there's no punctuation to break at.
  * - Double-clicking selects the whole string as one word if it's all alphanumeric.
  */
-#ifndef RAVEN_BASE58_H
-#define RAVEN_BASE58_H
+#ifndef MEMEIUM_BASE58_H
+#define MEMEIUM_BASE58_H
 
 #include "chainparams.h"
 #include "key.h"
@@ -75,12 +76,12 @@ protected:
     std::vector<unsigned char> vchVersion;
 
     //! the actually encoded data
-    typedef std::vector<unsigned char, zero_after_free_allocator<unsigned char> > vector_uchar;
+    typedef std::vector<unsigned char, zero_after_free_allocator<unsigned char>> vector_uchar;
     vector_uchar vchData;
 
     CBase58Data();
-    void SetData(const std::vector<unsigned char> &vchVersionIn, const void* pdata, size_t nSize);
-    void SetData(const std::vector<unsigned char> &vchVersionIn, const unsigned char *pbegin, const unsigned char *pend);
+    void SetData(const std::vector<unsigned char>& vchVersionIn, const void* pdata, size_t nSize);
+    void SetData(const std::vector<unsigned char>& vchVersionIn, const unsigned char* pbegin, const unsigned char* pend);
 
 public:
     bool SetString(const char* psz, unsigned int nVersionBytes = 1);
@@ -91,27 +92,28 @@ public:
     bool operator==(const CBase58Data& b58) const { return CompareTo(b58) == 0; }
     bool operator<=(const CBase58Data& b58) const { return CompareTo(b58) <= 0; }
     bool operator>=(const CBase58Data& b58) const { return CompareTo(b58) >= 0; }
-    bool operator< (const CBase58Data& b58) const { return CompareTo(b58) <  0; }
-    bool operator> (const CBase58Data& b58) const { return CompareTo(b58) >  0; }
+    bool operator<(const CBase58Data& b58) const { return CompareTo(b58) < 0; }
+    bool operator>(const CBase58Data& b58) const { return CompareTo(b58) > 0; }
 };
-/** base58-encoded Raven addresses.
+/** base58-encoded memeium addresses.
  * Public-key-hash-addresses have version 0 (or 111 testnet).
  * The data vector contains RIPEMD160(SHA256(pubkey)), where pubkey is the serialized public key.
  * Script-hash-addresses have version 5 (or 196 testnet).
  * The data vector contains RIPEMD160(SHA256(cscript)), where cscript is the serialized redemption script.
  */
-class CRavenAddress : public CBase58Data {
+class CMemeiumAddress : public CBase58Data
+{
 public:
-    bool Set(const CKeyID &id);
-    bool Set(const CScriptID &id);
-    bool Set(const CTxDestination &dest);
+    bool Set(const CKeyID& id);
+    bool Set(const CScriptID& id);
+    bool Set(const CTxDestination& dest);
     bool IsValid() const;
-    bool IsValid(const CChainParams &params) const;
+    bool IsValid(const CChainParams& params) const;
 
-    CRavenAddress() {}
-    CRavenAddress(const CTxDestination &dest) { Set(dest); }
-    CRavenAddress(const std::string& strAddress) { SetString(strAddress); }
-    CRavenAddress(const char* pszAddress) { SetString(pszAddress); }
+    CMemeiumAddress() {}
+    CMemeiumAddress(const CTxDestination& dest) { Set(dest); }
+    CMemeiumAddress(const std::string& strAddress) { SetString(strAddress); }
+    CMemeiumAddress(const char* pszAddress) { SetString(pszAddress); }
 
     CTxDestination Get() const;
     bool GetIndexKey(uint160& hashBytes, int& type) const;
@@ -120,7 +122,7 @@ public:
 /**
  * A base58-encoded secret key
  */
-class CRavenSecret : public CBase58Data
+class CMemeiumSecret : public CBase58Data
 {
 public:
     void SetKey(const CKey& vchSecret);
@@ -129,20 +131,23 @@ public:
     bool SetString(const char* pszSecret);
     bool SetString(const std::string& strSecret);
 
-    CRavenSecret(const CKey& vchSecret) { SetKey(vchSecret); }
-    CRavenSecret() {}
+    CMemeiumSecret(const CKey& vchSecret) { SetKey(vchSecret); }
+    CMemeiumSecret() {}
 };
 
-template<typename K, int Size, CChainParams::Base58Type Type> class CRavenExtKeyBase : public CBase58Data
+template <typename K, int Size, CChainParams::Base58Type Type>
+class CMemeiumExtKeyBase : public CBase58Data
 {
 public:
-    void SetKey(const K &key) {
+    void SetKey(const K& key)
+    {
         unsigned char vch[Size];
         key.Encode(vch);
         SetData(GetParams().Base58Prefix(Type), vch, vch + Size);
     }
 
-    K GetKey() {
+    K GetKey()
+    {
         K ret;
         if (vchData.size() == Size) {
             // If base58 encoded data does not hold an ext key, return a !IsValid() key
@@ -151,23 +156,25 @@ public:
         return ret;
     }
 
-    CRavenExtKeyBase(const K &key) {
+    CMemeiumExtKeyBase(const K& key)
+    {
         SetKey(key);
     }
 
-    CRavenExtKeyBase(const std::string& strBase58c) {
+    CMemeiumExtKeyBase(const std::string& strBase58c)
+    {
         SetString(strBase58c.c_str(), GetParams().Base58Prefix(Type).size());
     }
 
-    CRavenExtKeyBase() {}
+    CMemeiumExtKeyBase() {}
 };
 
-typedef CRavenExtKeyBase<CExtKey, BIP32_EXTKEY_SIZE, CChainParams::EXT_SECRET_KEY> CRavenExtKey;
-typedef CRavenExtKeyBase<CExtPubKey, BIP32_EXTKEY_SIZE, CChainParams::EXT_PUBLIC_KEY> CRavenExtPubKey;
+typedef CMemeiumExtKeyBase<CExtKey, BIP32_EXTKEY_SIZE, CChainParams::EXT_SECRET_KEY> CMemeiumExtKey;
+typedef CMemeiumExtKeyBase<CExtPubKey, BIP32_EXTKEY_SIZE, CChainParams::EXT_PUBLIC_KEY> CMemeiumExtPubKey;
 
 std::string EncodeDestination(const CTxDestination& dest);
 CTxDestination DecodeDestination(const std::string& str);
 bool IsValidDestinationString(const std::string& str);
 bool IsValidDestinationString(const std::string& str, const CChainParams& params);
 
-#endif // RAVEN_BASE58_H
+#endif // MEMEIUM_BASE58_H

@@ -1,32 +1,32 @@
 // Copyright (c) 2019-2021 The Raven Core developers
+// Copyright (c) 2024-2025 The Memeium Core developers
 // Distributed under the MIT software license, see the accompanying
 // file COPYING or http://www.opensource.org/licenses/mit-license.php.
 
 #include "restrictedfreezeaddress.h"
 #include "ui_restrictedfreezeaddress.h"
 
-#include "ravenunits.h"
+#include "assetfilterproxy.h"
+#include "assettablemodel.h"
 #include "clientmodel.h"
 #include "guiconstants.h"
 #include "guiutil.h"
+#include "memeiumunits.h"
 #include "optionsmodel.h"
 #include "platformstyle.h"
 #include "walletmodel.h"
-#include "assetfilterproxy.h"
-#include "assettablemodel.h"
 
 #include <QAbstractItemDelegate>
-#include <QPainter>
 #include <QCompleter>
-#include <validation.h>
+#include <QPainter>
 #include <utiltime.h>
+#include <validation.h>
 
-FreezeAddress::FreezeAddress(const PlatformStyle *_platformStyle, QWidget *parent) :
-        QWidget(parent),
-        ui(new Ui::FreezeAddress),
-        clientModel(0),
-        walletModel(0),
-        platformStyle(_platformStyle)
+FreezeAddress::FreezeAddress(const PlatformStyle* _platformStyle, QWidget* parent) : QWidget(parent),
+                                                                                     ui(new Ui::FreezeAddress),
+                                                                                     clientModel(0),
+                                                                                     walletModel(0),
+                                                                                     platformStyle(_platformStyle)
 {
     ui->setupUi(this);
 
@@ -69,12 +69,12 @@ FreezeAddress::~FreezeAddress()
     delete ui;
 }
 
-void FreezeAddress::setClientModel(ClientModel *model)
+void FreezeAddress::setClientModel(ClientModel* model)
 {
     this->clientModel = model;
 }
 
-void FreezeAddress::setWalletModel(WalletModel *model)
+void FreezeAddress::setWalletModel(WalletModel* model)
 {
     this->walletModel = model;
 
@@ -90,7 +90,7 @@ void FreezeAddress::setWalletModel(WalletModel *model)
 
 bool FreezeAddress::eventFilter(QObject* object, QEvent* event)
 {
-    if((object == ui->lineEditAddress || object == ui->lineEditChangeAddress || object == ui->lineEditAssetData) && event->type() == QEvent::FocusIn) {
+    if ((object == ui->lineEditAddress || object == ui->lineEditChangeAddress || object == ui->lineEditAssetData) && event->type() == QEvent::FocusIn) {
         static_cast<QLineEdit*>(object)->setStyleSheet(STYLE_VALID);
         // bring up your custom edit
         return false; // lets the event continue to the edit
@@ -176,7 +176,7 @@ void FreezeAddress::check()
     bool isGlobal = freeze_global || unfreeze_global;
 
     bool failed = false;
-    if (!IsAssetNameAnRestricted(restricted_asset.toStdString())){
+    if (!IsAssetNameAnRestricted(restricted_asset.toStdString())) {
         showWarning(tr("Must have a restricted asset selected"));
         failed = true;
     }
@@ -224,15 +224,15 @@ void FreezeAddress::check()
                 enableSubmitButton();
             }
         } else if (isGlobal) {
-           bool fCurrentlyGloballyRestricted = passets->CheckForGlobalRestriction(restricted_asset.toStdString(), true);
+            bool fCurrentlyGloballyRestricted = passets->CheckForGlobalRestriction(restricted_asset.toStdString(), true);
 
-           if (freeze_global && fCurrentlyGloballyRestricted) {
-               showWarning(tr("Restricted asset is already frozen globally"));
-           } else if (unfreeze_global && !fCurrentlyGloballyRestricted) {
-               showWarning(tr("Restricted asset is not frozen globally"));
-           } else {
-               enableSubmitButton();
-           }
+            if (freeze_global && fCurrentlyGloballyRestricted) {
+                showWarning(tr("Restricted asset is already frozen globally"));
+            } else if (unfreeze_global && !fCurrentlyGloballyRestricted) {
+                showWarning(tr("Restricted asset is not frozen globally"));
+            } else {
+                enableSubmitButton();
+            }
         }
     } else {
         showWarning(tr("Unable to preform action at this time"));

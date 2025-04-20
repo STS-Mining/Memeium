@@ -1,5 +1,6 @@
 // Copyright (c) 2016 The Bitcoin Core developers
 // Copyright (c) 2017-2019 The Raven Core developers
+// Copyright (c) 2024-2025 The Memeium Core developers
 // Distributed under the MIT software license, see the accompanying
 // file COPYING or http://www.opensource.org/licenses/mit-license.php.
 
@@ -10,14 +11,14 @@
 /* These architectures support querying the cycle counter
  * from user space, no need for any syscall overhead.
  */
-void perf_init(void) { }
-void perf_fini(void) { }
+void perf_init(void) {}
+void perf_fini(void) {}
 
 #elif defined(__linux__)
 
-#include <unistd.h>
-#include <sys/syscall.h>
 #include <linux/perf_event.h>
+#include <sys/syscall.h>
+#include <unistd.h>
 
 static int fd = -1;
 static struct perf_event_attr attr;
@@ -47,8 +48,8 @@ uint64_t perf_cpucycles(void)
 
 #else /* Unhandled platform */
 
-void perf_init(void) { }
-void perf_fini(void) { }
+void perf_init(void) {}
+void perf_fini(void) {}
 uint64_t perf_cpucycles(void) { return 0; }
 
 #endif

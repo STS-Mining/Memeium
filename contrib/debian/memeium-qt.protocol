@@ -1,0 +1,11 @@
+[Protocol]
+exec=memeium-qt '%u'
+protocol=memeium
+input=none
+output=none
+helper=true
+listing=
+reading=false
+writing=false
+makedir=false
+deleting=false

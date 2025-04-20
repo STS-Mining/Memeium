@@ -1,5 +1,6 @@
 // Copyright (c) 2015-2016 The Bitcoin Core developers
 // Copyright (c) 2017-2020 The Raven Core developers
+// Copyright (c) 2024-2025 The Memeium Core developers
 // Distributed under the MIT software license, see the accompanying
 // file COPYING or http://www.opensource.org/licenses/mit-license.php.
 
@@ -44,7 +45,7 @@ void CScheduler::serviceQueue()
     while (!shouldStop()) {
         try {
             if (!shouldStop() && taskQueue.empty()) {
-                reverse_lock<boost::unique_lock<boost::mutex> > rlock(lock);
+                reverse_lock<boost::unique_lock<boost::mutex>> rlock(lock);
                 // Use this chance to get a tiny bit more entropy
                 RandAddSeedSleep();
             }
@@ -82,7 +83,7 @@ void CScheduler::serviceQueue()
             {
                 // Unlock before calling f, so it can reschedule itself or another task
                 // without deadlocking:
-                reverse_lock<boost::unique_lock<boost::mutex> > rlock(lock);
+                reverse_lock<boost::unique_lock<boost::mutex>> rlock(lock);
                 f();
             }
         } catch (...) {
@@ -131,8 +132,8 @@ void CScheduler::scheduleEvery(CScheduler::Function f, int64_t deltaMilliSeconds
     scheduleFromNow(boost::bind(&Repeat, this, f, deltaMilliSeconds), deltaMilliSeconds);
 }
 
-size_t CScheduler::getQueueInfo(boost::chrono::system_clock::time_point &first,
-                             boost::chrono::system_clock::time_point &last) const
+size_t CScheduler::getQueueInfo(boost::chrono::system_clock::time_point& first,
+    boost::chrono::system_clock::time_point& last) const
 {
     boost::unique_lock<boost::mutex> lock(newTaskMutex);
     size_t result = taskQueue.size();
@@ -143,13 +144,15 @@ size_t CScheduler::getQueueInfo(boost::chrono::system_clock::time_point &first,
     return result;
 }
 
-bool CScheduler::AreThreadsServicingQueue() const {
+bool CScheduler::AreThreadsServicingQueue() const
+{
     boost::unique_lock<boost::mutex> lock(newTaskMutex);
     return nThreadsServicingQueue;
 }
 
 
-void SingleThreadedSchedulerClient::MaybeScheduleProcessQueue() {
+void SingleThreadedSchedulerClient::MaybeScheduleProcessQueue()
+{
     {
         LOCK(m_cs_callbacks_pending);
         // Try to avoid scheduling too many copies here, but if we
@@ -161,8 +164,9 @@ void SingleThreadedSchedulerClient::MaybeScheduleProcessQueue() {
     m_pscheduler->schedule(std::bind(&SingleThreadedSchedulerClient::ProcessQueue, this));
 }
 
-void SingleThreadedSchedulerClient::ProcessQueue() {
-    std::function<void (void)> callback;
+void SingleThreadedSchedulerClient::ProcessQueue()
+{
+    std::function<void(void)> callback;
     {
         LOCK(m_cs_callbacks_pending);
         if (m_are_callbacks_running) return;
@@ -178,7 +182,8 @@ void SingleThreadedSchedulerClient::ProcessQueue() {
     struct RAIICallbacksRunning {
         SingleThreadedSchedulerClient* instance;
         explicit RAIICallbacksRunning(SingleThreadedSchedulerClient* _instance) : instance(_instance) {}
-        ~RAIICallbacksRunning() {
+        ~RAIICallbacksRunning()
+        {
             {
                 LOCK(instance->m_cs_callbacks_pending);
                 instance->m_are_callbacks_running = false;
@@ -190,7 +195,8 @@ void SingleThreadedSchedulerClient::ProcessQueue() {
     callback();
 }
 
-void SingleThreadedSchedulerClient::AddToProcessQueue(std::function<void (void)> func) {
+void SingleThreadedSchedulerClient::AddToProcessQueue(std::function<void(void)> func)
+{
     assert(m_pscheduler);
 
     {
@@ -200,7 +206,8 @@ void SingleThreadedSchedulerClient::AddToProcessQueue(std::function<void (void)>
     MaybeScheduleProcessQueue();
 }
 
-void SingleThreadedSchedulerClient::EmptyQueue() {
+void SingleThreadedSchedulerClient::EmptyQueue()
+{
     assert(!m_pscheduler->AreThreadsServicingQueue());
     bool should_continue = true;
     while (should_continue) {

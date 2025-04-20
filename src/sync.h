@@ -1,11 +1,12 @@
 // Copyright (c) 2009-2010 Satoshi Nakamoto
 // Copyright (c) 2009-2016 The Bitcoin Core developers
 // Copyright (c) 2017-2019 The Raven Core developers
+// Copyright (c) 2024-2025 The Memeium Core developers
 // Distributed under the MIT software license, see the accompanying
 // file COPYING or http://www.opensource.org/licenses/mit-license.php.
 
-#ifndef RAVEN_SYNC_H
-#define RAVEN_SYNC_H
+#ifndef MEMEIUM_SYNC_H
+#define MEMEIUM_SYNC_H
 
 #include "threadsafety.h"
 
@@ -92,7 +93,8 @@ void static inline DeleteLock(void* cs) {}
 class CCriticalSection : public AnnotatedMixin<boost::recursive_mutex>
 {
 public:
-    ~CCriticalSection() {
+    ~CCriticalSection()
+    {
         DeleteLock((void*)this);
     }
 };
@@ -170,7 +172,7 @@ public:
 
 typedef CMutexLock<CCriticalSection> CCriticalBlock;
 
-#define PASTE(x, y) x ## y
+#define PASTE(x, y) x##y
 #define PASTE2(x, y) PASTE(x, y)
 
 #define LOCK(cs) CCriticalBlock PASTE2(criticalblock, __COUNTER__)(cs, #cs, __FILE__, __LINE__)
@@ -287,4 +289,4 @@ public:
     }
 };
 
-#endif // RAVEN_SYNC_H
+#endif // MEMEIUM_SYNC_H

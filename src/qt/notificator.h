@@ -1,13 +1,14 @@
 // Copyright (c) 2011-2015 The Bitcoin Core developers
 // Copyright (c) 2017-2019 The Raven Core developers
+// Copyright (c) 2024-2025 The Memeium Core developers
 // Distributed under the MIT software license, see the accompanying
 // file COPYING or http://www.opensource.org/licenses/mit-license.php.
 
-#ifndef RAVEN_QT_NOTIFICATOR_H
-#define RAVEN_QT_NOTIFICATOR_H
+#ifndef MEMEIUM_QT_NOTIFICATOR_H
+#define MEMEIUM_QT_NOTIFICATOR_H
 
 #if defined(HAVE_CONFIG_H)
-#include "config/raven-config.h"
+#include "config/memeium-config.h"
 #endif
 
 #include <QIcon>
@@ -22,7 +23,7 @@ class QDBusInterface;
 QT_END_NAMESPACE
 
 /** Cross-platform desktop notification client. */
-class Notificator: public QObject
+class Notificator : public QObject
 {
     Q_OBJECT
 
@@ -30,15 +31,14 @@ public:
     /** Create a new notificator.
        @note Ownership of trayIcon is not transferred to this object.
     */
-    Notificator(const QString &programName, QSystemTrayIcon *trayIcon, QWidget *parent);
+    Notificator(const QString& programName, QSystemTrayIcon* trayIcon, QWidget* parent);
     ~Notificator();
 
     // Message class
-    enum Class
-    {
-        Information,    /**< Informational message */
-        Warning,        /**< Notify user of potential problem */
-        Critical        /**< An error occurred */
+    enum Class {
+        Information, /**< Informational message */
+        Warning,     /**< Notify user of potential problem */
+        Critical     /**< An error occurred */
     };
 
 public Q_SLOTS:
@@ -50,29 +50,28 @@ public Q_SLOTS:
        @param[in] millisTimeout notification timeout in milliseconds (defaults to 10 seconds)
        @note Platform implementations are free to ignore any of the provided fields except for \a text.
      */
-    void notify(Class cls, const QString &title, const QString &text,
-                const QIcon &icon = QIcon(), int millisTimeout = 10000);
+    void notify(Class cls, const QString& title, const QString& text, const QIcon& icon = QIcon(), int millisTimeout = 10000);
 
 private:
-    QWidget *parent;
+    QWidget* parent;
     enum Mode {
-        None,                       /**< Ignore informational notifications, and show a modal pop-up dialog for Critical notifications. */
-        Freedesktop,                /**< Use DBus org.freedesktop.Notifications */
-        QSystemTray,                /**< Use QSystemTray::showMessage */
-        UserNotificationCenter      /**< Use the 10.8+ User Notification Center (Mac only) */
+        None,                  /**< Ignore informational notifications, and show a modal pop-up dialog for Critical notifications. */
+        Freedesktop,           /**< Use DBus org.freedesktop.Notifications */
+        QSystemTray,           /**< Use QSystemTray::showMessage */
+        UserNotificationCenter /**< Use the 10.8+ User Notification Center (Mac only) */
     };
     QString programName;
     Mode mode;
-    QSystemTrayIcon *trayIcon;
+    QSystemTrayIcon* trayIcon;
 #ifdef USE_DBUS
-    QDBusInterface *interface;
+    QDBusInterface* interface;
 
-    void notifyDBus(Class cls, const QString &title, const QString &text, const QIcon &icon, int millisTimeout);
+    void notifyDBus(Class cls, const QString& title, const QString& text, const QIcon& icon, int millisTimeout);
 #endif
-    void notifySystray(Class cls, const QString &title, const QString &text, const QIcon &icon, int millisTimeout);
+    void notifySystray(Class cls, const QString& title, const QString& text, const QIcon& icon, int millisTimeout);
 #ifdef Q_OS_MAC
-    void notifyMacUserNotificationCenter(Class cls, const QString &title, const QString &text, const QIcon &icon);
+    void notifyMacUserNotificationCenter(Class cls, const QString& title, const QString& text, const QIcon& icon);
 #endif
 };
 
-#endif // RAVEN_QT_NOTIFICATOR_H
+#endif // MEMEIUM_QT_NOTIFICATOR_H

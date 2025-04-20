@@ -1,13 +1,14 @@
 // Copyright (c) 2009-2010 Satoshi Nakamoto
 // Copyright (c) 2009-2016 The Bitcoin Core developers
 // Copyright (c) 2017-2019 The Raven Core developers
+// Copyright (c) 2024-2025 The Memeium Core developers
 // Distributed under the MIT software license, see the accompanying
 // file COPYING or http://www.opensource.org/licenses/mit-license.php.
 
-#ifndef RAVEN_UNDO_H
-#define RAVEN_UNDO_H
+#ifndef MEMEIUM_UNDO_H
+#define MEMEIUM_UNDO_H
 
-#include "compressor.h" 
+#include "compressor.h"
 #include "consensus/consensus.h"
 #include "primitives/transaction.h"
 #include "serialize.h"
@@ -24,8 +25,9 @@ class TxInUndoSerializer
     const Coin* txout;
 
 public:
-    template<typename Stream>
-    void Serialize(Stream &s) const {
+    template <typename Stream>
+    void Serialize(Stream& s) const
+    {
         ::Serialize(s, VARINT(txout->nHeight * 2 + (txout->fCoinBase ? 1 : 0)));
         if (txout->nHeight > 0) {
             // Required to maintain compatibility with older undo format.
@@ -42,8 +44,9 @@ class TxInUndoDeserializer
     Coin* txout;
 
 public:
-    template<typename Stream>
-    void Unserialize(Stream &s) {
+    template <typename Stream>
+    void Unserialize(Stream& s)
+    {
         unsigned int nCode = 0;
         ::Unserialize(s, VARINT(nCode));
         txout->nHeight = nCode / 2;
@@ -62,11 +65,11 @@ public:
 };
 
 static const size_t MIN_TRANSACTION_INPUT_WEIGHT = WITNESS_SCALE_FACTOR * ::GetSerializeSize(CTxIn(), SER_NETWORK, PROTOCOL_VERSION);
-/** RVN START */
+/** MMM START */
 // Deprecated for RIP2 implementation
-//static const size_t MAX_INPUTS_PER_BLOCK = /*fAssetsIsActive ? MAX_BLOCK_WEIGHT_RIP2 / MIN_TRANSACTION_INPUT_WEIGHT :*/ MAX_BLOCK_WEIGHT / MIN_TRANSACTION_INPUT_WEIGHT;
+// static const size_t MAX_INPUTS_PER_BLOCK = /*fAssetsIsActive ? MAX_BLOCK_WEIGHT_RIP2 / MIN_TRANSACTION_INPUT_WEIGHT :*/ MAX_BLOCK_WEIGHT / MIN_TRANSACTION_INPUT_WEIGHT;
 
-/** RVN END */
+/** MMM END */
 
 /** Undo information for a CTransaction */
 class CTxUndo
@@ -76,7 +79,8 @@ public:
     std::vector<Coin> vprevout;
 
     template <typename Stream>
-    void Serialize(Stream& s) const {
+    void Serialize(Stream& s) const
+    {
         // TODO: avoid reimplementing vector serializer
         uint64_t count = vprevout.size();
         ::Serialize(s, COMPACTSIZE(REF(count)));
@@ -86,7 +90,8 @@ public:
     }
 
     template <typename Stream>
-    void Unserialize(Stream& s) {
+    void Unserialize(Stream& s)
+    {
         // TODO: avoid reimplementing vector deserializer
         uint64_t count = 0;
         ::Unserialize(s, COMPACTSIZE(count));
@@ -115,9 +120,10 @@ public:
     ADD_SERIALIZE_METHODS;
 
     template <typename Stream, typename Operation>
-    inline void SerializationOp(Stream& s, Operation ser_action) {
+    inline void SerializationOp(Stream& s, Operation ser_action)
+    {
         READWRITE(vtxundo);
     }
 };
 
-#endif // RAVEN_UNDO_H
+#endif // MEMEIUM_UNDO_H
